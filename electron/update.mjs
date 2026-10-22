@@ -180,6 +180,12 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
   } catch (e) {
     result.error = e.message || String(e);
     result.message = "update_failed";
+    try {
+      const logPath = join(userData, "last-update-error.txt");
+      writeFileSync(logPath, `${new Date().toISOString()}\n${result.error}\n`, "utf8");
+    } catch {
+      /* */
+    }
   }
 
   return result;

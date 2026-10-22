@@ -71,14 +71,19 @@ export function applyUiBundle(userData, version, zipPath, expectedSha256) {
     throw new Error("UI OTA extract is supported on Windows only");
   }
 
-  if (!existsSync(join(target, "index.html"))) {
-    throw new Error("UI bundle missing index.html");
-  }
+  const uiRoot = resolveExtractedUiRoot(target);
 
   writeFileSync(
     activeUiMetaPath(userData),
-    JSON.stringify({ version, path: target, updatedAt: new Date().toISOString() }, null, 2),
+    JSON.stringify({ version, path: uiRoot, updatedAt: new Date().toISOString() }, null, 2),
     "utf8"
   );
-  return target;
+  return uiRoot;
+}
+
+function resolveExtractedUiRoot(target) {
+  if (existsSync(join(target, "index.html"))) return target;
+  const nested = join(target, "dist");
+  if (existsSync(join(nested, "index.html"))) return nested;
+  throw new Error("UI bundle missing index.html");
 }

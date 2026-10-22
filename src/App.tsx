@@ -338,6 +338,12 @@ export function App() {
     try {
       const r = await api.checkUpdates();
       await applyUpdateResult(r);
+      if (r.uiUpdated || r.needsReload) {
+        const ver = await api.getAppVersion();
+        setUpdateInfo((prev) =>
+          prev ? { ...prev, appVersion: ver, effectiveAppVersion: ver, message: r.message } : prev
+        );
+      }
     } finally {
       setCheckingUpdates(false);
     }

@@ -39,10 +39,9 @@ const uiZipPath = join(OUT, uiZipName);
 let uiSha256 = null;
 
 if (existsSync(join(distDir, "index.html"))) {
-  const distGlob = join(distDir, "*").replace(/\\/g, "/");
-  const dest = uiZipPath.replace(/'/g, "''");
-  const ps = `Compress-Archive -Path '${distGlob}' -DestinationPath '${dest}' -Force`;
-  const r = spawnSync("powershell", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", ps], {
+  // tar -a includes dist/assets (Compress-Archive -Path dist/* skips subfolders)
+  const r = spawnSync("tar", ["-a", "-cf", uiZipPath, "-C", distDir, "."], {
+    cwd: ROOT,
     stdio: "inherit",
   });
   if (r.status === 0 && existsSync(uiZipPath)) {

@@ -471,12 +471,14 @@ app.whenReady().then(() => {
   ipcMain.handle("updater:check", async () => {
     const userData = app.getPath("userData");
     const settings = loadSettings(userData);
-    return checkAndApplyUpdates({
+    const result = await checkAndApplyUpdates({
       appRoot: appRoot(),
       userData,
       settings,
       appVersion: readAppVersion(),
     });
+    if (result.needsReload) reloadMainWindowUi();
+    return result;
   });
 
   ipcMain.handle("shell:open-path", (_, filePath) => shell.openPath(filePath));

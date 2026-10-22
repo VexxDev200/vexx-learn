@@ -5,7 +5,7 @@ export const UI: Record<
   Record<string, string>
 > = {
   ru: {
-    tagline: "Теория → пример → код → проверка · OTA 0.2.5 ✓",
+    tagline: "Теория → пример → код → проверка · OTA 0.2.7 ✓",
     pickLesson: "Выбери урок слева",
     loading: "Загрузка курса…",
     run: "▶ Запустить",
@@ -90,7 +90,7 @@ export const UI: Record<
     upd_courses_and_ui_updated: "Уроки и интерфейс обновлены",
   },
   en: {
-    tagline: "Theory → example → code → auto-check · OTA 0.2.5 ✓",
+    tagline: "Theory → example → code → auto-check · OTA 0.2.7 ✓",
     pickLesson: "Pick a lesson on the left",
     loading: "Loading course…",
     run: "▶ Run",
@@ -175,7 +175,7 @@ export const UI: Record<
     upd_courses_and_ui_updated: "Lessons and UI updated",
   },
   he: {
-    tagline: "תיאוריה → דוגמה → קוד → בדיקה · OTA 0.2.5 ✓",
+    tagline: "תיאוריה → דוגמה → קוד → בדיקה · OTA 0.2.7 ✓",
     pickLesson: "בחר שיעור מהרשימה",
     loading: "טוען קורס…",
     run: "▶ הרץ",
