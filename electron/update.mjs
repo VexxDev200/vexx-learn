@@ -102,6 +102,7 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
     appUpdateUrl: null,
     appLocalPath: null,
     appDownloaded: false,
+    appUpdateAvailable: false,
     message: "",
     error: null,
   };
@@ -132,11 +133,10 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
       try {
         const gh = await fetchGitHubAppRelease(cfg);
         if (gh?.version) {
-          result.remoteAppVersion = gh.version;
-          result.appUpdateUrl = gh.downloadUrl || result.appUpdateUrl;
-        } else if (!gh) {
-          result.appUpdateUrl = null;
-          result.message = result.message || "no_app_release";
+          if (!result.remoteAppVersion || semverGt(gh.version, result.remoteAppVersion)) {
+            result.remoteAppVersion = gh.version;
+          }
+          if (gh.downloadUrl) result.appUpdateUrl = gh.downloadUrl;
         }
       } catch (e) {
         if (!base) throw e;
@@ -144,11 +144,12 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
       }
     }
 
-    if (result.appUpdateUrl && !(await urlReachable(result.appUpdateUrl))) {
-      console.warn("[vexx-learn] app download URL not ready:", result.appUpdateUrl);
-      result.appUpdateUrl = null;
-      if (!result.message || result.message === "courses_up_to_date") {
-        result.message = "no_app_release";
+    let appUrlOk = false;
+    if (result.appUpdateUrl) {
+      appUrlOk = await urlReachable(result.appUpdateUrl);
+      if (!appUrlOk) {
+        console.warn("[vexx-learn] app download URL not ready:", result.appUpdateUrl);
+        result.appUpdateUrl = null;
       }
     }
 
@@ -180,12 +181,11 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
       result.coursesVersion = effectiveLocal;
     }
 
-    if (
-      settings.autoCheckApp &&
-      result.remoteAppVersion &&
-      result.appUpdateUrl &&
-      semverGt(result.remoteAppVersion, appVersion)
-    ) {
+    const appNewer =
+      Boolean(result.remoteAppVersion) && semverGt(result.remoteAppVersion, appVersion);
+    result.appUpdateAvailable = appNewer;
+
+    if (settings.autoCheckApp && appNewer && result.appUpdateUrl && appUrlOk) {
       const dest = join(
         userData,
         "updates",
@@ -203,10 +203,15 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
         url: result.appUpdateUrl,
         localPath: dest,
       });
+    }
+
+    if (appNewer) {
       if (result.coursesUpdated) {
         result.message = result.appDownloaded ? "courses_and_app_downloaded" : "courses_and_app";
+      } else if (result.appDownloaded) {
+        result.message = "app_update_downloaded";
       } else {
-        result.message = result.appDownloaded ? "app_update_downloaded" : "app_update_available";
+        result.message = "app_update_available";
       }
     }
   } catch (e) {

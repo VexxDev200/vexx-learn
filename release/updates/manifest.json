@@ -1,11 +1,11 @@
 {
   "coursesVersion": 20261022038,
-  "appVersion": "0.2.0",
+  "appVersion": "0.2.1",
   "appDownloadUrl": "https://github.com/VexxDev200/vexx-learn/releases/latest/download/Vexx-Learn-Portable.exe",
   "updateSource": "github",
   "githubRepo": "VexxDev200/vexx-learn",
   "coursesBaseUrl": "https://raw.githubusercontent.com/VexxDev200/vexx-learn/main/release/updates",
-  "generatedAt": "2026-10-22T19:53:37.422Z",
+  "generatedAt": "2026-10-22T19:59:48.235Z",
   "files": {
     "python": "python.json",
     "java": "java.json",

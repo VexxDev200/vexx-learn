@@ -26,12 +26,20 @@ const PROGRESS = join(app.getPath("userData"), "vexx-learn-progress.json");
 let mainWindow = null;
 
 function readAppVersion() {
-  try {
-    const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
-    return pkg.version || "0.0.0";
-  } catch {
-    return "0.0.0";
+  const bases = app.isPackaged
+    ? [app.getAppPath(), ROOT]
+    : [ROOT, join(__dir, "..")];
+  for (const base of bases) {
+    try {
+      const p = join(base, "package.json");
+      if (!existsSync(p)) continue;
+      const pkg = JSON.parse(readFileSync(p, "utf8"));
+      if (pkg.version) return pkg.version;
+    } catch {
+      /* try next */
+    }
   }
+  return "0.0.0";
 }
 
 function loadProgress() {

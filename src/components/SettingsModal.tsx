@@ -139,12 +139,14 @@ export function SettingsModal({
             </button>
             {updateInfo && (
               <span className="meta update-status">
-                {tUi(lang, `upd_${updateInfo.message}`) || updateInfo.message}
+                {updateInfo.appUpdateAvailable
+                  ? `${tUi(lang, "upd_app_update_available")} v${updateInfo.remoteAppVersion}`
+                  : tUi(lang, `upd_${updateInfo.message}`) || updateInfo.message}
                 {updateInfo.error ? ` — ${updateInfo.error}` : ""}
               </span>
             )}
           </div>
-          {updateInfo?.remoteAppVersion &&
+          {updateInfo?.appUpdateAvailable &&
             (updateInfo.appLocalPath || updateInfo.appUpdateUrl) && (
             <button type="button" className="btn primary" onClick={onDownloadApp}>
               {updateInfo.appLocalPath
@@ -155,6 +157,10 @@ export function SettingsModal({
           {updateInfo && (
             <p className="meta version-line">
               {tUi(lang, "appVer")}: {updateInfo.appVersion}
+              {updateInfo.remoteAppVersion &&
+              updateInfo.remoteAppVersion !== updateInfo.appVersion
+                ? ` → ${updateInfo.remoteAppVersion}`
+                : ""}
             </p>
           )}
         </section>

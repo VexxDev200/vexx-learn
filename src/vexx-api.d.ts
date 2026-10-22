@@ -33,6 +33,7 @@ export type UpdateResult = {
   appUpdateUrl: string | null;
   appLocalPath?: string | null;
   appDownloaded?: boolean;
+  appUpdateAvailable?: boolean;
   message: string;
   error: string | null;
 };

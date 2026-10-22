@@ -130,8 +130,13 @@ export function App() {
         r.message === "courses_and_app_downloaded"
       ) {
         setUpdateBanner(tUi(lang, "upd_app_downloaded"));
-      } else if (r.message === "app_update_available" || r.message === "courses_and_app") {
-        setUpdateBanner(tUi(lang, "upd_app_update_available"));
+      } else if (
+        r.appUpdateAvailable ||
+        r.message === "app_update_available" ||
+        r.message === "courses_and_app"
+      ) {
+        const ver = r.remoteAppVersion ? ` v${r.remoteAppVersion}` : "";
+        setUpdateBanner(tUi(lang, "upd_app_update_available") + ver);
       }
     },
     [lang, reloadCourses]
