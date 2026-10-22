@@ -5,7 +5,7 @@
   "updateSource": "github",
   "githubRepo": "VexxDev200/vexx-learn",
   "coursesBaseUrl": "https://raw.githubusercontent.com/VexxDev200/vexx-learn/main/release/updates",
-  "generatedAt": "2026-10-22T18:47:30.504Z",
+  "generatedAt": "2026-10-22T18:49:27.703Z",
   "files": {
     "python": "python.json",
     "java": "java.json",
