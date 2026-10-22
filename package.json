@@ -9,6 +9,7 @@
     "courses": "node scripts/build-all-courses.mjs",
     "icon": "node scripts/generate-icon.mjs",
     "pack:updates": "node scripts/pack-updates.mjs",
+    "release:pack": "npm run courses && npm run pack:updates",
     "dev": "concurrently -k \"vite\" \"wait-on http://127.0.0.1:5173 && electron .\"",
     "build": "npm run icon && npm run courses && vite build && node scripts/copy-course-data.mjs && electron-builder --win portable",
     "start": "electron ."

@@ -46,6 +46,7 @@ export async function fetchGitHubAppRelease(cfg) {
       "User-Agent": "Vexx-Learn-Updater",
     },
   });
+  if (res.status === 404) return null;
   if (!res.ok) throw new Error(`GitHub releases HTTP ${res.status}`);
   const data = await res.json();
   const version = String(data.tag_name || "").replace(/^v/i, "");

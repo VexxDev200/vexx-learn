@@ -1,0 +1,24 @@
+Новая версия Vexx Learn (для тебя, не для пользователей)
+======================================================
+
+1) Поднять версию в package.json (например 0.2.1) или:
+   npm version patch
+
+2) Собрать уроки и manifest для авто-обновления:
+   npm run release:pack
+
+3) Закоммитить и запушить (в т.ч. release/updates/):
+   git add -A
+   git commit -m "release: v0.2.1"
+   git push
+
+4) Собрать portable и выложить на GitHub Release:
+   npm run build
+   git tag v0.2.1
+   git push origin v0.2.1
+
+   (CI .github/workflows/release.yml прикрепит release/Vexx-Learn-Portable.exe)
+
+   Или вручную: GitHub → Releases → Create → тег v0.2.1 → файл release/Vexx-Learn-Portable.exe
+
+Тег всегда с префиксом v и совпадает с version в package.json.

@@ -1,0 +1,17 @@
+{
+  "id": "py-04",
+  "track": "python",
+  "title": "4. if / else",
+  "minutes": 12,
+  "theory": "## Условие\n\n```python\nif score >= 10:\n    print(\"Молодец\")\nelse:\n    print(\"Ещё чуть-чуть\")\n```\n\nПосле `if` **обязательно отступ** (4 пробела). Двоеточие `:` в конце строки `if`.",
+  "exampleCode": "temp = 30\nif temp > 25:\n    print(\"Жарко\")\nelse:\n    print(\"Норм\")",
+  "exampleExplain": "Сравнения: `>`, `<`, `>=`, `<=`, `==`, `!=`.",
+  "task": "`n = 4`. Если n чётное — выведи `even`, иначе `odd`. (4 → even)",
+  "starterCode": "n = 4\n# if n % 2 == 0:\n",
+  "checks": [
+    {
+      "expectedStdout": "even",
+      "hint": "Чётность: n % 2 == 0"
+    }
+  ]
+}

@@ -136,6 +136,40 @@
     }
   },
   {
+    "kind": "project",
+    "minutes": 28,
+    "id": "cs-proj-1",
+    "track": "csharp",
+    "editorLang": "csharp",
+    "title": {
+      "ru": "Проект: сумма 1..4",
+      "en": "Project: sum 1..4",
+      "he": "פרויקט: סכום"
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    int s = 0;\n    for (int i = 1; i <= 4; i++) s += i;\n    Console.WriteLine(s);\n  }\n}",
+    "task": {
+      "ru": "Сумма 1..4 → 10.",
+      "en": "Sum → 10.",
+      "he": "10."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    int s = 0;\n    for (int i = 1; i <= 4; i++) s += i;\n    Console.WriteLine(s);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "10\n"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nЦикл `for` — сумма 1+2+3+4, выведи `10`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nfor loop, sum 1..4 → 10.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nסכום בלולאה.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Это образец решения — твой код может отличаться, если проходит проверку.",
+      "en": "Sample solution — yours can differ if tests pass.",
+      "he": "דוגמה לפתרון."
+    }
+  },
+  {
     "kind": "lesson",
     "id": "cs-05",
     "track": "csharp",
@@ -235,6 +269,40 @@
       "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
       "en": "Walk through each line: declarations, expressions, console output.",
       "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "project",
+    "minutes": 28,
+    "id": "cs-proj-2",
+    "track": "csharp",
+    "editorLang": "csharp",
+    "title": {
+      "ru": "Проект: массив",
+      "en": "Project: array sum",
+      "he": "פרויקט: מערך"
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    int[] a = {5, 5, 5};\n    Console.WriteLine(a[0] + a[1] + a[2]);\n  }\n}",
+    "task": {
+      "ru": "5+5+5 → 15.",
+      "en": "Sum → 15.",
+      "he": "15."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    int[] a = {5, 5, 5};\n    Console.WriteLine(a[0] + a[1] + a[2]);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "15\n"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nМассив `{5, 5, 5}` — выведи сумму (15).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nSum {5,5,5} → 15.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nסכום מערך.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Это образец решения — твой код может отличаться, если проходит проверку.",
+      "en": "Sample solution — yours can differ if tests pass.",
+      "he": "דוגמה לפתרון."
     }
   },
   {

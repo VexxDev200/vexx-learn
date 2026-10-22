@@ -1,0 +1,17 @@
+{
+  "id": "py-06",
+  "track": "python",
+  "title": "6. Списки",
+  "minutes": 10,
+  "theory": "## Список — несколько значений\n\n```python\nnums = [10, 20, 30]\nprint(nums[0])  # 10\nprint(len(nums))  # 3\n```\n\nИндексы с нуля.",
+  "exampleCode": "langs = [\"Python\", \"Java\", \"C++\"]\nprint(langs[1])",
+  "exampleExplain": "Индекс 1 — второй элемент.",
+  "task": "Список `items = [5, 10, 15]`. Выведи сумму всех элементов (30).",
+  "starterCode": "items = [5, 10, 15]\n",
+  "checks": [
+    {
+      "expectedStdout": "30",
+      "hint": "print(items[0] + items[1] + items[2]) или sum(items)"
+    }
+  ]
+}

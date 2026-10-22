@@ -25,4 +25,5 @@ contextBridge.exposeInMainWorld("vexxLearn", {
   runCsharp: (code) => ipcRenderer.invoke("run:csharp", { code }),
   checkCsharp: (code, checks) => ipcRenderer.invoke("check:csharp", { code, checks }),
   openExternal: (url) => ipcRenderer.invoke("shell:open", url),
+  openPath: (filePath) => ipcRenderer.invoke("shell:open-path", filePath),
 });

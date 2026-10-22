@@ -32,14 +32,82 @@ body {
   color: var(--text);
 }
 
-[dir="rtl"] .sidebar {
+/* Hebrew UI: mirror layout; never set dir=rtl on <html> (breaks Monaco). */
+.app.app-rtl {
+  grid-template-columns: 1fr 260px;
+  font-family: "Heebo", "Outfit", system-ui, sans-serif;
+}
+
+.app-rtl .sidebar {
+  order: 2;
+  border-right: none;
+  border-left: 1px solid var(--border);
+  text-align: right;
+}
+
+.app-rtl .main {
+  order: 1;
+}
+
+.app-rtl .brand-row,
+.app-rtl .lang-row,
+.app-rtl .progress-wrap,
+.app-rtl .topbar,
+.app-rtl .task-bar,
+.app-rtl .theory,
+.app-rtl .settings-modal,
+.app-rtl .lesson-list {
+  text-align: right;
+}
+
+.app-rtl .lesson-item {
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+.app-rtl .theory {
   border-right: none;
   border-left: 1px solid var(--border);
 }
 
-[dir="rtl"] .theory {
-  border-right: none;
-  border-left: 1px solid var(--border);
+.app-rtl .content {
+  direction: rtl;
+}
+
+.app-rtl .editor-pane,
+.app-rtl .editor-toolbar,
+.app-rtl .editor-wrap,
+.app-rtl .editor-wrap .monaco-editor,
+.app-rtl .console-panel,
+.app-rtl .console,
+.app-rtl .editor-hint {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate;
+}
+
+.app-rtl .editor-toolbar {
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.app-rtl .settings-check,
+.app-rtl .streak-pill,
+.app-rtl .lang-row {
+  justify-content: flex-end;
+}
+
+.app-rtl .topbar {
+  flex-direction: row-reverse;
+}
+
+.app-rtl .task-bar {
+  direction: rtl;
+}
+
+.app-rtl .error-why {
+  direction: rtl;
+  text-align: right;
 }
 
 .app {
@@ -75,6 +143,18 @@ body {
   color: var(--text);
   border-color: var(--accent-dim);
   background: #1a2e2a;
+}
+
+.manifest-url {
+  display: block;
+  margin: 0.35rem 0;
+  font-size: 0.7rem;
+  word-break: break-all;
+  color: var(--accent);
+}
+
+.manifest-open {
+  margin-top: 0.25rem;
 }
 
 .progress-wrap {
@@ -425,6 +505,45 @@ body {
 
 .lesson-item.ethics {
   border: 1px dashed #475569;
+}
+
+.lesson-item.project {
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, #1a1520);
+}
+
+.streak-pill {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  background: #1a2030;
+  border: 1px solid var(--border);
+}
+
+.streak-pill strong {
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+
+.error-why {
+  margin-top: 0.5rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #7c2d12;
+  background: #1c1410;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #fed7aa;
+}
+
+.error-why strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #fdba74;
 }
 
 .lesson-item.locked {

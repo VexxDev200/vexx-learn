@@ -8,15 +8,10 @@ type UpdateInfo = {
   appVersion: string;
   remoteAppVersion: string | null;
   appUpdateUrl: string | null;
+  appLocalPath?: string | null;
+  appDownloaded?: boolean;
   message: string;
   error: string | null;
-};
-
-type UpdateSource = {
-  coursesBaseUrl: string;
-  githubConfigured: boolean;
-  githubRepo: string | null;
-  portableAssetName: string;
 };
 
 type Props = {
@@ -24,7 +19,6 @@ type Props = {
   open: boolean;
   settings: VexxSettings;
   updateInfo: UpdateInfo | null;
-  updateSource: UpdateSource | null;
   checking: boolean;
   onClose: () => void;
   onChange: (patch: Partial<VexxSettings>) => void;
@@ -41,7 +35,6 @@ export function SettingsModal({
   open,
   settings,
   updateInfo,
-  updateSource,
   checking,
   onClose,
   onChange,
@@ -123,23 +116,7 @@ export function SettingsModal({
 
         <section className="settings-section">
           <h3>{tUi(lang, "updates")}</h3>
-          {updateSource?.githubConfigured ? (
-            <p className="meta github-hint">
-              {tUi(lang, "githubUpdates")}: <code>{updateSource.githubRepo}</code>
-              <br />
-              <span className="meta">{updateSource.coursesBaseUrl}</span>
-            </p>
-          ) : (
-            <p className="meta github-hint warn">{tUi(lang, "githubConfigHint")}</p>
-          )}
-          <label className="settings-label">{tUi(lang, "updateUrlOptional")}</label>
-          <input
-            className="settings-input"
-            type="url"
-            placeholder="https://your-host/vexx-learn/updates"
-            value={settings.updateBaseUrl}
-            onChange={(e) => onChange({ updateBaseUrl: e.target.value })}
-          />
+          <p className="meta github-hint">{tUi(lang, "updatesAutoHint")}</p>
           <label className="settings-check">
             <input
               type="checkbox"
@@ -167,15 +144,17 @@ export function SettingsModal({
               </span>
             )}
           </div>
-          {updateInfo?.appUpdateUrl && updateInfo.remoteAppVersion && (
+          {updateInfo?.remoteAppVersion &&
+            (updateInfo.appLocalPath || updateInfo.appUpdateUrl) && (
             <button type="button" className="btn primary" onClick={onDownloadApp}>
-              {tUi(lang, "downloadApp")} v{updateInfo.remoteAppVersion}
+              {updateInfo.appLocalPath
+                ? `${tUi(lang, "openDownloadedApp")} v${updateInfo.remoteAppVersion}`
+                : `${tUi(lang, "downloadApp")} v${updateInfo.remoteAppVersion}`}
             </button>
           )}
           {updateInfo && (
             <p className="meta version-line">
-              {tUi(lang, "coursesVer")}: {updateInfo.coursesVersion} · {tUi(lang, "appVer")}:{" "}
-              {updateInfo.appVersion}
+              {tUi(lang, "appVer")}: {updateInfo.appVersion}
             </p>
           )}
         </section>

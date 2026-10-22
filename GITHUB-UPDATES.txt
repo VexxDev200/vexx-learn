@@ -11,11 +11,12 @@ Vexx Learn — обновления через GitHub (без своего до�
    Приложение качает:
    https://raw.githubusercontent.com/<owner>/<repo>/main/release/updates/manifest.json
 
-3) Новый exe:
+3) Новый exe (без Release ссылка …/releases/latest/download/… даёт 404):
    npm run build
-   На GitHub: Releases → Create release → тег v0.2.0 (как в package.json)
-   Прикрепи файл release/Vexx-Learn-Portable.exe
-   Имя файла должно совпадать с portableAssetName в update.config.json
+   Вариант A — вручную: GitHub → Releases → Create release → тег v0.2.0 (как package.json)
+            Прикрепи release/Vexx-Learn-Portable.exe (имя = portableAssetName в update.config.json)
+   Вариант B — CI: git tag v0.2.0 && git push origin v0.2.0
+            (workflow .github/workflows/release.yml соберёт и выложит exe)
 
 4) У пользователей в настройках можно оставить URL пустым — используется GitHub из update.config.json
    (он встроен в exe при сборке).

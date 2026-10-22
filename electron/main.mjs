@@ -1,11 +1,13 @@
-import { app, BrowserWindow, ipcMain, nativeImage, shell } from "electron";
+import { app, BrowserWindow, ipcMain, Menu, nativeImage, shell } from "electron";
 import { loadAllCourses } from "./courses.mjs";
 import { loadSettings, saveSettings } from "./settings.mjs";
+import { isGitHubConfigured, loadUpdateConfig } from "./update-config.mjs";
 import {
   checkAndApplyUpdates,
   getUpdateSourceInfo,
+  isIncompleteGithubRawUrl,
   loadPendingAppUpdate,
-  savePendingAppUpdate,
+  resolveCoursesBaseForSettings,
 } from "./update.mjs";
 import { spawn } from "child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs";
@@ -34,10 +36,14 @@ function readAppVersion() {
 
 function loadProgress() {
   try {
-    if (!existsSync(PROGRESS)) return { completed: [] };
-    return JSON.parse(readFileSync(PROGRESS, "utf8"));
+    if (!existsSync(PROGRESS)) return { completed: [], streak: { count: 0, lastStudyDate: "" } };
+    const p = JSON.parse(readFileSync(PROGRESS, "utf8"));
+    return {
+      completed: p.completed || [],
+      streak: p.streak || { count: 0, lastStudyDate: "" },
+    };
   } catch {
-    return { completed: [] };
+    return { completed: [], streak: { count: 0, lastStudyDate: "" } };
   }
 }
 
@@ -90,10 +96,17 @@ function createWindow() {
   }
 }
 
+function updatesConfigured(settings) {
+  const root = appRoot();
+  const cfg = loadUpdateConfig(root);
+  const base = resolveCoursesBaseForSettings(settings, root);
+  return Boolean(base || isGitHubConfigured(cfg));
+}
+
 async function runBackgroundUpdate() {
   const userData = app.getPath("userData");
   const settings = loadSettings(userData);
-  if (!settings.updateBaseUrl?.trim()) return null;
+  if (!updatesConfigured(settings)) return null;
   if (!settings.autoUpdateCourses && !settings.autoCheckApp) return null;
   const result = await checkAndApplyUpdates({
     appRoot: appRoot(),
@@ -101,12 +114,6 @@ async function runBackgroundUpdate() {
     settings,
     appVersion: readAppVersion(),
   });
-  if (result.appUpdateUrl && result.remoteAppVersion) {
-    savePendingAppUpdate(userData, {
-      version: result.remoteAppVersion,
-      url: result.appUpdateUrl,
-    });
-  }
   mainWindow?.webContents?.send("vexx:update-result", result);
   return result;
 }
@@ -356,6 +363,7 @@ function runChecks(runFn, code, checks) {
 }
 
 app.whenReady().then(() => {
+  Menu.setApplicationMenu(null);
   ipcMain.handle("lessons:list", async () => {
     const base = join(appRoot(), "lessons");
     const tracks = ["python", "java", "cpp", "csharp"];
@@ -384,6 +392,24 @@ app.whenReady().then(() => {
   ipcMain.handle("progress:complete", (_, lessonId) => {
     const p = loadProgress();
     if (!p.completed.includes(lessonId)) p.completed.push(lessonId);
+    const today = new Date();
+    const y = today.getFullYear();
+    const m = String(today.getMonth() + 1).padStart(2, "0");
+    const d = String(today.getDate()).padStart(2, "0");
+    const todayStr = `${y}-${m}-${d}`;
+    const st = p.streak || { count: 0, lastStudyDate: "" };
+    if (st.lastStudyDate !== todayStr) {
+      const prev = st.lastStudyDate;
+      let count = 1;
+      if (prev) {
+        const da = new Date(prev + "T12:00:00");
+        const db = new Date(todayStr + "T12:00:00");
+        const diff = Math.round((db - da) / 86400000);
+        if (diff === 1) count = (st.count || 0) + 1;
+        else if (diff > 1) count = 1;
+      }
+      p.streak = { count, lastStudyDate: todayStr };
+    }
     saveProgress(p);
     return p;
   });
@@ -410,6 +436,12 @@ app.whenReady().then(() => {
   ipcMain.handle("settings:set", (_, patch) => {
     const userData = app.getPath("userData");
     const next = { ...loadSettings(userData), ...patch };
+    if (
+      typeof next.updateBaseUrl === "string" &&
+      isIncompleteGithubRawUrl(next.updateBaseUrl.trim())
+    ) {
+      next.updateBaseUrl = "";
+    }
     saveSettings(userData, next);
     return next;
   });
@@ -419,20 +451,15 @@ app.whenReady().then(() => {
   ipcMain.handle("updater:check", async () => {
     const userData = app.getPath("userData");
     const settings = loadSettings(userData);
-    const result = await checkAndApplyUpdates({
+    return checkAndApplyUpdates({
       appRoot: appRoot(),
       userData,
       settings,
       appVersion: readAppVersion(),
     });
-    if (result.appUpdateUrl && result.remoteAppVersion) {
-      savePendingAppUpdate(userData, {
-        version: result.remoteAppVersion,
-        url: result.appUpdateUrl,
-      });
-    }
-    return result;
   });
+
+  ipcMain.handle("shell:open-path", (_, filePath) => shell.openPath(filePath));
 
   ipcMain.handle("updater:pending-app", () => loadPendingAppUpdate(app.getPath("userData")));
 
@@ -445,7 +472,7 @@ app.whenReady().then(() => {
   createWindow();
   setTimeout(() => {
     runBackgroundUpdate().catch((e) => console.warn("[vexx-learn] update", e.message));
-  }, 2500);
+  }, 800);
 });
 
 app.on("window-all-closed", () => {

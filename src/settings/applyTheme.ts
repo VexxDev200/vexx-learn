@@ -64,11 +64,19 @@ export function applyVexxTheme(settings: VexxSettings): void {
   }
 }
 
+function sanitizeUpdateBaseUrl(url: string): string {
+  const u = (url || "").trim().replace(/\/+$/, "");
+  if (/^https:\/\/raw\.githubusercontent\.com\/[\w.-]+\/[\w.-]+$/i.test(u)) return "";
+  return url.trim();
+}
+
 export function loadSettingsFromStorage(): VexxSettings {
   try {
     const raw = localStorage.getItem("vexx-learn-settings");
     if (!raw) return { ...DEFAULT_SETTINGS };
-    return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+    const merged = { ...DEFAULT_SETTINGS, ...JSON.parse(raw) } as VexxSettings;
+    merged.updateBaseUrl = sanitizeUpdateBaseUrl(merged.updateBaseUrl);
+    return merged;
   } catch {
     return { ...DEFAULT_SETTINGS };
   }

@@ -1,0 +1,17 @@
+{
+  "id": "py-01",
+  "track": "python",
+  "title": "1. Первая программа",
+  "minutes": 5,
+  "theory": "## Что такое программа\n\nПрограмма — это **инструкции** для компьютера. В Python мы пишем их построчно, сверху вниз.\n\nФункция `print()` **выводит текст** в консоль (то окно, куда ты смотришь результат).\n\n```python\nprint(\"Привет\")\n```\n\nКавычки `\"...\"` или `'...'` — это **строка** (текст).",
+  "exampleCode": "print(\"Я учусь кодить на Python!\")\nprint(2026)",
+  "exampleExplain": "Первая строка — текст. Вторая — число без кавычек.",
+  "task": "Выведи две строки: сначала `MyName`, потом `Vexx Learn` (два print). Потом можешь поменять MyName на свой ник.",
+  "starterCode": "print(\"MyName\")\nprint(\"Vexx Learn\")\n",
+  "checks": [
+    {
+      "hint": "Два print — имя и фраза Vexx Learn.",
+      "expectedStdout": "MyName\nVexx Learn"
+    }
+  ]
+}

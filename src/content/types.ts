@@ -7,7 +7,7 @@ export type L = Record<Lang, string>;
 export type LessonDef = {
   id: string;
   track: "python" | "java" | "cpp" | "csharp";
-  kind?: "lesson" | "exam" | "ethics";
+  kind?: "lesson" | "exam" | "ethics" | "project";
   minutes: number;
   title: L;
   theory: L;

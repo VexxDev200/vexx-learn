@@ -37,6 +37,25 @@ function lesson(base) {
   };
 }
 
+function project(base) {
+  const { theoryRu, theoryEn, theoryHe, minutes, ...rest } = base;
+  const defRu =
+    "**Проект между блоками** — собери всё из предыдущих уроков. Смотри «Почему ошибка» под консолью.";
+  const defEn = "**Block project** — combine prior lessons. See “Why this error” below the console.";
+  const defHe = "**פרויקט בלוק** — שלב את מה שלמדת.";
+  return {
+    kind: "project",
+    minutes: minutes || 28,
+    ...rest,
+    theory: theory(theoryRu || defRu, theoryEn || defEn, theoryHe || defHe),
+    exampleExplain: H(
+      "Это образец решения — твой код может отличаться, если проходит проверку.",
+      "Sample solution — yours can differ if tests pass.",
+      "דוגמה לפתרון."
+    ),
+  };
+}
+
 function exam(id, track, editorLang, title, task, starter, expected, minutes = 45) {
   return {
     id,
@@ -176,6 +195,17 @@ const python = [
     starterCode: "n = 5\nwhile n >= 1:\n    print(n)\n    n -= 1\n",
     checks: [{ expectedStdout: "5\n4\n3\n2\n1" }],
   }),
+  project({
+    id: "py-proj-1", track: "python", editorLang: "python",
+    title: H("Проект: таблица ×2", "Project: ×2 table", "פרויקט: כפול 2"),
+    theoryRu: "Циклы `for` + f-строка. Выведи три строки `2x1=2`, `2x2=4`, `2x3=6`.",
+    theoryEn: "Loops + f-string. Print three lines for 2×1 … 2×3.",
+    theoryHe: "לולאה ו-f-string.",
+    exampleCode: "for i in range(1, 4):\n    print(f\"2x{i}={2 * i}\")",
+    task: H("Таблица умножения на 2 для 1..3 (три строки).", "Print 2×1, 2×2, 2×3.", "2x1, 2x2, 2x3."),
+    starterCode: "for i in range(1, 4):\n    print(f\"2x{i}={2 * i}\")\n",
+    checks: [{ expectedStdout: "2x1=2\n2x2=4\n2x3=6" }],
+  }),
   lesson({
     id: "py-08", track: "python", minutes: 16, editorLang: "python",
     title: H("8. Списки", "8. Lists", "8. רשימות"),
@@ -254,6 +284,17 @@ const python = [
     starterCode:
       "def count_even(xs):\n    c = 0\n    for x in xs:\n        if x % 2 == 0:\n            c += 1\n    return c\nprint(count_even([2, 3, 4, 6]))\n",
     checks: [{ expectedStdout: "3" }],
+  }),
+  project({
+    id: "py-proj-2", track: "python", editorLang: "python",
+    title: H("Проект: статистика", "Project: list stats", "פרויקט: סטטיסטיקה"),
+    theoryRu: "Функция `stats(nums)` возвращает сумму списка. Используй `sum`, цикл или встроенные функции.",
+    theoryEn: "Function `stats(nums)` returns total sum.",
+    theoryHe: "פונקציה וסכום רשימה.",
+    exampleCode: "def stats(nums):\n    return sum(nums)\nprint(stats([5, 5, 10]))",
+    task: H("stats([5,5,10]) → 20.", "stats([5,5,10]) → 20.", "20."),
+    starterCode: "def stats(nums):\n    return sum(nums)\nprint(stats([5, 5, 10]))\n",
+    checks: [{ expectedStdout: "20" }],
   }),
   lesson({
     id: "py-14", track: "python", minutes: 16, editorLang: "python",
@@ -385,6 +426,19 @@ const java = [
     javaMain("for (int i = 1; i <= 2; i++) System.out.println(i);"),
     "1\n2\n"
   ),
+  project({
+    id: "java-proj-1",
+    track: "java",
+    editorLang: "java",
+    title: H("Проект: сумма 1..5", "Project: sum 1..5", "פרויקט: סכום 1..5"),
+    theoryRu: "Цикл `for` от 1 до 5, накапливай сумму в `int sum`, выведи `15`.",
+    theoryEn: "for loop 1..5, accumulate sum, print 15.",
+    theoryHe: "לולאה וסכום.",
+    exampleCode: `public class Main {\n  public static void main(String[] args) {\n    int sum = 0;\n    for (int i = 1; i <= 5; i++) sum += i;\n    System.out.println(sum);\n  }\n}`,
+    task: H("Сумма чисел 1+2+3+4+5 → 15.", "Print sum 1..5 → 15.", "15."),
+    starterCode: `public class Main {\n  public static void main(String[] args) {\n    int sum = 0;\n    for (int i = 1; i <= 5; i++) sum += i;\n    System.out.println(sum);\n  }\n}\n`,
+    checks: [{ expectedStdout: "15\n" }],
+  }),
   javaLesson(
     "java-05", 5, "Цикл while", "while loop", "while",
     "`while (условие) { }` — проверка **до** входа в тело. Обновляй переменные внутри.\n\n`do { } while (условие)` — минимум одна итерация (позже).",
@@ -415,6 +469,19 @@ const java = [
     javaMain("int[] a = {2, 3};\n    System.out.println(a[0] + a[1]);"),
     "5\n"
   ),
+  project({
+    id: "java-proj-2",
+    track: "java",
+    editorLang: "java",
+    title: H("Проект: массив", "Project: array sum", "פרויקט: מערך"),
+    theoryRu: "Массив `{4, 5, 6}` — выведи сумму элементов (15).",
+    theoryEn: "Sum array {4,5,6} → 15.",
+    theoryHe: "סכום מערך.",
+    exampleCode: `public class Main {\n  public static void main(String[] args) {\n    int[] a = {4, 5, 6};\n    System.out.println(a[0] + a[1] + a[2]);\n  }\n}`,
+    task: H("Сумма 4+5+6 → 15.", "Sum → 15.", "15."),
+    starterCode: `public class Main {\n  public static void main(String[] args) {\n    int[] a = {4, 5, 6};\n    System.out.println(a[0] + a[1] + a[2]);\n  }\n}\n`,
+    checks: [{ expectedStdout: "15\n" }],
+  }),
   javaLesson(
     "java-08", 8, "Строки", "Strings", "מחרוזות",
     "`String s = \"abc\";` — неизменяемые. `s.length()`, `s.charAt(0)`, `s.substring(1)`.\n\nСклейка: `+` или `String.format`.",
@@ -547,6 +614,19 @@ const cpp = [
     cppWrap('  for (int i = 1; i <= 3; i++)\n    cout << i << "\\n";'),
     "1\n2\n3"
   ),
+  project({
+    id: "cpp-proj-1",
+    track: "cpp",
+    editorLang: "cpp",
+    title: H("Проект: таблица ×3", "Project: ×3 table", "פרויקט: ×3"),
+    theoryRu: "Цикл `for` — три строки `3x1=3`, `3x2=6`, `3x3=9`.",
+    theoryEn: "Print 3×1, 3×2, 3×3.",
+    theoryHe: "לולאת for.",
+    exampleCode: cppWrap('  for (int i = 1; i <= 3; i++)\n    cout << "3x" << i << "=" << 3 * i << "\\n";'),
+    task: H("Таблица ×3 для 1..3.", "×3 table.", "×3."),
+    starterCode: cppWrap('  for (int i = 1; i <= 3; i++)\n    cout << "3x" << i << "=" << 3 * i << "\\n";'),
+    checks: [{ expectedStdout: "3x1=3\n3x2=6\n3x3=9" }],
+  }),
   cppLesson(
     "cpp-05", 5, "while", "while", "while",
     "`while (cond) { }` — цикл с предусловием. Следи за изменением переменной цикла.",
@@ -573,6 +653,19 @@ const cpp = [
     cppWrap("  int a[] = {1, 2, 3};\n  cout << a[0] + a[2];"),
     "4"
   ),
+  project({
+    id: "cpp-proj-2",
+    track: "cpp",
+    editorLang: "cpp",
+    title: H("Проект: массив", "Project: array", "פרויקט: מערך"),
+    theoryRu: "Массив `{2, 4, 6}` — выведи сумму (12).",
+    theoryEn: "Sum {2,4,6} → 12.",
+    theoryHe: "סכום.",
+    exampleCode: cppWrap("  int a[] = {2, 4, 6};\n  cout << a[0] + a[1] + a[2];"),
+    task: H("2+4+6 → 12.", "Sum → 12.", "12."),
+    starterCode: cppWrap("  int a[] = {2, 4, 6};\n  cout << a[0] + a[1] + a[2];"),
+    checks: [{ expectedStdout: "12" }],
+  }),
   cppLesson(
     "cpp-08", 8, "vector", "vector", "vector",
     "`#include <vector>` — динамический массив: `vector<int> v = {1, 2};`, `v.push_back(3)`, `v.size()`.",
@@ -701,6 +794,19 @@ const csharp = [
     csWrap("for (int i = 1; i <= 2; i++) Console.WriteLine(i);"),
     "1\n2\n"
   ),
+  project({
+    id: "cs-proj-1",
+    track: "csharp",
+    editorLang: "csharp",
+    title: H("Проект: сумма 1..4", "Project: sum 1..4", "פרויקט: סכום"),
+    theoryRu: "Цикл `for` — сумма 1+2+3+4, выведи `10`.",
+    theoryEn: "for loop, sum 1..4 → 10.",
+    theoryHe: "סכום בלולאה.",
+    exampleCode: csWrap("int s = 0;\n    for (int i = 1; i <= 4; i++) s += i;\n    Console.WriteLine(s);"),
+    task: H("Сумма 1..4 → 10.", "Sum → 10.", "10."),
+    starterCode: csWrap("int s = 0;\n    for (int i = 1; i <= 4; i++) s += i;\n    Console.WriteLine(s);"),
+    checks: [{ expectedStdout: "10\n" }],
+  }),
   csLesson(
     "cs-05", 5, "while", "while", "while",
     "while с декрементом счётчика — тот же паттерн, что в Python/Java.",
@@ -725,6 +831,19 @@ const csharp = [
     csWrap("Console.WriteLine(new int[] { 1, 2, 3 }.Length);"),
     "3\n"
   ),
+  project({
+    id: "cs-proj-2",
+    track: "csharp",
+    editorLang: "csharp",
+    title: H("Проект: массив", "Project: array sum", "פרויקט: מערך"),
+    theoryRu: "Массив `{5, 5, 5}` — выведи сумму (15).",
+    theoryEn: "Sum {5,5,5} → 15.",
+    theoryHe: "סכום מערך.",
+    exampleCode: csWrap("int[] a = {5, 5, 5};\n    Console.WriteLine(a[0] + a[1] + a[2]);"),
+    task: H("5+5+5 → 15.", "Sum → 15.", "15."),
+    starterCode: csWrap("int[] a = {5, 5, 5};\n    Console.WriteLine(a[0] + a[1] + a[2]);"),
+    checks: [{ expectedStdout: "15\n" }],
+  }),
   csLesson(
     "cs-08", 8, "List<T>", "List<T>", "List",
     "`using System.Collections.Generic;` → `List<int> xs = new List<int> { 1, 2 };` — динамический список, `Add`, `Count`.",

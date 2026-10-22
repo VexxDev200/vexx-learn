@@ -10,7 +10,7 @@ export type LessonCheck = {
 export type Lesson = {
   id: string;
   track: string;
-  kind?: "lesson" | "exam" | "ethics";
+  kind?: "lesson" | "exam" | "ethics" | "project";
   editorLang?: "python" | "java" | "cpp" | "csharp";
   title: string;
   minutes: number;
@@ -31,6 +31,8 @@ export type UpdateResult = {
   appVersion: string;
   remoteAppVersion: string | null;
   appUpdateUrl: string | null;
+  appLocalPath?: string | null;
+  appDownloaded?: boolean;
   message: string;
   error: string | null;
 };
@@ -43,8 +45,14 @@ export type CoursesPayload = {
 
 export type VexxLearnApi = {
   listLessons: () => Promise<Record<string, Lesson[]>>;
-  getProgress: () => Promise<{ completed: string[] }>;
-  completeLesson: (id: string) => Promise<{ completed: string[] }>;
+  getProgress: () => Promise<{
+    completed: string[];
+    streak?: { count: number; lastStudyDate: string };
+  }>;
+  completeLesson: (id: string) => Promise<{
+    completed: string[];
+    streak?: { count: number; lastStudyDate: string };
+  }>;
   getCourses: () => Promise<CoursesPayload>;
   getSettings: () => Promise<VexxSettings>;
   setSettings: (patch: Partial<VexxSettings>) => Promise<VexxSettings>;
@@ -54,6 +62,7 @@ export type VexxLearnApi = {
   onUpdateResult: (cb: (r: UpdateResult) => void) => () => void;
   getUpdateSource: () => Promise<{
     coursesBaseUrl: string;
+    manifestUrl: string;
     githubConfigured: boolean;
     githubRepo: string | null;
     portableAssetName: string;
@@ -67,6 +76,12 @@ export type VexxLearnApi = {
   runCsharp: (code: string) => Promise<RunResult>;
   checkCsharp: (code: string, checks: LessonCheck[]) => Promise<CheckResult>;
   openExternal: (url: string) => Promise<void>;
+  openPath: (filePath: string) => Promise<string>;
+  getPendingAppUpdate: () => Promise<{
+    version: string;
+    url: string;
+    localPath?: string;
+  } | null>;
 };
 
 export type RunResult = {

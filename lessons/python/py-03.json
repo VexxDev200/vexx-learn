@@ -1,0 +1,17 @@
+{
+  "id": "py-03",
+  "track": "python",
+  "title": "3. Ввод и f-строки",
+  "minutes": 10,
+  "theory": "## Текст с подстановкой\n\n**f-строка** подставляет значения в `{}`:\n\n```python\nx = 7\nprint(f\"Ответ: {x}\")\n```\n\nВ этом лаунчере ввод с клавиатуры (`input`) в проверках не нужен — мы задаём данные в коде.",
+  "exampleCode": "coins = 100\nbonus = 15\nprint(f\"Всего монет: {coins + bonus}\")",
+  "exampleExplain": "Внутри `{}` можно писать выражения.",
+  "task": "Переменные `hours = 3` и `rate = 50`. Выведи: `Зарплата: 150` (через f-строку).",
+  "starterCode": "hours = 3\nrate = 50\n",
+  "checks": [
+    {
+      "expectedStdout": "Зарплата: 150",
+      "hint": "print(f\"Зарплата: {hours * rate}\")"
+    }
+  ]
+}

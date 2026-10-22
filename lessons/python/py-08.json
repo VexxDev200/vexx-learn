@@ -1,0 +1,17 @@
+{
+  "id": "py-08",
+  "track": "python",
+  "title": "8. Мини-проект: счётчик",
+  "minutes": 15,
+  "theory": "## Собери всё вместе\n\nФункция + цикл + условие — типичный маленький скрипт.\n\nТы напишешь функцию, которая считает, сколько чисел в списке больше порога.",
+  "exampleCode": "def count_big(nums, limit):\n    c = 0\n    for n in nums:\n        if n > limit:\n            c += 1\n    return c\n\nprint(count_big([1, 5, 9], 4))",
+  "exampleExplain": "Только 5 и 9 > 4 → ответ 2.",
+  "task": "Реализуй `count_big` как в примере и выведи `count_big([2, 4, 6, 8], 5)` → должно быть **2**.",
+  "starterCode": "def count_big(nums, limit):\n    c = 0\n    # твой код\n    return c\n\nprint(count_big([2, 4, 6, 8], 5))\n",
+  "checks": [
+    {
+      "expectedStdout": "2",
+      "hint": "В цикле: if n > limit: c += 1"
+    }
+  ]
+}

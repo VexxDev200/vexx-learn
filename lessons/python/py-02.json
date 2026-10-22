@@ -1,0 +1,17 @@
+{
+  "id": "py-02",
+  "track": "python",
+  "title": "2. Переменные",
+  "minutes": 8,
+  "theory": "## Переменная — коробка с именем\n\n```python\nage = 16\nname = \"Alex\"\n```\n\nСлева **имя**, справа **значение**. Потом можно использовать имя:\n\n```python\nprint(name)\nprint(age + 1)\n```\n\nИмена: латиница, цифры, `_`. Без пробелов.",
+  "exampleCode": "lang = \"Python\"\nlevel = 1\nprint(lang, \"уровень\", level)",
+  "exampleExplain": "В print можно передать несколько значений через запятую — они выведутся через пробел.",
+  "task": "Создай `a = 10` и `b = 25`. Выведи одной строкой их сумму (число 35).",
+  "starterCode": "a = 10\nb = 25\n# выведи a + b\n",
+  "checks": [
+    {
+      "expectedStdout": "35",
+      "hint": "Используй print(a + b)"
+    }
+  ]
+}

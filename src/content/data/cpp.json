@@ -136,6 +136,40 @@
     }
   },
   {
+    "kind": "project",
+    "minutes": 28,
+    "id": "cpp-proj-1",
+    "track": "cpp",
+    "editorLang": "cpp",
+    "title": {
+      "ru": "Проект: таблица ×3",
+      "en": "Project: ×3 table",
+      "he": "פרויקט: ×3"
+    },
+    "exampleCode": "#include <iostream>\nusing namespace std;\nint main() {\n  for (int i = 1; i <= 3; i++)\n    cout << \"3x\" << i << \"=\" << 3 * i << \"\\n\";\n  return 0;\n}",
+    "task": {
+      "ru": "Таблица ×3 для 1..3.",
+      "en": "×3 table.",
+      "he": "×3."
+    },
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n  for (int i = 1; i <= 3; i++)\n    cout << \"3x\" << i << \"=\" << 3 * i << \"\\n\";\n  return 0;\n}",
+    "checks": [
+      {
+        "expectedStdout": "3x1=3\n3x2=6\n3x3=9"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nЦикл `for` — три строки `3x1=3`, `3x2=6`, `3x3=9`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nPrint 3×1, 3×2, 3×3.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nלולאת for.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Это образец решения — твой код может отличаться, если проходит проверку.",
+      "en": "Sample solution — yours can differ if tests pass.",
+      "he": "דוגמה לפתרון."
+    }
+  },
+  {
     "kind": "lesson",
     "id": "cpp-05",
     "track": "cpp",
@@ -235,6 +269,40 @@
       "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
       "en": "Walk through each line: declarations, expressions, console output.",
       "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "project",
+    "minutes": 28,
+    "id": "cpp-proj-2",
+    "track": "cpp",
+    "editorLang": "cpp",
+    "title": {
+      "ru": "Проект: массив",
+      "en": "Project: array",
+      "he": "פרויקט: מערך"
+    },
+    "exampleCode": "#include <iostream>\nusing namespace std;\nint main() {\n  int a[] = {2, 4, 6};\n  cout << a[0] + a[1] + a[2];\n  return 0;\n}",
+    "task": {
+      "ru": "2+4+6 → 12.",
+      "en": "Sum → 12.",
+      "he": "12."
+    },
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n  int a[] = {2, 4, 6};\n  cout << a[0] + a[1] + a[2];\n  return 0;\n}",
+    "checks": [
+      {
+        "expectedStdout": "12"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nМассив `{2, 4, 6}` — выведи сумму (12).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nSum {2,4,6} → 12.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nסכום.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Это образец решения — твой код может отличаться, если проходит проверку.",
+      "en": "Sample solution — yours can differ if tests pass.",
+      "he": "דוגמה לפתרון."
     }
   },
   {

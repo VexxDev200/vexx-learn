@@ -1,0 +1,17 @@
+{
+  "id": "py-07",
+  "track": "python",
+  "title": "7. Функции def",
+  "minutes": 15,
+  "theory": "## Своя функция\n\n```python\ndef greet(name):\n    return f\"Hi, {name}\"\n\nprint(greet(\"Vexx\"))\n```\n\n`return` отдаёт результат. Без return функция вернёт `None`.",
+  "exampleCode": "def double(n):\n    return n * 2\n\nprint(double(21))",
+  "exampleExplain": "double(21) → 42",
+  "task": "Напиши функцию `add(a, b)` и выведи результат `add(7, 8)` (15).",
+  "starterCode": "def add(a, b):\n    pass\n\nprint(add(7, 8))\n",
+  "checks": [
+    {
+      "expectedStdout": "15",
+      "hint": "return a + b вместо pass"
+    }
+  ]
+}

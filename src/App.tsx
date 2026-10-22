@@ -15,6 +15,8 @@ import type { Lang } from "./content/types";
 import { LANG_LABEL, tUi } from "./i18n/ui";
 import { applyVexxTheme, loadSettingsFromStorage, saveSettingsToStorage } from "./settings/applyTheme";
 import type { VexxSettings } from "./settings/types";
+import { explainError } from "./learn/errorExplain";
+import { mergeStreakFromServer, type StreakState } from "./learn/streak";
 import type { Lesson, UpdateResult } from "./vexx-api";
 
 const TRACKS: { id: string; label: string; ready: boolean }[] = [
@@ -74,10 +76,6 @@ export function App() {
   const [updateInfo, setUpdateInfo] = useState<UpdateResult | null>(null);
   const [checkingUpdates, setCheckingUpdates] = useState(false);
   const [updateBanner, setUpdateBanner] = useState<string | null>(null);
-  const [updateSource, setUpdateSource] = useState<
-    Awaited<ReturnType<NonNullable<typeof window.vexxLearn>["getUpdateSource"]>> | null
-  >(null);
-
   const tracks = useMemo(() => buildTracks(registry, lang), [registry, lang]);
   const [track, setTrack] = useState("python");
   const [lessonId, setLessonId] = useState<string | null>("py-01");
@@ -85,6 +83,8 @@ export function App() {
   const [consoleText, setConsoleText] = useState("");
   const [consoleOk, setConsoleOk] = useState(true);
   const [completed, setCompleted] = useState<string[]>([]);
+  const [streak, setStreak] = useState<StreakState>({ count: 0, lastStudyDate: "" });
+  const [failContext, setFailContext] = useState<"run" | "check">("run");
   const [loading, setLoading] = useState(true);
 
   const consoleRef = useRef<HTMLDivElement>(null);
@@ -103,7 +103,8 @@ export function App() {
 
   useEffect(() => {
     document.documentElement.lang = lang;
-    document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
+    // Monaco breaks when <html dir="rtl"> — UI RTL via .app-rtl only.
+    document.documentElement.dir = "ltr";
     localStorage.setItem("vexx-learn-lang", lang);
   }, [lang]);
 
@@ -123,6 +124,12 @@ export function App() {
       if (r.coursesUpdated) {
         await reloadCourses();
         setUpdateBanner(tUi(lang, "upd_courses_updated"));
+      }
+      if (
+        r.message === "app_update_downloaded" ||
+        r.message === "courses_and_app_downloaded"
+      ) {
+        setUpdateBanner(tUi(lang, "upd_app_downloaded"));
       } else if (r.message === "app_update_available" || r.message === "courses_and_app") {
         setUpdateBanner(tUi(lang, "upd_app_update_available"));
       }
@@ -154,14 +161,13 @@ export function App() {
         return;
       }
       try {
-        const [prog, remoteSettings, coursesPayload, src] = await Promise.all([
+        const [prog, remoteSettings, coursesPayload] = await Promise.all([
           api.getProgress(),
           api.getSettings(),
           api.getCourses(),
-          api.getUpdateSource(),
         ]);
-        setUpdateSource(src);
         setCompleted(prog.completed || []);
+        setStreak(mergeStreakFromServer(prog.streak));
         const merged = { ...loadSettingsFromStorage(), ...remoteSettings };
         setSettings(merged);
         setSettingsDraft(merged);
@@ -196,6 +202,16 @@ export function App() {
     [lessons, lessonId]
   );
 
+  const errorWhy = useMemo(() => {
+    if (consoleOk || !lesson) return null;
+    return explainError(
+      consoleText,
+      lang,
+      lesson.editorLang || "python",
+      failContext
+    );
+  }, [consoleOk, consoleText, lang, lesson, failContext]);
+
   const progressPct = useMemo(() => {
     const defs = defsForTrack(registry, track).filter((l) => l.kind !== "exam");
     if (!defs.length) return 0;
@@ -213,6 +229,7 @@ export function App() {
     setCode(l.starterCode);
     setConsoleText("");
     setConsoleOk(true);
+    setFailContext("run");
   }, [track, completed, lang, registry]);
 
   const switchTrack = (id: string) => {
@@ -234,6 +251,7 @@ export function App() {
     }
     setConsoleText(tUi(lang, "running"));
     setConsoleOk(true);
+    setFailContext("run");
     const r = await runLesson(api, lesson.editorLang || "python", code);
     if (!r) {
       setConsoleText(`${tUi(lang, "noElectron")}\n(no response from runner)`);
@@ -253,6 +271,7 @@ export function App() {
       return;
     }
     setConsoleText(tUi(lang, "checking") + "\n");
+    setFailContext("check");
     const r = await checkLesson(api, lesson.editorLang || "python", code, lesson.checks);
     if (!r) return;
     const lines: string[] = [];
@@ -277,6 +296,7 @@ export function App() {
       );
       const p = await api.completeLesson(lesson.id);
       setCompleted(p.completed);
+      if (p.streak) setStreak(mergeStreakFromServer(p.streak));
     }
     setConsoleText(lines.join("\n"));
     setConsoleOk(r.allPass);
@@ -323,9 +343,15 @@ export function App() {
     }
   };
 
-  const downloadAppHandler = () => {
+  const downloadAppHandler = async () => {
+    if (!api) return;
+    const pending = await api.getPendingAppUpdate();
+    if (pending?.localPath) {
+      await api.openPath(pending.localPath);
+      return;
+    }
     const url = updateInfo?.appUpdateUrl;
-    if (url && api) api.openExternal(url);
+    if (url) api.openExternal(url);
   };
 
   if (loading) {
@@ -333,13 +359,12 @@ export function App() {
   }
 
   return (
-    <div className="app">
+    <div className={`app${lang === "he" ? " app-rtl" : ""}`}>
       <SettingsModal
         lang={lang}
         open={settingsOpen}
         settings={settingsDraft}
         updateInfo={updateInfo}
-        updateSource={updateSource}
         checking={checkingUpdates}
         onClose={() => setSettingsOpen(false)}
         onChange={(patch) => setSettingsDraft((s) => ({ ...s, ...patch }))}
@@ -381,6 +406,10 @@ export function App() {
           <div className="progress-bar">
             <div className="progress-fill" style={{ width: `${progressPct}%` }} />
           </div>
+          <div className="streak-pill" title={tUi(lang, "streakHint")}>
+            <span className="meta">{tUi(lang, "streak")}</span>
+            <strong>{streak.count}</strong>
+          </div>
         </div>
 
         {TRACKS.map((t) => (
@@ -403,7 +432,7 @@ export function App() {
                 key={l.id}
                 type="button"
                 disabled={locked}
-                className={`lesson-item ${lessonId === l.id ? "active" : ""} ${completed.includes(l.id) ? "done" : ""} ${l.kind === "exam" ? "exam" : ""} ${l.kind === "ethics" ? "ethics" : ""} ${locked ? "locked" : ""}`}
+                className={`lesson-item ${lessonId === l.id ? "active" : ""} ${completed.includes(l.id) ? "done" : ""} ${l.kind === "exam" ? "exam" : ""} ${l.kind === "ethics" ? "ethics" : ""} ${l.kind === "project" ? "project" : ""} ${locked ? "locked" : ""}`}
                 onClick={() => pickLesson(l)}
               >
                 {l.title}
@@ -421,11 +450,16 @@ export function App() {
         {lesson ? (
           <>
             <header className="topbar">
-              <h1>{lesson.title}</h1>
+              <h1>
+                {lesson.title}
+                {lesson.kind === "project" ? (
+                  <span className="meta lesson-kind"> · {tUi(lang, "kindProject")}</span>
+                ) : null}
+              </h1>
               <span className="meta">~{lesson.minutes} min</span>
             </header>
             <div className="content">
-              <article className="theory">
+              <article className="theory" dir={lang === "he" ? "rtl" : "ltr"}>
                 <ReactMarkdown>{lesson.theory}</ReactMarkdown>
                 <div className="example-box">
                   <strong>{tUi(lang, "example")}</strong>
@@ -458,8 +492,9 @@ export function App() {
                     {tUi(lang, "reset")}
                   </button>
                 </div>
-                <div className="editor-wrap">
+                <div className="editor-wrap" dir="ltr">
                   <Editor
+                    key={`${lesson.id}-${lang}`}
                     height="100%"
                     language={lesson.editorLang || "python"}
                     theme="vexx-dark"
@@ -474,6 +509,12 @@ export function App() {
                   <div className={`console ${consoleOk ? "ok" : "err"}`}>
                     {consoleText || tUi(lang, "output")}
                   </div>
+                  {errorWhy ? (
+                    <div className="error-why" role="note">
+                      <strong>{tUi(lang, "whyError")}</strong>
+                      {errorWhy}
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>

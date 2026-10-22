@@ -1,0 +1,17 @@
+{
+  "id": "py-05",
+  "track": "python",
+  "title": "5. Цикл for",
+  "minutes": 12,
+  "theory": "## Повторить N раз\n\n```python\nfor i in range(3):\n    print(i)\n```\n\n`range(3)` даёт 0, 1, 2. `range(1, 4)` — 1, 2, 3.",
+  "exampleCode": "for x in range(1, 4):\n    print(x * x)",
+  "exampleExplain": "Каждую итерацию печатаем квадрат числа.",
+  "task": "Выведи числа 1, 2, 3 каждое с новой строки (цикл for).",
+  "starterCode": "# for i in range(1, 4):\n#     print(i)\n",
+  "checks": [
+    {
+      "expectedStdout": "1\n2\n3",
+      "hint": "range(1, 4) и print внутри цикла с отступом"
+    }
+  ]
+}

@@ -34,6 +34,25 @@ async function fetchJson(url, timeoutMs = 15000) {
   }
 }
 
+async function urlReachable(url, timeoutMs = 12000) {
+  if (!url || typeof url !== "string") return false;
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { method: "HEAD", redirect: "follow", signal: ctrl.signal });
+    if (res.ok) return true;
+    if (res.status === 405 || res.status === 403) {
+      const getRes = await fetch(url, { method: "GET", redirect: "follow", signal: ctrl.signal });
+      return getRes.ok;
+    }
+    return false;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
 async function downloadFile(url, destPath) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Download failed ${res.status}`);
@@ -46,11 +65,28 @@ function sha256File(path) {
   return createHash("sha256").update(buf).digest("hex");
 }
 
+/** raw.githubusercontent.com/owner/repo with no branch/path → 404 in browser */
+export function isIncompleteGithubRawUrl(url) {
+  return /^https:\/\/raw\.githubusercontent\.com\/[\w.-]+\/[\w.-]+\/?$/i.test(url);
+}
+
 function resolveCoursesBase(settings, appRoot) {
-  const custom = normalizeBase(settings.updateBaseUrl);
-  if (custom) return custom;
   const cfg = loadUpdateConfig(appRoot);
-  return githubCoursesBaseUrl(cfg);
+  const gh = githubCoursesBaseUrl(cfg);
+  const custom = normalizeBase(settings.updateBaseUrl);
+  if (!custom) return gh;
+  if (isIncompleteGithubRawUrl(custom)) {
+    console.warn(
+      "[vexx-learn] updateBaseUrl is repo root only; using",
+      gh || "bundled GitHub path from update.config.json"
+    );
+    return gh || custom;
+  }
+  return custom;
+}
+
+export function resolveCoursesBaseForSettings(settings, appRoot) {
+  return resolveCoursesBase(settings, appRoot);
 }
 
 export async function checkAndApplyUpdates({ appRoot, userData, settings, appVersion }) {
@@ -64,6 +100,8 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
     appVersion,
     remoteAppVersion: null,
     appUpdateUrl: null,
+    appLocalPath: null,
+    appDownloaded: false,
     message: "",
     error: null,
   };
@@ -96,10 +134,21 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
         if (gh?.version) {
           result.remoteAppVersion = gh.version;
           result.appUpdateUrl = gh.downloadUrl || result.appUpdateUrl;
+        } else if (!gh) {
+          result.appUpdateUrl = null;
+          result.message = result.message || "no_app_release";
         }
       } catch (e) {
         if (!base) throw e;
         console.warn("[vexx-learn] GitHub release check:", e.message);
+      }
+    }
+
+    if (result.appUpdateUrl && !(await urlReachable(result.appUpdateUrl))) {
+      console.warn("[vexx-learn] app download URL not ready:", result.appUpdateUrl);
+      result.appUpdateUrl = null;
+      if (!result.message || result.message === "courses_up_to_date") {
+        result.message = "no_app_release";
       }
     }
 
@@ -134,10 +183,30 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
     if (
       settings.autoCheckApp &&
       result.remoteAppVersion &&
-      (result.appUpdateUrl || semverGt(result.remoteAppVersion, appVersion))
+      result.appUpdateUrl &&
+      semverGt(result.remoteAppVersion, appVersion)
     ) {
-      if (semverGt(result.remoteAppVersion, appVersion)) {
-        result.message = result.coursesUpdated ? "courses_and_app" : "app_update_available";
+      const dest = join(
+        userData,
+        "updates",
+        `Vexx-Learn-Portable-${result.remoteAppVersion}.exe`
+      );
+      mkdirSync(dirname(dest), { recursive: true });
+      const hadFile = existsSync(dest);
+      if (!hadFile) {
+        await downloadFile(result.appUpdateUrl, dest);
+        result.appDownloaded = true;
+      }
+      result.appLocalPath = dest;
+      savePendingAppUpdate(userData, {
+        version: result.remoteAppVersion,
+        url: result.appUpdateUrl,
+        localPath: dest,
+      });
+      if (result.coursesUpdated) {
+        result.message = result.appDownloaded ? "courses_and_app_downloaded" : "courses_and_app";
+      } else {
+        result.message = result.appDownloaded ? "app_update_downloaded" : "app_update_available";
       }
     }
   } catch (e) {
@@ -166,8 +235,10 @@ export function savePendingAppUpdate(userData, info) {
 export function getUpdateSourceInfo(appRoot, settings) {
   const cfg = loadUpdateConfig(appRoot);
   const base = resolveCoursesBase(settings, appRoot);
+  const manifestUrl = base ? `${base}/manifest.json` : "";
   return {
     coursesBaseUrl: base,
+    manifestUrl,
     githubConfigured: isGitHubConfigured(cfg),
     githubRepo: isGitHubConfigured(cfg) ? `${cfg.githubOwner}/${cfg.githubRepo}` : null,
     portableAssetName: cfg.portableAssetName,

@@ -136,6 +136,40 @@
     }
   },
   {
+    "kind": "project",
+    "minutes": 28,
+    "id": "java-proj-1",
+    "track": "java",
+    "editorLang": "java",
+    "title": {
+      "ru": "Проект: сумма 1..5",
+      "en": "Project: sum 1..5",
+      "he": "פרויקט: סכום 1..5"
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    int sum = 0;\n    for (int i = 1; i <= 5; i++) sum += i;\n    System.out.println(sum);\n  }\n}",
+    "task": {
+      "ru": "Сумма чисел 1+2+3+4+5 → 15.",
+      "en": "Print sum 1..5 → 15.",
+      "he": "15."
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    int sum = 0;\n    for (int i = 1; i <= 5; i++) sum += i;\n    System.out.println(sum);\n  }\n}\n",
+    "checks": [
+      {
+        "expectedStdout": "15\n"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nЦикл `for` от 1 до 5, накапливай сумму в `int sum`, выведи `15`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nfor loop 1..5, accumulate sum, print 15.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nלולאה וסכום.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Это образец решения — твой код может отличаться, если проходит проверку.",
+      "en": "Sample solution — yours can differ if tests pass.",
+      "he": "דוגמה לפתרון."
+    }
+  },
+  {
     "kind": "lesson",
     "id": "java-05",
     "track": "java",
@@ -235,6 +269,40 @@
       "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
       "en": "Walk through each line: declarations, expressions, console output.",
       "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "project",
+    "minutes": 28,
+    "id": "java-proj-2",
+    "track": "java",
+    "editorLang": "java",
+    "title": {
+      "ru": "Проект: массив",
+      "en": "Project: array sum",
+      "he": "פרויקט: מערך"
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    int[] a = {4, 5, 6};\n    System.out.println(a[0] + a[1] + a[2]);\n  }\n}",
+    "task": {
+      "ru": "Сумма 4+5+6 → 15.",
+      "en": "Sum → 15.",
+      "he": "15."
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    int[] a = {4, 5, 6};\n    System.out.println(a[0] + a[1] + a[2]);\n  }\n}\n",
+    "checks": [
+      {
+        "expectedStdout": "15\n"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nМассив `{4, 5, 6}` — выведи сумму элементов (15).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nSum array {4,5,6} → 15.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nסכום מערך.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Это образец решения — твой код может отличаться, если проходит проверку.",
+      "en": "Sample solution — yours can differ if tests pass.",
+      "he": "דוגמה לפתרון."
     }
   },
   {
