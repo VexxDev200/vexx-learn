@@ -20,11 +20,9 @@ type Props = {
   settings: VexxSettings;
   updateInfo: UpdateInfo | null;
   uiOtaSupported: boolean;
-  checking: boolean;
   onClose: () => void;
   onChange: (patch: Partial<VexxSettings>) => void;
   onSave: () => void;
-  onCheckUpdates: () => void;
 };
 
 const THEMES: AppTheme[] = ["default", "midnight", "light", "neon"];
@@ -36,11 +34,9 @@ export function SettingsModal({
   settings,
   updateInfo,
   uiOtaSupported,
-  checking,
   onClose,
   onChange,
   onSave,
-  onCheckUpdates,
 }: Props) {
   if (!open) return null;
 
@@ -120,33 +116,13 @@ export function SettingsModal({
           {!uiOtaSupported && (
             <p className="meta github-hint warn">{tUi(lang, "upd_need_new_installer")}</p>
           )}
-          <label className="settings-check">
-            <input
-              type="checkbox"
-              checked={settings.autoUpdateCourses}
-              onChange={(e) => onChange({ autoUpdateCourses: e.target.checked })}
-            />
-            {tUi(lang, "autoUpdateCourses")}
-          </label>
-          <label className="settings-check">
-            <input
-              type="checkbox"
-              checked={settings.autoCheckApp}
-              onChange={(e) => onChange({ autoCheckApp: e.target.checked })}
-            />
-            {tUi(lang, "autoCheckApp")}
-          </label>
-          <div className="settings-update-row">
-            <button type="button" className="btn" disabled={checking} onClick={onCheckUpdates}>
-              {checking ? tUi(lang, "checkingUpdates") : tUi(lang, "checkUpdates")}
-            </button>
-            {updateInfo && (
-              <span className="meta update-status">
-                {tUi(lang, `upd_${updateInfo.message}`) || updateInfo.message}
-                {updateInfo.error ? ` — ${updateInfo.error}` : ""}
-              </span>
-            )}
-          </div>
+          <p className="meta update-status">
+            {updateInfo
+              ? `${tUi(lang, `upd_${updateInfo.message}`) || updateInfo.message}${
+                  updateInfo.error ? ` — ${updateInfo.error}` : ""
+                }`
+              : tUi(lang, "updatesAutoHint")}
+          </p>
           {updateInfo && (
             <p className="meta version-line">
               {tUi(lang, "appVer")}:{" "}

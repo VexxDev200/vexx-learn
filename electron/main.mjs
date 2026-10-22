@@ -120,11 +120,12 @@ function updatesConfigured(settings) {
   return Boolean(base || isGitHubConfigured(cfg));
 }
 
+const UPDATE_POLL_MS = 3 * 60 * 1000;
+
 async function runBackgroundUpdate() {
   const userData = app.getPath("userData");
   const settings = loadSettings(userData);
   if (!updatesConfigured(settings)) return null;
-  if (!settings.autoUpdateCourses && !settings.autoCheckApp) return null;
   const result = await checkAndApplyUpdates({
     appRoot: appRoot(),
     userData,
@@ -500,6 +501,9 @@ app.whenReady().then(() => {
       } catch (e) {
         console.warn("[vexx-learn] update", e.message);
       }
+      setInterval(() => {
+        runBackgroundUpdate().catch((e) => console.warn("[vexx-learn] update poll", e.message));
+      }, UPDATE_POLL_MS);
     }
     createWindow();
   })();

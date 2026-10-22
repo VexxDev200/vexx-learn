@@ -5,7 +5,7 @@
   "updateSource": "github",
   "githubRepo": "VexxDev200/vexx-learn",
   "coursesBaseUrl": "https://raw.githubusercontent.com/VexxDev200/vexx-learn/main/release/updates",
-  "generatedAt": "2026-10-22T20:18:50.100Z",
+  "generatedAt": "2026-10-22T20:21:22.480Z",
   "files": {
     "python": "python.json",
     "java": "java.json",
@@ -17,6 +17,6 @@
     "java": "4fc1286c55ceb1b9a4e807c78c73a8e5ad7edf3fb35f1553aa4f1a3aa07ee269",
     "cpp": "25739a905cd686bd4c16c2aa588d20d0bab6c978f6a39ac8ead706e01f52a257",
     "csharp": "18a614e8eb693daac45de5656047c1c2f92627d1bbd8a601a622a344e8654cd5",
-    "uiBundle": "48e14bf3de303c120db8bd7724054b4b015025ff4b6609a0fd8ad7b1116eca5f"
+    "uiBundle": "de8c4332baf4f4c7a355aa075b32483c20668b3c9fde571919668b535d5a49e0"
   }
 }

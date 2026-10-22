@@ -71,6 +71,7 @@ export function resolveCoursesBaseForSettings(settings, appRoot) {
 }
 
 export async function checkAndApplyUpdates({ appRoot, userData, settings, appVersion }) {
+  settings = { ...settings, autoUpdateCourses: true, autoCheckApp: true };
   const cfg = loadUpdateConfig(appRoot);
   const base = resolveCoursesBase(settings, appRoot);
   const result = {
@@ -146,9 +147,7 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
       Boolean(result.remoteAppVersion) && semverGt(result.remoteAppVersion, effectiveVersion);
     result.appUpdateAvailable = appNewer;
 
-    const autoUi =
-      settings.autoCheckApp || settings.autoUpdateCourses;
-    if (autoUi && appNewer && base && remote.uiBundle) {
+    if (appNewer && base && remote.uiBundle) {
       const uiName = remote.uiBundle;
       const uiUrl = `${base}/${uiName}`.replace(/([^:]\/)\/+/g, "$1");
       const zipTmp = join(userData, "app-ui", `_dl_${result.remoteAppVersion}.zip`);
@@ -173,7 +172,7 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
       console.warn("[vexx-learn] newer appVersion but no uiBundle in manifest — run release:pack");
       if (result.coursesUpdated) result.message = "courses_updated";
       else result.message = "courses_up_to_date";
-    } else if (appNewer && autoUi && remote.uiBundle && !result.uiUpdated) {
+    } else if (appNewer && remote.uiBundle && !result.uiUpdated) {
       result.message = "ui_update_pending";
       result.appUpdateAvailable = true;
     }

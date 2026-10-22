@@ -1,0 +1,15 @@
+# When release/updates is pushed to main, nothing else — clients poll manifest every 3 min.
+name: OTA manifest on main
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "release/updates/**"
+      - "package.json"
+
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "OTA files on main — Vexx Learn clients auto-download within 3 minutes."

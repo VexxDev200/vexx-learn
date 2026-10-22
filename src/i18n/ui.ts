@@ -5,7 +5,7 @@ export const UI: Record<
   Record<string, string>
 > = {
   ru: {
-    tagline: "Теория → пример → код → проверка · OTA 0.2.7 ✓",
+    tagline: "Теория → пример → код → проверка · auto",
     pickLesson: "Выбери урок слева",
     loading: "Загрузка курса…",
     run: "▶ Запустить",
@@ -56,7 +56,7 @@ export const UI: Record<
     fontSize: "Размер шрифта",
     reduceMotion: "Меньше анимаций",
     updates: "Обновления",
-    updatesAutoHint: "Скачали один раз — дальше уроки и интерфейс качаются сами при запуске.",
+    updatesAutoHint: "Обновления приходят сами при запуске и каждые 3 минуты. Ничего нажимать не нужно.",
     updateUrl: "URL папки с manifest.json",
     updateUrlOptional: "Свой URL (необязательно, если настроен GitHub)",
     githubUpdates: "Обновления через GitHub",
@@ -90,7 +90,7 @@ export const UI: Record<
     upd_courses_and_ui_updated: "Уроки и интерфейс обновлены",
   },
   en: {
-    tagline: "Theory → example → code → auto-check · OTA 0.2.7 ✓",
+    tagline: "Theory → example → code → auto-check · auto",
     pickLesson: "Pick a lesson on the left",
     loading: "Loading course…",
     run: "▶ Run",
@@ -175,7 +175,7 @@ export const UI: Record<
     upd_courses_and_ui_updated: "Lessons and UI updated",
   },
   he: {
-    tagline: "תיאוריה → דוגמה → קוד → בדיקה · OTA 0.2.7 ✓",
+    tagline: "תיאוריה → דוגמה → קוד → בדיקה · auto",
     pickLesson: "בחר שיעור מהרשימה",
     loading: "טוען קורס…",
     run: "▶ הרץ",

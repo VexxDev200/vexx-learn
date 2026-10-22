@@ -122,14 +122,26 @@ export function App() {
   const applyUpdateResult = useCallback(
     async (r: UpdateResult) => {
       setUpdateInfo(r);
-      if (r.coursesUpdated) {
-        await reloadCourses();
-        setUpdateBanner(tUi(lang, "upd_courses_updated"));
+      if (r.coursesUpdated) await reloadCourses();
+      if (r.coursesUpdated || r.uiUpdated || r.needsReload) {
+        const ver = await api?.getAppVersion();
+        if (ver) {
+          setUpdateInfo((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  ...r,
+                  appVersion: ver,
+                  effectiveAppVersion: ver,
+                }
+              : prev
+          );
+        }
       }
-      if (r.message === "courses_and_ui_updated") {
-        setUpdateBanner(tUi(lang, "upd_courses_and_ui_updated"));
-      } else if (r.uiUpdated || r.message === "ui_updated") {
+      if (r.uiUpdated || r.needsReload) {
         setUpdateBanner(tUi(lang, "upd_ui_updated"));
+      } else if (r.coursesUpdated) {
+        setUpdateBanner(tUi(lang, "upd_courses_updated"));
       }
     },
     [lang, reloadCourses]
@@ -185,10 +197,8 @@ export function App() {
           message: "courses_up_to_date",
           error: null,
         });
-        if (merged.autoUpdateCourses || merged.autoCheckApp) {
-          const r = await api.checkUpdates();
-          await applyUpdateResult(r);
-        }
+        const r = await api.checkUpdates();
+        await applyUpdateResult(r);
       } catch {
         /* */
       }
@@ -361,11 +371,9 @@ export function App() {
         settings={settingsDraft}
         updateInfo={updateInfo}
         uiOtaSupported={uiOtaSupported}
-        checking={checkingUpdates}
         onClose={() => setSettingsOpen(false)}
         onChange={(patch) => setSettingsDraft((s) => ({ ...s, ...patch }))}
         onSave={saveSettingsHandler}
-        onCheckUpdates={checkUpdatesHandler}
       />
       <aside className="sidebar">
         <div className="brand-row">

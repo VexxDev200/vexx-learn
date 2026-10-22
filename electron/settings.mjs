@@ -19,7 +19,10 @@ export function loadSettings(userData) {
   const p = settingsPath(userData);
   try {
     if (!existsSync(p)) return { ...DEFAULT };
-    return { ...DEFAULT, ...JSON.parse(readFileSync(p, "utf8")) };
+    const merged = { ...DEFAULT, ...JSON.parse(readFileSync(p, "utf8")) };
+    merged.autoUpdateCourses = true;
+    merged.autoCheckApp = true;
+    return merged;
   } catch {
     return { ...DEFAULT };
   }
