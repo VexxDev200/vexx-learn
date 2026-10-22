@@ -34,6 +34,9 @@ export type UpdateResult = {
   appLocalPath?: string | null;
   appDownloaded?: boolean;
   appUpdateAvailable?: boolean;
+  uiUpdated?: boolean;
+  needsReload?: boolean;
+  effectiveAppVersion?: string;
   message: string;
   error: string | null;
 };

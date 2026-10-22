@@ -14,26 +14,22 @@ echo [2/6] Pack lessons + manifest.json...
 call npm run release:pack
 if errorlevel 1 (echo release:pack failed. & pause & exit /b 1)
 
-echo [3/6] Build portable exe...
-call npm run build
-if errorlevel 1 (echo build failed. & pause & exit /b 1)
-
-echo [4/6] Git commit...
+echo [3/6] Git commit (OTA: lessons + app-ui.zip, users keep same exe)...
 git add -A
 git commit -m "release: v%VER%"
 if errorlevel 1 (
   echo Nothing to commit or commit failed.
 )
 
-echo [5/6] Git push...
+echo [4/6] Git push...
 git push
 if errorlevel 1 (echo git push failed. & pause & exit /b 1)
 
-echo [6/6] Tag v%VER% and push tag (GitHub Release CI)...
+echo [5/6] Tag v%VER% (optional marker)...
 git tag -f "v%VER%"
 git push origin "v%VER%" --force
 
 echo.
-echo Done. v%VER% — manifest appVersion and portable exe are in sync.
-echo Users on older exe will see app update after pull + auto-check.
+echo Done v%VER%. Users with ANY exe auto-download UI + lessons on next start.
+echo New exe only for first install: npm run build
 pause

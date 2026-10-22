@@ -1,11 +1,11 @@
 {
   "coursesVersion": 20261022038,
-  "appVersion": "0.2.1",
-  "appDownloadUrl": "https://github.com/VexxDev200/vexx-learn/releases/latest/download/Vexx-Learn-Portable.exe",
+  "appVersion": "0.2.2",
+  "uiBundle": "app-ui.zip",
   "updateSource": "github",
   "githubRepo": "VexxDev200/vexx-learn",
   "coursesBaseUrl": "https://raw.githubusercontent.com/VexxDev200/vexx-learn/main/release/updates",
-  "generatedAt": "2026-10-22T19:59:48.235Z",
+  "generatedAt": "2026-10-22T20:02:34.615Z",
   "files": {
     "python": "python.json",
     "java": "java.json",
@@ -16,6 +16,7 @@
     "python": "ea358d43287ed17a539ac95271183e6ac6b00dcc44b41d0a7f4d972a3eb6bf53",
     "java": "4fc1286c55ceb1b9a4e807c78c73a8e5ad7edf3fb35f1553aa4f1a3aa07ee269",
     "cpp": "25739a905cd686bd4c16c2aa588d20d0bab6c978f6a39ac8ead706e01f52a257",
-    "csharp": "18a614e8eb693daac45de5656047c1c2f92627d1bbd8a601a622a344e8654cd5"
+    "csharp": "18a614e8eb693daac45de5656047c1c2f92627d1bbd8a601a622a344e8654cd5",
+    "uiBundle": "23f9820fb49d6e22988df0fd7baa9d35269b4b305de107d76d7ee357dec2a893"
   }
 }

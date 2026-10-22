@@ -8,8 +8,7 @@ type UpdateInfo = {
   appVersion: string;
   remoteAppVersion: string | null;
   appUpdateUrl: string | null;
-  appLocalPath?: string | null;
-  appDownloaded?: boolean;
+  effectiveAppVersion?: string;
   message: string;
   error: string | null;
 };
@@ -24,7 +23,6 @@ type Props = {
   onChange: (patch: Partial<VexxSettings>) => void;
   onSave: () => void;
   onCheckUpdates: () => void;
-  onDownloadApp: () => void;
 };
 
 const THEMES: AppTheme[] = ["default", "midnight", "light", "neon"];
@@ -40,7 +38,6 @@ export function SettingsModal({
   onChange,
   onSave,
   onCheckUpdates,
-  onDownloadApp,
 }: Props) {
   if (!open) return null;
 
@@ -139,28 +136,15 @@ export function SettingsModal({
             </button>
             {updateInfo && (
               <span className="meta update-status">
-                {updateInfo.appUpdateAvailable
-                  ? `${tUi(lang, "upd_app_update_available")} v${updateInfo.remoteAppVersion}`
-                  : tUi(lang, `upd_${updateInfo.message}`) || updateInfo.message}
+                {tUi(lang, `upd_${updateInfo.message}`) || updateInfo.message}
                 {updateInfo.error ? ` — ${updateInfo.error}` : ""}
               </span>
             )}
           </div>
-          {updateInfo?.appUpdateAvailable &&
-            (updateInfo.appLocalPath || updateInfo.appUpdateUrl) && (
-            <button type="button" className="btn primary" onClick={onDownloadApp}>
-              {updateInfo.appLocalPath
-                ? `${tUi(lang, "openDownloadedApp")} v${updateInfo.remoteAppVersion}`
-                : `${tUi(lang, "downloadApp")} v${updateInfo.remoteAppVersion}`}
-            </button>
-          )}
           {updateInfo && (
             <p className="meta version-line">
-              {tUi(lang, "appVer")}: {updateInfo.appVersion}
-              {updateInfo.remoteAppVersion &&
-              updateInfo.remoteAppVersion !== updateInfo.appVersion
-                ? ` → ${updateInfo.remoteAppVersion}`
-                : ""}
+              {tUi(lang, "appVer")}:{" "}
+              {updateInfo.effectiveAppVersion || updateInfo.appVersion}
             </p>
           )}
         </section>

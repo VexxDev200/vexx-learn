@@ -1,11 +1,14 @@
 Новая версия Vexx Learn (для тебя)
 ==================================
 
-Один клик — всё само (+1 к patch: 0.2.1 → 0.2.2):
+Пользователи: один раз скачали portable exe — дальше только OTA (уроки + app-ui.zip).
+
+Релиз контента (без нового exe для людей):
 
    BUMP-RELEASE.bat
 
-Делает: bump package.json → release:pack (manifest appVersion!) → build exe → commit → push → tag vX.Y.Z
+Делает: +1 patch → release:pack (json + app-ui.zip + manifest) → git push.
 
-Важно: в manifest на GitHub должна быть та же appVersion, что в package.json.
-Иначе у пользователей «уроки актуальны», а exe не видит обнову.
+Новый exe только для НОВЫХ установок (редко):
+
+   npm run build

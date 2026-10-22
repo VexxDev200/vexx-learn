@@ -125,18 +125,10 @@ export function App() {
         await reloadCourses();
         setUpdateBanner(tUi(lang, "upd_courses_updated"));
       }
-      if (
-        r.message === "app_update_downloaded" ||
-        r.message === "courses_and_app_downloaded"
-      ) {
-        setUpdateBanner(tUi(lang, "upd_app_downloaded"));
-      } else if (
-        r.appUpdateAvailable ||
-        r.message === "app_update_available" ||
-        r.message === "courses_and_app"
-      ) {
-        const ver = r.remoteAppVersion ? ` v${r.remoteAppVersion}` : "";
-        setUpdateBanner(tUi(lang, "upd_app_update_available") + ver);
+      if (r.message === "courses_and_ui_updated") {
+        setUpdateBanner(tUi(lang, "upd_courses_and_ui_updated"));
+      } else if (r.uiUpdated || r.message === "ui_updated") {
+        setUpdateBanner(tUi(lang, "upd_ui_updated"));
       }
     },
     [lang, reloadCourses]
@@ -348,17 +340,6 @@ export function App() {
     }
   };
 
-  const downloadAppHandler = async () => {
-    if (!api) return;
-    const pending = await api.getPendingAppUpdate();
-    if (pending?.localPath) {
-      await api.openPath(pending.localPath);
-      return;
-    }
-    const url = updateInfo?.appUpdateUrl;
-    if (url) api.openExternal(url);
-  };
-
   if (loading) {
     return <div className="placeholder">{tUi(lang, "loading")}</div>;
   }
@@ -375,7 +356,6 @@ export function App() {
         onChange={(patch) => setSettingsDraft((s) => ({ ...s, ...patch }))}
         onSave={saveSettingsHandler}
         onCheckUpdates={checkUpdatesHandler}
-        onDownloadApp={downloadAppHandler}
       />
       <aside className="sidebar">
         <div className="brand-row">

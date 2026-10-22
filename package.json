@@ -1,6 +1,6 @@
 {
   "name": "vexx-learn",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "Vexx Learn — лаунчер обучения кодингу (Python, Java, C++, C#)",
   "type": "module",
@@ -9,7 +9,8 @@
     "courses": "node scripts/build-all-courses.mjs",
     "icon": "node scripts/generate-icon.mjs",
     "pack:updates": "node scripts/pack-updates.mjs",
-    "release:pack": "npm run courses && npm run pack:updates",
+    "build:ui": "vite build && node scripts/copy-course-data.mjs",
+    "release:pack": "npm run courses && npm run build:ui && node scripts/pack-updates.mjs",
     "dev": "concurrently -k \"vite\" \"wait-on http://127.0.0.1:5173 && electron .\"",
     "build": "npm run icon && npm run courses && vite build && node scripts/copy-course-data.mjs && electron-builder --win portable",
     "start": "electron ."
@@ -17,11 +18,22 @@
   "build": {
     "appId": "dev.vexx.learn",
     "productName": "Vexx Learn",
-    "directories": { "output": "release" },
-    "files": ["dist/**/*", "electron/**/*", "public/**/*", "lessons/**/*", "update.config.json", "package.json"],
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "public/**/*",
+      "lessons/**/*",
+      "update.config.json",
+      "package.json"
+    ],
     "icon": "build/icon.ico",
     "win": {
-      "target": ["portable"],
+      "target": [
+        "portable"
+      ],
       "icon": "build/icon.ico",
       "artifactName": "Vexx-Learn-Portable.${ext}"
     }

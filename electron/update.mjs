@@ -8,8 +8,8 @@ import {
   writeCoursesCache,
   readBundledCoursesVersion,
 } from "./courses.mjs";
+import { applyUiBundle, getLocalUiVersion } from "./app-ui.mjs";
 import {
-  fetchGitHubAppRelease,
   githubCoursesBaseUrl,
   isGitHubConfigured,
   loadUpdateConfig,
@@ -29,25 +29,6 @@ async function fetchJson(url, timeoutMs = 15000) {
     const res = await fetch(url, { signal: ctrl.signal });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json();
-  } finally {
-    clearTimeout(t);
-  }
-}
-
-async function urlReachable(url, timeoutMs = 12000) {
-  if (!url || typeof url !== "string") return false;
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { method: "HEAD", redirect: "follow", signal: ctrl.signal });
-    if (res.ok) return true;
-    if (res.status === 405 || res.status === 403) {
-      const getRes = await fetch(url, { method: "GET", redirect: "follow", signal: ctrl.signal });
-      return getRes.ok;
-    }
-    return false;
-  } catch {
-    return false;
   } finally {
     clearTimeout(t);
   }
@@ -103,6 +84,9 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
     appLocalPath: null,
     appDownloaded: false,
     appUpdateAvailable: false,
+    uiUpdated: false,
+    needsReload: false,
+    effectiveAppVersion: appVersion,
     message: "",
     error: null,
   };
@@ -127,31 +111,8 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
     const effectiveLocal = Math.max(localVer, bundledVer);
 
     result.remoteAppVersion = remote.appVersion || null;
-    result.appUpdateUrl = remote.appDownloadUrl || null;
-
-    if (settings.autoCheckApp && isGitHubConfigured(cfg)) {
-      try {
-        const gh = await fetchGitHubAppRelease(cfg);
-        if (gh?.version) {
-          if (!result.remoteAppVersion || semverGt(gh.version, result.remoteAppVersion)) {
-            result.remoteAppVersion = gh.version;
-          }
-          if (gh.downloadUrl) result.appUpdateUrl = gh.downloadUrl;
-        }
-      } catch (e) {
-        if (!base) throw e;
-        console.warn("[vexx-learn] GitHub release check:", e.message);
-      }
-    }
-
-    let appUrlOk = false;
-    if (result.appUpdateUrl) {
-      appUrlOk = await urlReachable(result.appUpdateUrl);
-      if (!appUrlOk) {
-        console.warn("[vexx-learn] app download URL not ready:", result.appUpdateUrl);
-        result.appUpdateUrl = null;
-      }
-    }
+    const effectiveVersion = getLocalUiVersion(userData, appVersion);
+    result.effectiveAppVersion = effectiveVersion;
 
     if (base && settings.autoUpdateCourses && remoteCoursesVer > effectiveLocal) {
       const tracksData = {};
@@ -182,37 +143,34 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
     }
 
     const appNewer =
-      Boolean(result.remoteAppVersion) && semverGt(result.remoteAppVersion, appVersion);
+      Boolean(result.remoteAppVersion) && semverGt(result.remoteAppVersion, effectiveVersion);
     result.appUpdateAvailable = appNewer;
 
-    if (settings.autoCheckApp && appNewer && result.appUpdateUrl && appUrlOk) {
-      const dest = join(
+    if (settings.autoCheckApp && appNewer && base && remote.uiBundle) {
+      const uiName = remote.uiBundle;
+      const uiUrl = `${base}/${uiName}`.replace(/([^:]\/)\/+/g, "$1");
+      const zipTmp = join(userData, "app-ui", `_dl_${result.remoteAppVersion}.zip`);
+      mkdirSync(dirname(zipTmp), { recursive: true });
+      await downloadFile(uiUrl, zipTmp);
+      applyUiBundle(
         userData,
-        "updates",
-        `Vexx-Learn-Portable-${result.remoteAppVersion}.exe`
+        result.remoteAppVersion,
+        zipTmp,
+        remote.sha256?.uiBundle || remote.sha256?.[uiName]
       );
-      mkdirSync(dirname(dest), { recursive: true });
-      const hadFile = existsSync(dest);
-      if (!hadFile) {
-        await downloadFile(result.appUpdateUrl, dest);
-        result.appDownloaded = true;
-      }
-      result.appLocalPath = dest;
-      savePendingAppUpdate(userData, {
-        version: result.remoteAppVersion,
-        url: result.appUpdateUrl,
-        localPath: dest,
-      });
-    }
-
-    if (appNewer) {
+      result.uiUpdated = true;
+      result.needsReload = true;
+      result.effectiveAppVersion = result.remoteAppVersion;
+      result.appUpdateAvailable = false;
       if (result.coursesUpdated) {
-        result.message = result.appDownloaded ? "courses_and_app_downloaded" : "courses_and_app";
-      } else if (result.appDownloaded) {
-        result.message = "app_update_downloaded";
+        result.message = "courses_and_ui_updated";
       } else {
-        result.message = "app_update_available";
+        result.message = "ui_updated";
       }
+    } else if (appNewer && !remote.uiBundle) {
+      console.warn("[vexx-learn] newer appVersion but no uiBundle in manifest — run release:pack");
+      if (result.coursesUpdated) result.message = "courses_updated";
+      else result.message = "courses_up_to_date";
     }
   } catch (e) {
     result.error = e.message || String(e);

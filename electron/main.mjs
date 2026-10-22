@@ -2,11 +2,11 @@ import { app, BrowserWindow, ipcMain, Menu, nativeImage, shell } from "electron"
 import { loadAllCourses } from "./courses.mjs";
 import { loadSettings, saveSettings } from "./settings.mjs";
 import { isGitHubConfigured, loadUpdateConfig } from "./update-config.mjs";
+import { getLocalUiVersion, resolveUiRoot } from "./app-ui.mjs";
 import {
   checkAndApplyUpdates,
   getUpdateSourceInfo,
   isIncompleteGithubRawUrl,
-  loadPendingAppUpdate,
   resolveCoursesBaseForSettings,
 } from "./update.mjs";
 import { spawn } from "child_process";
@@ -100,8 +100,17 @@ function createWindow() {
   if (isDev) {
     win.loadURL("http://127.0.0.1:5173");
   } else {
-    win.loadFile(join(ROOT, "dist", "index.html"));
+    const bundledDist = join(ROOT, "dist");
+    const uiRoot = resolveUiRoot(app.getPath("userData"), bundledDist);
+    win.loadFile(join(uiRoot, "index.html"));
   }
+}
+
+function reloadMainWindowUi() {
+  if (!mainWindow || isDev) return;
+  const bundledDist = join(ROOT, "dist");
+  const uiRoot = resolveUiRoot(app.getPath("userData"), bundledDist);
+  mainWindow.loadFile(join(uiRoot, "index.html"));
 }
 
 function updatesConfigured(settings) {
@@ -122,6 +131,7 @@ async function runBackgroundUpdate() {
     settings,
     appVersion: readAppVersion(),
   });
+  if (result.needsReload) reloadMainWindowUi();
   mainWindow?.webContents?.send("vexx:update-result", result);
   return result;
 }
@@ -454,7 +464,9 @@ app.whenReady().then(() => {
     return next;
   });
 
-  ipcMain.handle("app:version", () => readAppVersion());
+  ipcMain.handle("app:version", () =>
+    getLocalUiVersion(app.getPath("userData"), readAppVersion())
+  );
 
   ipcMain.handle("updater:check", async () => {
     const userData = app.getPath("userData");
