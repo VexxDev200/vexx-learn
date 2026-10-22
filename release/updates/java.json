@@ -1,0 +1,517 @@
+[
+  {
+    "kind": "lesson",
+    "id": "java-01",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "1. Hello, Java",
+      "en": "1. Hello, Java",
+      "he": "1. Hello, Java"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nКаждый Java-файл — **класс**. Точка входа: `public static void main(String[] args)`. Вывод: `System.out.println(\"текст\");` — не забудь `;` в конце.\n\nИмя публичного класса должно совпадать с именем файла (`Main.java` → `class Main`).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nA Java file defines a **class**. Entry point: `public static void main`. Output: `System.out.println(...);` with semicolons.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nclass Main עם main. System.out.println לפלט.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"Java\");\n  }\n}",
+    "task": {
+      "ru": "Выведи строку Java",
+      "en": "Print Java",
+      "he": "הדפס Java"
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"Java\");\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "Java\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-02",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "2. Переменные",
+      "en": "2. Variables",
+      "he": "2. משתנים"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nТипы: `int`, `double`, `boolean`, `String` (с большой S — класс). Объявление: `int a = 5;`. Переменные внутри `main` локальные.\n\nАрифметика как в математике; целочисленное деление `7/2` → 3.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nDeclare types explicitly: int, double, boolean, String. Statements end with `;`.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nint, double, String עם ; בסוף.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    int a = 5;\n    int b = 7;\n    System.out.println(a + b);\n  }\n}",
+    "task": {
+      "ru": "Выведи 12",
+      "en": "Print 12",
+      "he": "12"
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    System.out.println(5 + 7);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "12\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-03",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "3. Условия if",
+      "en": "3. if statements",
+      "he": "3. if"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`if (условие) { ... } else { ... }`. Условие в скобках. Блоки в `{ }`. Сравнение: `==`, `!=`, `<`, `>`.\n\nДля строк используй `.equals()`, не `==`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nif/else with braces. Use `.equals()` for String content comparison.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nif/else עם סוגריים מסולסלים.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    if (2 < 3) System.out.println(\"yes\");\n  }\n}",
+    "task": {
+      "ru": "Выведи yes",
+      "en": "Print yes",
+      "he": "yes"
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"yes\");\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "yes\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-04",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "4. Цикл for",
+      "en": "4. for loop",
+      "he": "4. for"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nКлассика: `for (int i = 0; i < n; i++) { ... }`. Переменная `i` видна только в цикле.\n\n`i++` увеличивает на 1. Можно идти вниз: `i--`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nfor (init; condition; step) { } — classic counting loop.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nfor עם i++.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    for (int i = 1; i <= 2; i++) System.out.println(i);\n  }\n}",
+    "task": {
+      "ru": "Строки 1 и 2",
+      "en": "Lines 1 and 2",
+      "he": "1 ו-2"
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    for (int i = 1; i <= 2; i++) System.out.println(i);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "1\n2\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-05",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "5. Цикл while",
+      "en": "5. while loop",
+      "he": "5. while"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`while (условие) { }` — проверка **до** входа в тело. Обновляй переменные внутри.\n\n`do { } while (условие)` — минимум одна итерация (позже).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nwhile (cond) { } — check before each iteration. Update state inside.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nwhile עם עדכון משתנה.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    int n = 2;\n    while (n > 0) {\n      System.out.println(n);\n      n--;\n    }\n  }\n}",
+    "task": {
+      "ru": "2 затем 1",
+      "en": "Print 2 then 1",
+      "he": "2 ואז 1"
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    int n = 2;\n    while (n > 0) {\n      System.out.println(n);\n      n--;\n    }\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "2\n1\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-06",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "6. Методы",
+      "en": "6. Methods",
+      "he": "6. מתודות"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`static int mul(int a, int b) { return a * b; }` — метод в том же классе. `return` отдаёт значение.\n\nВызов из `main`: `System.out.println(mul(3, 4));`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nstatic methods belong to the class. return sends a value back to the caller.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nstatic method עם return.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  static int mul(int a, int b) {\n    return a * b;\n  }\n  public static void main(String[] args) {\n    System.out.println(mul(3, 4));\n  }\n}",
+    "task": {
+      "ru": "mul(3,4) → 12",
+      "en": "mul(3,4) → 12",
+      "he": "12"
+    },
+    "starterCode": "public class Main {\n  static int mul(int a, int b) {\n    return a * b;\n  }\n  public static void main(String[] args) {\n    System.out.println(mul(3, 4));\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "12\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-07",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "7. Массивы",
+      "en": "7. Arrays",
+      "he": "7. מערכים"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`int[] a = {2, 3, 5};` — фиксированная длина. `a.length` (поле, не метод). Индекс с 0.\n\nПеребор: `for (int v : a) { sum += v; }` (for-each).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nArrays: fixed size, index from 0, `.length` field. for-each: `for (int v : a)`.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמערך עם length ואינדקס.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    int[] a = {2, 3};\n    System.out.println(a[0] + a[1]);\n  }\n}",
+    "task": {
+      "ru": "Сумма 2+3=5",
+      "en": "Sum to 5",
+      "he": "5"
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    int[] a = {2, 3};\n    System.out.println(a[0] + a[1]);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "5\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-08",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "8. Строки",
+      "en": "8. Strings",
+      "he": "8. מחרוזות"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`String s = \"abc\";` — неизменяемые. `s.length()`, `s.charAt(0)`, `s.substring(1)`.\n\nСклейка: `+` или `String.format`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nString is immutable. length(), charAt(), substring(), concatenation with +.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nString immutable; length().\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    String s = \"abc\";\n    System.out.println(s.length());\n  }\n}",
+    "task": {
+      "ru": "Длина abc → 3",
+      "en": "Length 3",
+      "he": "3"
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    String s = \"abc\";\n    System.out.println(s.length());\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "3\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-09",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "9. Классы",
+      "en": "9. Classes",
+      "he": "9. מחלקות"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nПоля и методы в одном классе. Пока всё `static` для простоты. Позже — объекты `new`.\n\nИнкапсуляция: private поля + public методы (в продвинутых уроках).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nClasses group fields and methods. static members belong to the class itself.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמחלקה עם שדות ומתודות.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  static int twice(int x) {\n    return x * 2;\n  }\n  public static void main(String[] args) {\n    System.out.println(twice(5));\n  }\n}",
+    "task": {
+      "ru": "twice(5) → 10",
+      "en": "twice(5) → 10",
+      "he": "10"
+    },
+    "starterCode": "public class Main {\n  static int twice(int x) {\n    return x * 2;\n  }\n  public static void main(String[] args) {\n    System.out.println(twice(5));\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "10\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-10",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "10. Массив + цикл",
+      "en": "10. Arrays + loops",
+      "he": "10. מערך ולולאה"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nСумма элементов: цикл for или for-each. Это база для обработки данных, статистики, игровых инвентарей.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nSum array elements with a loop — foundation for data processing.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nסכום מערך בלולאה.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    int[] a = {1, 2, 3};\n    int s = 0;\n    for (int v : a) s += v;\n    System.out.println(s);\n  }\n}",
+    "task": {
+      "ru": "Сумма 1+2+3=6",
+      "en": "Sum 6",
+      "he": "6"
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    int[] a = {1, 2, 3};\n    int s = 0;\n    for (int v : a) s += v;\n    System.out.println(s);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "6\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-11",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "11. switch",
+      "en": "11. switch",
+      "he": "11. switch"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`switch (x) { case 1: ... break; default: ... }` — выбор по дискретным значениям. `break` обязателен, иначе провалится в следующий case.\n\nС Java 14+ есть switch-expression — пока классический switch.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nswitch selects by value; use break to avoid fall-through.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nswitch עם case ו-break.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    int d = 2;\n    switch (d) {\n      case 2: System.out.println(\"two\"); break;\n      default: System.out.println(\"other\");\n    }\n  }\n}",
+    "task": {
+      "ru": "При d=2 выведи two",
+      "en": "Print two",
+      "he": "two"
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    int d = 2;\n    switch (d) {\n      case 2: System.out.println(\"two\"); break;\n      default: System.out.println(\"other\");\n    }\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "two\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-12",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "12. try / catch",
+      "en": "12. try / catch",
+      "he": "12. try/catch"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`try { ... } catch (Exception e) { ... }` — перехват ошибок. `Integer.parseInt(\"42\")` может бросить `NumberFormatException`.\n\nНе показывай стек пользователю в проде — логируй и дай понятное сообщение.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\ntry/catch handles exceptions like bad parseInt input.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\ntry/catch לשגיאות.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    try {\n      System.out.println(Integer.parseInt(\"7\"));\n    } catch (NumberFormatException e) {\n      System.out.println(0);\n    }\n  }\n}",
+    "task": {
+      "ru": "parseInt 7 → 7",
+      "en": "Print 7",
+      "he": "7"
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    System.out.println(Integer.parseInt(\"7\"));\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "7\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "java-13",
+    "track": "java",
+    "minutes": 16,
+    "editorLang": "java",
+    "title": {
+      "ru": "13. Мини-проект",
+      "en": "13. Mini project",
+      "he": "13. מיני-פרויקט"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nМетод `max3(a,b,c)` возвращает наибольшее из трёх. Сравни через if — без Math.max, чтобы закрепить условия.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nWrite max3(a,b,c) using if — reinforces conditionals.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nmax3 עם if.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  static int max3(int a, int b, int c) {\n    int m = a;\n    if (b > m) m = b;\n    if (c > m) m = c;\n    return m;\n  }\n  public static void main(String[] args) {\n    System.out.println(max3(1, 9, 4));\n  }\n}",
+    "task": {
+      "ru": "max3(1,9,4) → 9",
+      "en": "max3 → 9",
+      "he": "9"
+    },
+    "starterCode": "public class Main {\n  static int max3(int a, int b, int c) {\n    return a;\n  }\n  public static void main(String[] args) {\n    System.out.println(max3(1, 9, 4));\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "9\n",
+        "hint": {
+          "ru": "if (b > m) m = b;",
+          "en": "if (b > m) m = b;",
+          "he": "if (b > m) m = b;"
+        }
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "id": "java-14",
+    "track": "java",
+    "kind": "ethics",
+    "minutes": 25,
+    "editorLang": "java",
+    "title": {
+      "ru": "Безопасность и этика",
+      "en": "Security & ethics",
+      "he": "אבטחה ואתיקה"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nПрограммирование даёт силу менять системы. **Вредоносное ПО** (вирусы, RAT, стилеры, шифровальщики) создаёт и распространять **незаконно** — это вред людям и карьере.\n\n**Легальные направления:** защита (blue team), анализ уязвимостей **с письменным разрешением**, open-source, игры, автоматизация, обучение.\n\n**Гигиена:** уникальные пароли + менеджер паролей, 2FA, обновления ОС, не запускать `.exe` из чатов, бэкапы. В Vexx Learn ты учишься **строить** и **защищать**, не ломать чужие машины.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nCoding is power. **Malware** (RATs, stealers, ransomware) is **illegal** and harms people.\n\n**Legal paths:** defense, pentesting **with written permission**, apps, games, automation.\n\n**Hygiene:** password manager, 2FA, updates, suspicious attachments, backups. Here you **learn**, **build**, **protect**.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nקוד נותן כוח. תוכנות זדוניות בלתי חוקיות.\n\nמסלולים חוקיים: הגנה, בדיקות חדירות **באישור**, פיתוח.\n\nהיגיינה: סיסמאות, 2FA, עדכונים, גיבויים.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"learn\");\n    System.out.println(\"build\");\n    System.out.println(\"protect\");\n  }\n}",
+    "exampleExplain": {
+      "ru": "Три строки — девиз курса.",
+      "en": "Three lines — course motto.",
+      "he": "שלוש שורות."
+    },
+    "task": {
+      "ru": "Выведи три строки: `learn`, `build`, `protect` (каждая с новой строки).",
+      "en": "Print learn, build, protect (one per line).",
+      "he": "הדפס learn, build, protect — שורה לכל אחד."
+    },
+    "starterCode": "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"learn\");\n    System.out.println(\"build\");\n    System.out.println(\"protect\");\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "learn\nbuild\nprotect"
+      }
+    ]
+  },
+  {
+    "id": "java-exam",
+    "track": "java",
+    "kind": "exam",
+    "minutes": 45,
+    "editorLang": "java",
+    "title": {
+      "ru": "Экзамен Java",
+      "en": "Java exam",
+      "he": "מבחן Java"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nЭкзамен закрывает весь трек. Нужно написать рабочий код без подсказок стартера (кроме шаблона). Все автотесты по выводу должны пройти. Если застрял — вернись к урокам про функции, циклы и коллекции.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nFinal exam for this track. Write working code; all stdout checks must pass. Review functions, loops, and collections if stuck.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמבחן סופי לכל המסלול. כל הבדיקות חייבות לעבור.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "public class Main {\n  static int sum3(int a, int b, int c) {\n    return a + b + c;\n  }\n  public static void main(String[] args) {\n    System.out.println(sum3(1, 2, 3));\n  }\n}",
+    "exampleExplain": {
+      "ru": "Шаблон экзамена.",
+      "en": "Exam template.",
+      "he": "תבנית מבחן."
+    },
+    "task": {
+      "ru": "Метод sum3(1,2,3) → 6.",
+      "en": "sum3(1,2,3) → 6.",
+      "he": "6."
+    },
+    "starterCode": "public class Main {\n  static int sum3(int a, int b, int c) {\n    return a + b + c;\n  }\n  public static void main(String[] args) {\n    System.out.println(sum3(1, 2, 3));\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "6\n"
+      }
+    ]
+  }
+]

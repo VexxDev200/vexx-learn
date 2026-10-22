@@ -1,0 +1,648 @@
+[
+  {
+    "kind": "lesson",
+    "id": "py-01",
+    "track": "python",
+    "minutes": 12,
+    "editorLang": "python",
+    "title": {
+      "ru": "1. Первая программа",
+      "en": "1. First program",
+      "he": "1. תוכנית ראשונה"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nПрограмма на Python — это обычный текстовый файл (часто `main.py`), который интерпретатор выполняет **сверху вниз**, строка за строкой.\n\n`print(значение)` — встроенная команда: она превращает значение в текст и отправляет в **консоль** (терминал). Строковый литерал пишут в кавычках: `\"Hello\"`. Числа `1`, `3.14` кавычек не требуют.\n\nОдна программа может содержать много вызовов `print` — каждый обычно даёт **новую строку** вывода.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nA Python program runs **top to bottom**. `print(value)` sends text to the **console**. String literals use quotes; numbers do not.\n\nMultiple `print` calls usually produce multiple lines of output.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nתוכנית Python רצה מלמעלה למטה. `print` מדפיס לקונסול. מחרוזות במרכאות, מספרים לא.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "print(\"Vexx Learn\")\nprint(1 + 2)",
+    "task": {
+      "ru": "Выведи `Hello` и `World` на двух строках.",
+      "en": "Print Hello and World on two lines.",
+      "he": "Hello ו-World בשתי שורות."
+    },
+    "starterCode": "print(\"Hello\")\nprint(\"World\")\n",
+    "checks": [
+      {
+        "expectedStdout": "Hello\nWorld"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-02",
+    "track": "python",
+    "minutes": 14,
+    "editorLang": "python",
+    "title": {
+      "ru": "2. Переменные",
+      "en": "2. Variables",
+      "he": "2. משתנים"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n**Переменная** — имя, привязанное к значению в памяти: `age = 17`. Слева имя, справа выражение. После присваивания имя можно использовать: `print(age + 1)`.\n\nИмена: буквы, цифры, `_`, без пробелов; не начинать с цифры. Регистр важен: `Age` и `age` — разные имена.\n\nПеременные можно переприсваивать: `x = 1` затем `x = x + 1` → в `x` будет `2`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nA **variable** binds a name to a value: `age = 17`. Use the name in later expressions. Names are case-sensitive. Reassignment is allowed.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמשתנה שומר שם וערך. `age = 17`. שמות רגישים לרישיות.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "a = 10\nb = 5\nprint(a + b)",
+    "task": {
+      "ru": "Задай a=12, b=8 и выведи сумму 20.",
+      "en": "Set a=12, b=8 and print 20.",
+      "he": "a=12, b=8, הדפס 20."
+    },
+    "starterCode": "a = 12\nb = 8\nprint(a + b)\n",
+    "checks": [
+      {
+        "expectedStdout": "20"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-03",
+    "track": "python",
+    "minutes": 14,
+    "editorLang": "python",
+    "title": {
+      "ru": "3. Типы данных",
+      "en": "3. Data types",
+      "he": "3. טיפוסים"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nУ каждого значения есть **тип**. Частые: `int` (целые), `float` (дробные), `str` (строки), `bool` (`True` / `False`).\n\n`type(x)` показывает тип во время выполнения. Строку и число нельзя складывать `+` без преобразования: `str(42)` или f-строка `f\"n={n}\"`.\n\n`True` и `False` участвуют в условиях и циклах.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nValues have **types**: int, float, str, bool. `type(x)` inspects a value. Convert before mixing str and numbers.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nint, float, str, bool. `type(x)` לבדיקת טיפוס.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "n = 42\nprint(type(n).__name__)",
+    "task": {
+      "ru": "n=42 → выведи имя типа `int`.",
+      "en": "For n=42 print type name `int`.",
+      "he": "הדפס int."
+    },
+    "starterCode": "n = 42\nprint(type(n).__name__)\n",
+    "checks": [
+      {
+        "expectedStdout": "int"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-04",
+    "track": "python",
+    "minutes": 15,
+    "editorLang": "python",
+    "title": {
+      "ru": "4. f-строки",
+      "en": "4. f-strings",
+      "he": "4. מחרוזות f"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n**f-строка** (formatted string): префикс `f` перед кавычками, выражения в `{ }`: `name = \"Ann\"; print(f\"Hi {name}\")`.\n\nВнутри `{}` можно писать любое выражение: `f\"{a*b}\"`, `f\"{len(items)} items\"`. Это читаемее, чем `\"Price: \" + str(p)`.\n\nДля фиксированного числа знаков после запятой позже пригодится `f\"{x:.2f}\"` — пока достаточно простых вставок.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\n**f-strings** embed expressions in `{}`. Cleaner than concatenating str() everywhere.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמחרוזות f עם `{ביטוי}` בתוך המחרוזת.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "hours = 5\nrate = 10\nprint(f\"Total: {hours * rate}\")",
+    "task": {
+      "ru": "hours=5, rate=10 → строка `Total: 50`.",
+      "en": "Print `Total: 50`.",
+      "he": "Total: 50."
+    },
+    "starterCode": "hours = 5\nrate = 10\nprint(f\"Total: {hours * rate}\")\n",
+    "checks": [
+      {
+        "expectedStdout": "Total: 50"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-05",
+    "track": "python",
+    "minutes": 16,
+    "editorLang": "python",
+    "title": {
+      "ru": "5. if / elif / else",
+      "en": "5. if / elif / else",
+      "he": "5. תנאים"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n**Ветвление** выбирает, какой блок выполнить. Синтаксис: `if условие:` → блок с отступом; опционально `elif` и `else`.\n\nВ Python отступ **4 пробела** (или один Tab) — часть синтаксиса. Операторы сравнения: `==`, `!=`, `<`, `>`, `<=`, `>=`. Логика: `and`, `or`, `not`.\n\nУсловие должно давать `bool`. Например `if score >= 60:` — порог сдачи.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\n**Branches** with if/elif/else and indented blocks. Comparison: ==, !=, <, >. Combine with and/or/not.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nif/elif/else עם הזחה. אופרטורי השוואה.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "score = 75\nif score >= 60:\n    print('pass')\nelse:\n    print('fail')",
+    "task": {
+      "ru": "score=75 → `pass` если >=60, иначе `fail`.",
+      "en": "score=75 → pass if >=60.",
+      "he": "pass."
+    },
+    "starterCode": "score = 75\nif score >= 60:\n    print('pass')\nelse:\n    print('fail')\n",
+    "checks": [
+      {
+        "expectedStdout": "pass"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-06",
+    "track": "python",
+    "minutes": 16,
+    "editorLang": "python",
+    "title": {
+      "ru": "6. Цикл for",
+      "en": "6. for loop",
+      "he": "6. לולאת for"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`for переменная in последовательность:` выполняет тело цикла для каждого элемента.\n\n`range(n)` даёт 0..n-1. `range(1, 4)` → 1,2,3. `range(0, 10, 2)` — шаг 2.\n\nЦиклы используют для сумм, поиска в списке, отрисовки таблиц в консоли.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\n`for x in seq:` iterates. `range(start, stop, step)` generates number sequences.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nfor עם range לספירה וחזרות.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "for i in range(1, 4):\n    print(i)",
+    "task": {
+      "ru": "Выведи 1, 2, 3 — каждое с новой строки.",
+      "en": "Print 1, 2, 3 on separate lines.",
+      "he": "1\\n2\\n3."
+    },
+    "starterCode": "for i in range(1, 4):\n    print(i)\n",
+    "checks": [
+      {
+        "expectedStdout": "1\n2\n3"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-07",
+    "track": "python",
+    "minutes": 16,
+    "editorLang": "python",
+    "title": {
+      "ru": "7. while",
+      "en": "7. while",
+      "he": "7. while"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`while условие:` повторяет блок, пока условие истинно. Перед циклом инициализируй счётчик; **внутри** обязательно меняй данные, иначе цикл не закончится.\n\nПример: обратный отсчёт `n -= 1` до нуля. `break` выходит из цикла досрочно, `continue` пропускает оставшуюся часть итерации.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\n`while cond:` loops until false. Update variables inside to avoid infinite loops. break/continue control flow.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nwhile עד שהתנאי שקר. עדכן משתנים בלולאה.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "n = 3\nwhile n:\n    print(n)\n    n -= 1",
+    "task": {
+      "ru": "Обратный отсчёт 5→1.",
+      "en": "Count down 5 to 1.",
+      "he": "5 עד 1."
+    },
+    "starterCode": "n = 5\nwhile n >= 1:\n    print(n)\n    n -= 1\n",
+    "checks": [
+      {
+        "expectedStdout": "5\n4\n3\n2\n1"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-08",
+    "track": "python",
+    "minutes": 16,
+    "editorLang": "python",
+    "title": {
+      "ru": "8. Списки",
+      "en": "8. Lists",
+      "he": "8. רשימות"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n**Список** `[1, 2, 3]` — упорядоченная коллекция. Индексация с **0**: `a[0]` первый, `a[-1]` последний. Срез `a[1:3]` — элементы с индекса 1 до 2.\n\nМетоды: `append(x)`, `pop()`, `len(a)`. Функция `sum(a)` для чисел. Списки **изменяемые** (mutable).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\n**Lists** are ordered, mutable sequences. Index from 0; slices `a[i:j]`. append, len, sum.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nרשימות בסדר, אינדקס מ-0, mutable.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "nums = [1, 2, 3, 4]\nprint(sum(nums))",
+    "task": {
+      "ru": "[1,2,3,4] → сумма 10.",
+      "en": "Sum list to 10.",
+      "he": "סכום 10."
+    },
+    "starterCode": "nums = [1, 2, 3, 4]\nprint(sum(nums))\n",
+    "checks": [
+      {
+        "expectedStdout": "10"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-09",
+    "track": "python",
+    "minutes": 16,
+    "editorLang": "python",
+    "title": {
+      "ru": "9. Словари",
+      "en": "9. Dicts",
+      "he": "9. מילונים"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n**Словарь** `{ключ: значение}` — быстрый поиск по ключу (хеш-таблица). Ключи часто строки; значения — любой тип.\n\n`d[\"name\"]`, `d.get(\"name\", default)`, `d.keys()`, `d.values()`. Удобно для JSON-подобных данных, настроек, счётчиков.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\n**Dicts** map keys to values. Access `d[key]` or `d.get(key, default)`.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמילון: מפתח → ערך.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "d = {\"a\": 1, \"b\": 2}\nprint(d[\"a\"] + d[\"b\"])",
+    "task": {
+      "ru": "{\"a\":1,\"b\":2} → выведи 3.",
+      "en": "Print sum of values: 3.",
+      "he": "3."
+    },
+    "starterCode": "d = {\"a\": 1, \"b\": 2}\nprint(d[\"a\"] + d[\"b\"])\n",
+    "checks": [
+      {
+        "expectedStdout": "3"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-10",
+    "track": "python",
+    "minutes": 18,
+    "editorLang": "python",
+    "title": {
+      "ru": "10. Функции",
+      "en": "10. Functions",
+      "he": "10. פונקציות"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`def имя(параметры):` объявляет функцию. Тело с отступом. `return значение` отдаёт результат вызывающему коду.\n\nФункции убирают дублирование и дают имена идеям: `area(w,h)` вместо повторения формулы. Параметры — локальные имена; можно задавать значения по умолчанию `def f(x=0):`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\n`def name(params):` with `return`. Functions name behavior and avoid copy-paste.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\ndef, return, פרמטרים.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "def double(n):\n    return n * 2\nprint(double(9))",
+    "task": {
+      "ru": "Функция double(9) → 18.",
+      "en": "double(9) → 18.",
+      "he": "18."
+    },
+    "starterCode": "def double(n):\n    return n * 2\nprint(double(9))\n",
+    "checks": [
+      {
+        "expectedStdout": "18"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-11",
+    "track": "python",
+    "minutes": 16,
+    "editorLang": "python",
+    "title": {
+      "ru": "11. Строки",
+      "en": "11. Strings",
+      "he": "11. מחרוזות"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nСтроки — последовательности символов. **Неизменяемые**: методы возвращают **новую** строку.\n\n`.lower()`, `.upper()`, `.strip()` убирает пробелы по краям, `.split(',')` режет на список, `','.join(parts)` склеивает.\n\n`len(s)`, проверка подстроки `\"ab\" in s`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nStrings are immutable. Methods like strip, split, join return new strings.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמחרוזות immutable; split, join, strip.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "s = \"a,b,c\"\nprint(len(s.split(\",\")))",
+    "task": {
+      "ru": "\"a,b,c\".split → длина 3.",
+      "en": "split → length 3.",
+      "he": "אורך 3."
+    },
+    "starterCode": "s = \"a,b,c\"\nprint(len(s.split(\",\")))\n",
+    "checks": [
+      {
+        "expectedStdout": "3"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-12",
+    "track": "python",
+    "minutes": 18,
+    "editorLang": "python",
+    "title": {
+      "ru": "12. try / except",
+      "en": "12. try / except",
+      "he": "12. try/except"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nОшибки времени выполнения (деление на ноль, неверный `int('x')`) без обработки останавливают программу.\n\n`try:` — рискованный код; `except ТипОшибки:` — план Б. Лови **конкретные** исключения, не голый `except:` без нужды.\n\n`finally:` выполняется всегда (закрыть файл). Для обучения достаточно простого try/except.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\ntry/except handles runtime errors. Catch specific exceptions when possible.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\ntry/except לטיפול בשגיאות.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "try:\n    print(int('42'))\nexcept ValueError:\n    print(0)",
+    "task": {
+      "ru": "Безопасно: int('42') → 42.",
+      "en": "Print 42 from int('42').",
+      "he": "42."
+    },
+    "starterCode": "try:\n    print(int('42'))\nexcept ValueError:\n    print(0)\n",
+    "checks": [
+      {
+        "expectedStdout": "42"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-13",
+    "track": "python",
+    "minutes": 18,
+    "editorLang": "python",
+    "title": {
+      "ru": "13. Мини-проект",
+      "en": "13. Mini project",
+      "he": "13. מיני-פרויקט"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nСобери **функцию + цикл + список**. Алгоритм: прочитай задачу → пример на бумаге → напиши функцию → проверь на маленьком входе → запусти автотест.\n\nДекомпозиция: большую задачу режь на маленькие функции с понятными именами.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nCombine functions, loops, lists. Decompose the problem into small named steps.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nשלב פונקציות, לולאות ורשימות.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "def count_even(xs):\n    return sum(1 for x in xs if x % 2 == 0)\nprint(count_even([2,3,4,6]))",
+    "task": {
+      "ru": "count_even([2,3,4,6]) → 3.",
+      "en": "count_even → 3.",
+      "he": "3."
+    },
+    "starterCode": "def count_even(xs):\n    c = 0\n    for x in xs:\n        if x % 2 == 0:\n            c += 1\n    return c\nprint(count_even([2, 3, 4, 6]))\n",
+    "checks": [
+      {
+        "expectedStdout": "3"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-14",
+    "track": "python",
+    "minutes": 16,
+    "editorLang": "python",
+    "title": {
+      "ru": "14. Множества и кортежи",
+      "en": "14. Sets & tuples",
+      "he": "14. set ו-tuple"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n**Кортеж** `(1, 2)` — как список, но **неизменяемый**. Удобен для координат, записей из БД.\n\n**Множество** `{1, 2, 3}` — уникальные элементы, быстрая проверка `x in s`. Операции: объединение `|`, пересечение `&`.\n\n`set([1,1,2])` → `{1,2}`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\n**Tuples** are immutable sequences. **Sets** hold unique items; fast membership test.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\ntuple לא משתנה; set לערכים ייחודיים.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "t = (10, 20)\nprint(t[0] + t[1])",
+    "task": {
+      "ru": "Кортеж (3, 7) → выведи 10.",
+      "en": "Tuple (3,7) → print 10.",
+      "he": "10."
+    },
+    "starterCode": "t = (3, 7)\nprint(t[0] + t[1])\n",
+    "checks": [
+      {
+        "expectedStdout": "10"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-15",
+    "track": "python",
+    "minutes": 20,
+    "editorLang": "python",
+    "title": {
+      "ru": "15. Классы (ООП)",
+      "en": "15. Classes",
+      "he": "15. מחלקות"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`class Имя:` описывает объект. `__init__(self, ...)` — конструктор; `self` — текущий экземпляр.\n\nМетоды — функции внутри класса. `obj = Point(3, 4)` создаёт объект. ООП группирует данные и поведение (игровой персонаж, пользователь, счётчик).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\n`class` + `__init__(self)` define objects. Methods use `self` for instance state.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nclass עם __init__ ו-self.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "class Box:\n    def __init__(self, v):\n        self.v = v\n    def double(self):\n        return self.v * 2\nb = Box(5)\nprint(b.double())",
+    "task": {
+      "ru": "Класс Counter со start=3, метод value() → 3.",
+      "en": "Counter with value() → 3.",
+      "he": "3."
+    },
+    "starterCode": "class Counter:\n    def __init__(self, start):\n        self.start = start\n    def value(self):\n        return self.start\nprint(Counter(3).value())\n",
+    "checks": [
+      {
+        "expectedStdout": "3"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-16",
+    "track": "python",
+    "minutes": 16,
+    "editorLang": "python",
+    "title": {
+      "ru": "16. import и math",
+      "en": "16. import & math",
+      "he": "16. import"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nСтандартная библиотека Python огромна. `import math` подключает модуль; `math.sqrt(9)` → 3.0.\n\n`from math import pi` импортирует одно имя. Модули помогают не писать всё в одном файле.\n\nПозже: `import json`, `pathlib` — сейчас достаточно `math`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\n`import math` loads a module. Use `math.sqrt`, constants like `pi`.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nimport math לפונקציות מוכנות.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "import math\nprint(int(math.sqrt(16)))",
+    "task": {
+      "ru": "import math → выведи 5 для sqrt(25).",
+      "en": "Print 5 for sqrt(25).",
+      "he": "5."
+    },
+    "starterCode": "import math\nprint(int(math.sqrt(25)))\n",
+    "checks": [
+      {
+        "expectedStdout": "5"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "py-17",
+    "track": "python",
+    "minutes": 18,
+    "editorLang": "python",
+    "title": {
+      "ru": "17. Comprehensions",
+      "en": "17. Comprehensions",
+      "he": "17. comprehensions"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n**List comprehension**: `[x*2 for x in range(3)]` → `[0,2,4]`. Короткая запись цикла + списка.\n\nУсловие в конце: `[x for x in nums if x > 0]`. Читаемость важнее «магии» — если длинно, вернись к обычному `for`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nList comprehensions build lists in one expression. Optional `if` filter at the end.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nlist comprehension ביטוי קומפקטי.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "print([n * n for n in range(1, 4)])",
+    "task": {
+      "ru": "Список квадратов 1,4,9 как строка — выведи сумму 14.",
+      "en": "Squares 1,4,9 sum to 14.",
+      "he": "14."
+    },
+    "starterCode": "squares = [n * n for n in range(1, 4)]\nprint(sum(squares))\n",
+    "checks": [
+      {
+        "expectedStdout": "14"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "id": "py-18",
+    "track": "python",
+    "kind": "ethics",
+    "minutes": 25,
+    "editorLang": "python",
+    "title": {
+      "ru": "Безопасность и этика",
+      "en": "Security & ethics",
+      "he": "אבטחה ואתיקה"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nПрограммирование даёт силу менять системы. **Вредоносное ПО** (вирусы, RAT, стилеры, шифровальщики) создаёт и распространять **незаконно** — это вред людям и карьере.\n\n**Легальные направления:** защита (blue team), анализ уязвимостей **с письменным разрешением**, open-source, игры, автоматизация, обучение.\n\n**Гигиена:** уникальные пароли + менеджер паролей, 2FA, обновления ОС, не запускать `.exe` из чатов, бэкапы. В Vexx Learn ты учишься **строить** и **защищать**, не ломать чужие машины.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nCoding is power. **Malware** (RATs, stealers, ransomware) is **illegal** and harms people.\n\n**Legal paths:** defense, pentesting **with written permission**, apps, games, automation.\n\n**Hygiene:** password manager, 2FA, updates, suspicious attachments, backups. Here you **learn**, **build**, **protect**.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nקוד נותן כוח. תוכנות זדוניות בלתי חוקיות.\n\nמסלולים חוקיים: הגנה, בדיקות חדירות **באישור**, פיתוח.\n\nהיגיינה: סיסמאות, 2FA, עדכונים, גיבויים.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "print(\"learn\")\nprint(\"build\")\nprint(\"protect\")\n",
+    "exampleExplain": {
+      "ru": "Три строки — девиз курса.",
+      "en": "Three lines — course motto.",
+      "he": "שלוש שורות."
+    },
+    "task": {
+      "ru": "Выведи три строки: `learn`, `build`, `protect` (каждая с новой строки).",
+      "en": "Print learn, build, protect (one per line).",
+      "he": "הדפס learn, build, protect — שורה לכל אחד."
+    },
+    "starterCode": "print(\"learn\")\nprint(\"build\")\nprint(\"protect\")\n",
+    "checks": [
+      {
+        "expectedStdout": "learn\nbuild\nprotect"
+      }
+    ]
+  },
+  {
+    "id": "py-exam",
+    "track": "python",
+    "kind": "exam",
+    "minutes": 45,
+    "editorLang": "python",
+    "title": {
+      "ru": "Экзамен Python",
+      "en": "Python exam",
+      "he": "מבחן Python"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nЭкзамен закрывает весь трек. Нужно написать рабочий код без подсказок стартера (кроме шаблона). Все автотесты по выводу должны пройти. Если застрял — вернись к урокам про функции, циклы и коллекции.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nFinal exam for this track. Write working code; all stdout checks must pass. Review functions, loops, and collections if stuck.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמבחן סופי לכל המסלול. כל הבדיקות חייבות לעבור.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "def avg(nums):\n    if not nums:\n        return 0\n    return sum(nums) / len(nums)\nprint(int(avg([10, 20, 30])))\n",
+    "exampleExplain": {
+      "ru": "Шаблон экзамена.",
+      "en": "Exam template.",
+      "he": "תבנית מבחן."
+    },
+    "task": {
+      "ru": "Напиши `avg(nums)` — среднее арифметическое. Выведи `avg([10, 20, 30])` → 20.",
+      "en": "Implement avg(nums). Print avg([10,20,30]) → 20.",
+      "he": "avg → 20."
+    },
+    "starterCode": "def avg(nums):\n    if not nums:\n        return 0\n    return sum(nums) / len(nums)\nprint(int(avg([10, 20, 30])))\n",
+    "checks": [
+      {
+        "expectedStdout": "20"
+      }
+    ]
+  }
+]

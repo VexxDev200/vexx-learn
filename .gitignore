@@ -1,0 +1,13 @@
+node_modules/
+dist/
+*.log
+
+# Portable exe / builder output — не в git
+release/*.exe
+release/win-unpacked/
+release/builder-effective-config.yaml
+release/builder-debug.yml
+
+# Уроки для авто-обновления — в git
+!release/updates/
+!release/updates/**

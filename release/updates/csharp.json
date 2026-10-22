@@ -1,0 +1,512 @@
+[
+  {
+    "kind": "lesson",
+    "id": "cs-01",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "1. Hello",
+      "en": "1. Hello",
+      "he": "1. Hello"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nC# — язык .NET. `Console.WriteLine(\"text\");` печатает строку. Каждый файл — класс с `static void Main()`.\n\nПроект собирается `dotnet run` (в лаунчере это уже настроено).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nConsole.WriteLine for output. Entry: static void Main inside a class.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nConsole.WriteLine.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(\"C#\");\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(\"C#\");\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "C#\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-02",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "2. Переменные",
+      "en": "2. Variables",
+      "he": "2. משתנים"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`int`, `double`, `string`, `bool`. `var x = 3` — вывод типа компилятором. Строки в двойных кавычках.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nTypes and var for inferred locals.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nint, string, var.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(3 + 4);\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(3 + 4);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "7\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-03",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "3. if / else",
+      "en": "3. if / else",
+      "he": "3. if"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nКак Java/C++: `if (cond) { } else { }`. Условие в скобках.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nif/else blocks.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nif/else.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(\"ok\");\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(\"ok\");\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "ok\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-04",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "4. for",
+      "en": "4. for",
+      "he": "4. for"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`for (int i = 1; i <= 2; i++) Console.WriteLine(i);`\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nClassic for loop.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nfor.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    for (int i = 1; i <= 2; i++) Console.WriteLine(i);\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    for (int i = 1; i <= 2; i++) Console.WriteLine(i);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "1\n2\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-05",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "5. while",
+      "en": "5. while",
+      "he": "5. while"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nwhile с декрементом счётчика — тот же паттерн, что в Python/Java.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nwhile countdown pattern.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nwhile.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    int n = 2;\n    while (n > 0) { Console.WriteLine(n); n--; }\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    int n = 2;\n    while (n > 0) { Console.WriteLine(n); n--; }\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "2\n1\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-06",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "6. Методы",
+      "en": "6. Methods",
+      "he": "6. מתודות"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`static int Add(int a, int b) => a + b;` или с телом `{ return a+b; }`. Методы живут в классе `Program`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nstatic methods in Program class.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nstatic method.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static int Add(int a, int b) { return a + b; }\n  static void Main() { Console.WriteLine(Add(2, 3)); }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static int Add(int a, int b) { return a + b; }\n  static void Main() { Console.WriteLine(Add(2, 3)); }\n}",
+    "checks": [
+      {
+        "expectedStdout": "5\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-07",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "7. Массивы",
+      "en": "7. Arrays",
+      "he": "7. מערכים"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`int[] a = {1, 2, 3};` — `a.Length` (с большой L). Индекс с 0.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nArrays with Length property.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמערך עם Length.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(new int[] { 1, 2, 3 }.Length);\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(new int[] { 1, 2, 3 }.Length);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "3\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-08",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "8. List<T>",
+      "en": "8. List<T>",
+      "he": "8. List"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`using System.Collections.Generic;` → `List<int> xs = new List<int> { 1, 2 };` — динамический список, `Add`, `Count`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nList<int> dynamic collection; Count, Add.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nList<int>.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nusing System.Collections.Generic;\nclass Program {\n  static void Main() {\n    var xs = new List<int> { 1, 2, 3 };\n    Console.WriteLine(xs.Count);\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nusing System.Collections.Generic;\nclass Program {\n  static void Main() {\n    var xs = new List<int> { 1, 2, 3 };\n    Console.WriteLine(xs.Count);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "3\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-09",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "9. Классы",
+      "en": "9. Classes",
+      "he": "9. מחלקות"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`class User { public int Id; public string Name; }` — поля и методы. `new User()` создаёт объект.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nclass with fields; new for instances.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nclass ו-new.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Box {\n  public int V;\n  public int Twice() => V * 2;\n}\nclass Program {\n  static void Main() {\n    var b = new Box { V = 5 };\n    Console.WriteLine(b.Twice());\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Box {\n  public int V;\n  public int Twice() => V * 2;\n}\nclass Program {\n  static void Main() {\n    var b = new Box { V = 5 };\n    Console.WriteLine(b.Twice());\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "10\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-10",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "10. foreach",
+      "en": "10. foreach",
+      "he": "10. foreach"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`foreach (var x in arr) { }` — перебор коллекций без индекса.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nforeach iterates any IEnumerable.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nforeach.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    int s = 0;\n    foreach (var x in new[] { 2, 3, 4 }) s += x;\n    Console.WriteLine(s);\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    int s = 0;\n    foreach (var x in new[] { 2, 3, 4 }) s += x;\n    Console.WriteLine(s);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "9\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-11",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "11. try / catch",
+      "en": "11. try / catch",
+      "he": "11. try/catch"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`try { } catch (Exception ex) { }` — обработка ошибок. `int.Parse(\"12\")` при ошибке бросает.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\ntry/catch for parse and IO errors.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\ntry/catch.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(int.Parse(\"12\"));\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(int.Parse(\"12\"));\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "12\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-12",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "12. Мини-проект",
+      "en": "12. Mini project",
+      "he": "12. מיני-פרויקט"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nМетод `Max(int a, int b)` и вывод для `Max(7, 3)` → 7.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nMax method with if.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nMax.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static int Max(int a, int b) => a > b ? a : b;\n  static void Main() { Console.WriteLine(Max(7, 3)); }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static int Max(int a, int b) => a > b ? a : b;\n  static void Main() { Console.WriteLine(Max(7, 3)); }\n}",
+    "checks": [
+      {
+        "expectedStdout": "7\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "id": "cs-13",
+    "track": "csharp",
+    "minutes": 16,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "13. Строки",
+      "en": "13. Strings",
+      "he": "13. מחרוזות"
+    },
+    "theory": {
+      "ru": "## Подробно\n\n`string` immutable. `s.Length`, `s.ToUpper()`, интерполяция `$\"Hi {name}\"`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nstring interpolation and ToUpper.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמחרוזות עם $.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    var name = \"vexx\";\n    Console.WriteLine($\"hi {name}\");\n  }\n}",
+    "task": {
+      "ru": "Выполни задание.",
+      "en": "Do the task.",
+      "he": "בצע."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    var name = \"vexx\";\n    Console.WriteLine($\"hi {name}\");\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "hi vexx\n"
+      }
+    ],
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "id": "cs-14",
+    "track": "csharp",
+    "kind": "ethics",
+    "minutes": 25,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "Безопасность и этика",
+      "en": "Security & ethics",
+      "he": "אבטחה ואתיקה"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nПрограммирование даёт силу менять системы. **Вредоносное ПО** (вирусы, RAT, стилеры, шифровальщики) создаёт и распространять **незаконно** — это вред людям и карьере.\n\n**Легальные направления:** защита (blue team), анализ уязвимостей **с письменным разрешением**, open-source, игры, автоматизация, обучение.\n\n**Гигиена:** уникальные пароли + менеджер паролей, 2FA, обновления ОС, не запускать `.exe` из чатов, бэкапы. В Vexx Learn ты учишься **строить** и **защищать**, не ломать чужие машины.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nCoding is power. **Malware** (RATs, stealers, ransomware) is **illegal** and harms people.\n\n**Legal paths:** defense, pentesting **with written permission**, apps, games, automation.\n\n**Hygiene:** password manager, 2FA, updates, suspicious attachments, backups. Here you **learn**, **build**, **protect**.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nקוד נותן כוח. תוכנות זדוניות בלתי חוקיות.\n\nמסלולים חוקיים: הגנה, בדיקות חדירות **באישור**, פיתוח.\n\nהיגיינה: סיסמאות, 2FA, עדכונים, גיבויים.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(\"learn\");\n    Console.WriteLine(\"build\");\n    Console.WriteLine(\"protect\");\n  }\n}",
+    "exampleExplain": {
+      "ru": "Три строки — девиз курса.",
+      "en": "Three lines — course motto.",
+      "he": "שלוש שורות."
+    },
+    "task": {
+      "ru": "Выведи три строки: `learn`, `build`, `protect` (каждая с новой строки).",
+      "en": "Print learn, build, protect (one per line).",
+      "he": "הדפס learn, build, protect — שורה לכל אחד."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(\"learn\");\n    Console.WriteLine(\"build\");\n    Console.WriteLine(\"protect\");\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "learn\nbuild\nprotect"
+      }
+    ]
+  },
+  {
+    "id": "cs-exam",
+    "track": "csharp",
+    "kind": "exam",
+    "minutes": 45,
+    "editorLang": "csharp",
+    "title": {
+      "ru": "Экзамен C#",
+      "en": "C# exam",
+      "he": "מבחן C#"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nЭкзамен закрывает весь трек. Нужно написать рабочий код без подсказок стартера (кроме шаблона). Все автотесты по выводу должны пройти. Если застрял — вернись к урокам про функции, циклы и коллекции.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nFinal exam for this track. Write working code; all stdout checks must pass. Review functions, loops, and collections if stuck.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמבחן סופי לכל המסלול. כל הבדיקות חייבות לעבור.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(1 + 2 + 3);\n  }\n}",
+    "exampleExplain": {
+      "ru": "Шаблон экзамена.",
+      "en": "Exam template.",
+      "he": "תבנית מבחן."
+    },
+    "task": {
+      "ru": "Выведи сумму 1+2+3 → 6.",
+      "en": "Print 1+2+3 → 6.",
+      "he": "6."
+    },
+    "starterCode": "using System;\nclass Program {\n  static void Main() {\n    Console.WriteLine(1 + 2 + 3);\n  }\n}",
+    "checks": [
+      {
+        "expectedStdout": "6\n"
+      }
+    ]
+  }
+]

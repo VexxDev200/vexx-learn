@@ -1,0 +1,21 @@
+Vexx Learn — обновления через GitHub (без своего домена)
+
+1) Открой update.config.json и замени YOUR_GITHUB_USERNAME на свой логин GitHub.
+   При необходимости поменяй githubRepo (имя репозитория).
+
+2) Уроки (JSON):
+   npm run courses
+   npm run pack:updates
+   Закоммить и запушить папку release/updates/ в репозиторий (ветка main).
+
+   Приложение качает:
+   https://raw.githubusercontent.com/<owner>/<repo>/main/release/updates/manifest.json
+
+3) Новый exe:
+   npm run build
+   На GitHub: Releases → Create release → тег v0.2.0 (как в package.json)
+   Прикрепи файл release/Vexx-Learn-Portable.exe
+   Имя файла должно совпадать с portableAssetName в update.config.json
+
+4) У пользователей в настройках можно оставить URL пустым — используется GitHub из update.config.json
+   (он встроен в exe при сборке).
