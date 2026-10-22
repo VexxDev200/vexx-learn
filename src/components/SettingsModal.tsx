@@ -9,6 +9,7 @@ type UpdateInfo = {
   remoteAppVersion: string | null;
   appUpdateUrl: string | null;
   effectiveAppVersion?: string;
+  remoteAppVersion?: string | null;
   message: string;
   error: string | null;
 };
@@ -150,6 +151,11 @@ export function SettingsModal({
             <p className="meta version-line">
               {tUi(lang, "appVer")}:{" "}
               {updateInfo.effectiveAppVersion || updateInfo.appVersion}
+              {updateInfo.remoteAppVersion &&
+              updateInfo.remoteAppVersion !==
+                (updateInfo.effectiveAppVersion || updateInfo.appVersion)
+                ? ` (${tUi(lang, "onServer")}: ${updateInfo.remoteAppVersion})`
+                : ""}
             </p>
           )}
         </section>

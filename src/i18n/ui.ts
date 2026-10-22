@@ -5,7 +5,7 @@ export const UI: Record<
   Record<string, string>
 > = {
   ru: {
-    tagline: "Теория → пример → код → проверка · OTA 0.2.4",
+    tagline: "Теория → пример → код → проверка · OTA 0.2.5 ✓",
     pickLesson: "Выбери урок слева",
     loading: "Загрузка курса…",
     run: "▶ Запустить",
@@ -72,6 +72,7 @@ export const UI: Record<
     downloadApp: "Скачать новую версию",
     coursesVer: "Уроки",
     appVer: "Приложение",
+    onServer: "на сервере",
     upd_no_update_url: "Укажи URL обновлений в настройках",
     upd_courses_updated: "Уроки обновлены!",
     upd_courses_up_to_date: "Уроки актуальны",
@@ -89,7 +90,7 @@ export const UI: Record<
     upd_courses_and_ui_updated: "Уроки и интерфейс обновлены",
   },
   en: {
-    tagline: "Theory → example → code → auto-check · OTA 0.2.4",
+    tagline: "Theory → example → code → auto-check · OTA 0.2.5 ✓",
     pickLesson: "Pick a lesson on the left",
     loading: "Loading course…",
     run: "▶ Run",
@@ -156,6 +157,7 @@ export const UI: Record<
     downloadApp: "Download new version",
     coursesVer: "Courses",
     appVer: "App",
+    onServer: "on server",
     upd_no_update_url: "Set update URL in settings",
     upd_courses_updated: "Lessons updated!",
     upd_courses_up_to_date: "Lessons are up to date",
@@ -173,7 +175,7 @@ export const UI: Record<
     upd_courses_and_ui_updated: "Lessons and UI updated",
   },
   he: {
-    tagline: "תיאוריה → דוגמה → קוד → בדיקה · OTA 0.2.4",
+    tagline: "תיאוריה → דוגמה → קוד → בדיקה · OTA 0.2.5 ✓",
     pickLesson: "בחר שיעור מהרשימה",
     loading: "טוען קורס…",
     run: "▶ הרץ",
@@ -239,6 +241,7 @@ export const UI: Record<
     downloadApp: "הורד גרסה חדשה",
     coursesVer: "שיעורים",
     appVer: "אפליקציה",
+    onServer: "בשרת",
     upd_no_update_url: "הגדר כתובת עדכונים",
     upd_courses_updated: "השיעורים עודכנו!",
     upd_courses_up_to_date: "השיעורים מעודכנים",

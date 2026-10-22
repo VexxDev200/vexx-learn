@@ -491,10 +491,16 @@ app.whenReady().then(() => {
     return getUpdateSourceInfo(appRoot(), settings);
   });
 
-  createWindow();
-  setTimeout(() => {
-    runBackgroundUpdate().catch((e) => console.warn("[vexx-learn] update", e.message));
-  }, 800);
+  (async () => {
+    if (!isDev) {
+      try {
+        await runBackgroundUpdate();
+      } catch (e) {
+        console.warn("[vexx-learn] update", e.message);
+      }
+    }
+    createWindow();
+  })();
 });
 
 app.on("window-all-closed", () => {

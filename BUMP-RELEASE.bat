@@ -25,11 +25,19 @@ echo [4/6] Git push...
 git push
 if errorlevel 1 (echo git push failed. & pause & exit /b 1)
 
-echo [5/6] Tag v%VER% (optional marker)...
+echo [5/6] Tag v%VER%...
 git tag -f "v%VER%"
 git push origin "v%VER%" --force
 
+echo [6/6] GitHub Release (Releases tab)...
+where gh >nul 2>&1 && (
+  node scripts/gh-release.mjs
+) || (
+  echo Install GitHub CLI: winget install GitHub.cli
+  echo Then: gh auth login
+)
+
 echo.
-echo Done v%VER%. Users with ANY exe auto-download UI + lessons on next start.
-echo New exe only for first install: npm run build
+echo Done v%VER%. OTA on main/release/updates — users restart app.
+echo First-time installer: BUILD-PORTABLE.bat then gh uploads exe.
 pause
