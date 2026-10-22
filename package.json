@@ -1,6 +1,6 @@
 {
   "name": "vexx-learn",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "description": "Vexx Learn — лаунчер обучения кодингу (Python, Java, C++, C#)",
   "type": "module",
