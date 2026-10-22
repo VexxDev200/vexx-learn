@@ -76,6 +76,7 @@ export function App() {
   const [updateInfo, setUpdateInfo] = useState<UpdateResult | null>(null);
   const [checkingUpdates, setCheckingUpdates] = useState(false);
   const [updateBanner, setUpdateBanner] = useState<string | null>(null);
+  const [uiOtaSupported, setUiOtaSupported] = useState(true);
   const tracks = useMemo(() => buildTracks(registry, lang), [registry, lang]);
   const [track, setTrack] = useState("python");
   const [lessonId, setLessonId] = useState<string | null>("py-01");
@@ -158,11 +159,13 @@ export function App() {
         return;
       }
       try {
-        const [prog, remoteSettings, coursesPayload] = await Promise.all([
+        const [prog, remoteSettings, coursesPayload, caps] = await Promise.all([
           api.getProgress(),
           api.getSettings(),
           api.getCourses(),
+          api.getUpdateCapabilities?.() ?? Promise.resolve({ uiOta: false }),
         ]);
+        setUiOtaSupported(Boolean(caps?.uiOta));
         setCompleted(prog.completed || []);
         setStreak(mergeStreakFromServer(prog.streak));
         const merged = { ...loadSettingsFromStorage(), ...remoteSettings };
@@ -351,6 +354,7 @@ export function App() {
         open={settingsOpen}
         settings={settingsDraft}
         updateInfo={updateInfo}
+        uiOtaSupported={uiOtaSupported}
         checking={checkingUpdates}
         onClose={() => setSettingsOpen(false)}
         onChange={(patch) => setSettingsDraft((s) => ({ ...s, ...patch }))}

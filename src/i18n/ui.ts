@@ -5,7 +5,7 @@ export const UI: Record<
   Record<string, string>
 > = {
   ru: {
-    tagline: "Теория → пример → код → проверка · OTA 0.2.3",
+    tagline: "Теория → пример → код → проверка · OTA 0.2.4",
     pickLesson: "Выбери урок слева",
     loading: "Загрузка курса…",
     run: "▶ Запустить",
@@ -83,10 +83,13 @@ export const UI: Record<
     upd_no_app_release:
       "Уроки с GitHub OK. Exe: создай Release на GitHub и прикрепи Vexx-Learn-Portable.exe",
     upd_ui_updated: "Интерфейс обновлён автоматически",
+    upd_ui_update_pending: "Есть новая версия — перезапусти приложение",
+    upd_need_new_installer:
+      "Этот exe старый: один раз скачай новый Vexx-Learn-Portable — дальше обновы без exe.",
     upd_courses_and_ui_updated: "Уроки и интерфейс обновлены",
   },
   en: {
-    tagline: "Theory → example → code → auto-check · OTA 0.2.3",
+    tagline: "Theory → example → code → auto-check · OTA 0.2.4",
     pickLesson: "Pick a lesson on the left",
     loading: "Loading course…",
     run: "▶ Run",
@@ -164,10 +167,13 @@ export const UI: Record<
     upd_no_app_release:
       "Lessons from GitHub OK. For exe: create a GitHub Release with Vexx-Learn-Portable.exe",
     upd_ui_updated: "App UI updated automatically",
+    upd_ui_update_pending: "New version available — restart the app",
+    upd_need_new_installer:
+      "This exe is outdated: install the latest portable once — then updates are automatic.",
     upd_courses_and_ui_updated: "Lessons and UI updated",
   },
   he: {
-    tagline: "תיאוריה → דוגמה → קוד → בדיקה · OTA 0.2.3",
+    tagline: "תיאוריה → דוגמה → קוד → בדיקה · OTA 0.2.4",
     pickLesson: "בחר שיעור מהרשימה",
     loading: "טוען קורס…",
     run: "▶ הרץ",
@@ -241,6 +247,8 @@ export const UI: Record<
     openDownloadedApp: "פתח exe שהורד",
     upd_courses_and_app: "שיעורים עודכנו; גרסה חדשה זמינה",
     upd_ui_updated: "הממשק עודכן אוטומטית",
+    upd_ui_update_pending: "גרסה חדשה — הפעל מחדש",
+    upd_need_new_installer: "ה-exe ישן: התקן portable חדש פעם אחת.",
     upd_courses_and_ui_updated: "שיעורים והממשק עודכנו",
     upd_update_failed: "עדכון נכשל",
     upd_no_app_release:

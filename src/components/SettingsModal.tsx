@@ -18,6 +18,7 @@ type Props = {
   open: boolean;
   settings: VexxSettings;
   updateInfo: UpdateInfo | null;
+  uiOtaSupported: boolean;
   checking: boolean;
   onClose: () => void;
   onChange: (patch: Partial<VexxSettings>) => void;
@@ -33,6 +34,7 @@ export function SettingsModal({
   open,
   settings,
   updateInfo,
+  uiOtaSupported,
   checking,
   onClose,
   onChange,
@@ -114,6 +116,9 @@ export function SettingsModal({
         <section className="settings-section">
           <h3>{tUi(lang, "updates")}</h3>
           <p className="meta github-hint">{tUi(lang, "updatesAutoHint")}</p>
+          {!uiOtaSupported && (
+            <p className="meta github-hint warn">{tUi(lang, "upd_need_new_installer")}</p>
+          )}
           <label className="settings-check">
             <input
               type="checkbox"

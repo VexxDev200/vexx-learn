@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld("vexxLearn", {
   checkUpdates: () => ipcRenderer.invoke("updater:check"),
   getPendingAppUpdate: () => ipcRenderer.invoke("updater:pending-app"),
   getUpdateSource: () => ipcRenderer.invoke("updates:source"),
+  getUpdateCapabilities: () => ipcRenderer.invoke("updates:capabilities"),
   onUpdateResult: (cb) => {
     const handler = (_e, payload) => cb(payload);
     ipcRenderer.on("vexx:update-result", handler);

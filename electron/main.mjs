@@ -483,6 +483,8 @@ app.whenReady().then(() => {
 
   ipcMain.handle("updater:pending-app", () => loadPendingAppUpdate(app.getPath("userData")));
 
+  ipcMain.handle("updates:capabilities", () => ({ uiOta: true }));
+
   ipcMain.handle("updates:source", () => {
     const userData = app.getPath("userData");
     const settings = loadSettings(userData);

@@ -64,6 +64,7 @@ export type VexxLearnApi = {
   checkUpdates: () => Promise<UpdateResult>;
   getPendingAppUpdate: () => Promise<{ version: string; url: string } | null>;
   onUpdateResult: (cb: (r: UpdateResult) => void) => () => void;
+  getUpdateCapabilities: () => Promise<{ uiOta: boolean }>;
   getUpdateSource: () => Promise<{
     coursesBaseUrl: string;
     manifestUrl: string;
