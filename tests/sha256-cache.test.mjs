@@ -7,6 +7,7 @@ import { join } from "node:path";
 import {
   canOpenPath,
   clearSha256Cache,
+  forgeSha256CacheEntryForTests,
   pendingUpdatesDir,
   savePendingAppUpdate,
   sha256File,
@@ -107,10 +108,12 @@ test("launch gate with a WARM cache: a tampered exe is still caught and deleted;
 
   assert.ok(await verifyPendingAppUpdate(userData));
   assert.equal(sha256Stats().computed, 1);
-  assert.equal((await canOpenPath(userData, exe)).ok, true);
   assert.ok(await verifyPendingAppUpdate(userData));
-  assert.equal(sha256Stats().computed, 1, "repeat checks are served from the cache");
-  assert.ok(sha256Stats().cacheHits >= 2);
+  assert.equal(sha256Stats().computed, 1, "repeat polls are served from the cache");
+  assert.equal(sha256Stats().cacheHits, 1);
+  assert.equal((await canOpenPath(userData, exe)).ok, true);
+  assert.equal(sha256Stats().computed, 2, "the launch gate never uses the cache: it hashes again");
+  assert.equal(sha256Stats().cacheHits, 1);
 
   // swap with same-size garbage and forge the old mtime
   await wait(30);
@@ -121,5 +124,39 @@ test("launch gate with a WARM cache: a tampered exe is still caught and deleted;
   assert.equal(gate.ok, false);
   assert.equal(existsSync(exe), false, "tampered exe deleted");
   assert.equal(await verifyPendingAppUpdate(userData), null);
+  rmSync(userData, { recursive: true, force: true });
+});
+
+test("shell:open-path re-hashes WITHOUT the cache: a tamper the cache cannot see (cache forged/warm) is still refused, file deleted, pending cleared", async () => {
+  clearSha256Cache();
+  const userData = tmp();
+  const dir = pendingUpdatesDir(userData);
+  mkdirSync(dir, { recursive: true });
+  const exe = join(dir, "Vexx-Learn-Portable-9.9.9.exe");
+  const good = Buffer.from("genuine exe bytes");
+  writeFileSync(exe, good);
+  savePendingAppUpdate(userData, { version: "9.9.9", url: "https://x", path: exe, sha256: ref(good), size: good.length });
+
+  assert.ok(await verifyPendingAppUpdate(userData)); // polling path warms the cache
+
+  // same size, old mtime forged back ...
+  await wait(30);
+  const st = statSync(exe);
+  writeFileSync(exe, Buffer.alloc(good.length, 0x42));
+  utimesSync(exe, st.atime, st.mtime);
+  // ... and, worst case, the cache is made to believe the file is unchanged (e.g. even ctime was spoofed)
+  forgeSha256CacheEntryForTests(exe, ref(good));
+
+  // polling (cache allowed) is fooled by design - that is why it must never be what gates a launch
+  assert.ok(await verifyPendingAppUpdate(userData), "cached poll still reports the pending exe");
+  assert.equal(existsSync(exe), true);
+
+  // the launch gate does not use the cache
+  const before = sha256Stats().computed;
+  const gate = await canOpenPath(userData, exe);
+  assert.equal(gate.ok, false, "open-path must refuse the tampered file");
+  assert.equal(sha256Stats().computed, before + 1, "open-path really re-hashed the file (no cache hit)");
+  assert.equal(existsSync(exe), false, "tampered exe deleted");
+  assert.equal(await verifyPendingAppUpdate(userData), null, "pending cleared");
   rmSync(userData, { recursive: true, force: true });
 });

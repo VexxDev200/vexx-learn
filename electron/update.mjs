@@ -60,6 +60,10 @@ const HASH_CACHE_MAX = 16;
 const hashCache = new Map();
 const hashStats = { computed: 0, cacheHits: 0 };
 export function sha256Stats() { return { ...hashStats }; }
+/** TEST ONLY: plant a digest under the file's CURRENT stat key, i.e. simulate a tamper that the cache cannot see. */
+export function forgeSha256CacheEntryForTests(path, digest) {
+  hashCache.set(statKey(path, statSync(path)), digest);
+}
 export function clearSha256Cache() { hashCache.clear(); hashStats.computed = 0; hashStats.cacheHits = 0; }
 const statKey = (path, st) => `${resolve(path)}|${st.size}|${st.mtimeMs}|${st.ctimeMs}`;
 
@@ -426,14 +430,14 @@ export function clearPendingAppUpdate(userData) {
 }
 
 /** Pending exe info, or null if the file is gone or no longer matches the recorded sha256 (then it is deleted). */
-export async function verifyPendingAppUpdate(userData) {
+export async function verifyPendingAppUpdate(userData, { useCache = true } = {}) {
   const pending = loadPendingAppUpdate(userData);
   if (!pending) return null;
   if (!pending.path || !existsSync(pending.path)) {
     clearPendingAppUpdate(userData);
     return null;
   }
-  if (pending.sha256 && (await sha256File(pending.path)) !== String(pending.sha256).toLowerCase()) {
+  if (pending.sha256 && (await sha256File(pending.path, { useCache })) !== String(pending.sha256).toLowerCase()) {
     console.warn("[vexx-learn] pending exe no longer matches its recorded sha256 - deleted");
     try { rmSync(pending.path, { force: true }); } catch { /* ignore */ }
     clearPendingAppUpdate(userData);
@@ -448,7 +452,8 @@ export async function verifyPendingAppUpdate(userData) {
  */
 export async function canOpenPath(userData, filePath) {
   if (!isPathInsideRoots(filePath, [pendingUpdatesDir(userData)])) return { ok: true };
-  const pending = await verifyPendingAppUpdate(userData);
+  // NO cache here: the exe is re-hashed (streamed, async) right before it is launched.
+  const pending = await verifyPendingAppUpdate(userData, { useCache: false });
   if (!pending) return { ok: false, reason: "no verified pending update (file missing or checksum mismatch)" };
   if (resolve(pending.path).toLowerCase() !== resolve(String(filePath)).toLowerCase()) {
     return { ok: false, reason: "not the recorded pending update file" };
