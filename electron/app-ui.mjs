@@ -1,7 +1,9 @@
-import { createWriteStream, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
-import { dirname, join } from "path";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
+import { join } from "path";
 import { spawnSync } from "child_process";
 import { createHash } from "crypto";
+
+import { semverGt } from "./portable-sync.mjs";
 
 export function appUiDir(userData) {
   return join(userData, "app-ui");
@@ -12,21 +14,27 @@ export function activeUiMetaPath(userData) {
 }
 
 export function getLocalUiVersion(userData, bundledVersion) {
+  const bundled = bundledVersion || "0.0.0";
   const p = activeUiMetaPath(userData);
-  if (!existsSync(p)) return bundledVersion || "0.0.0";
+  if (!existsSync(p)) return bundled;
   try {
     const m = JSON.parse(readFileSync(p, "utf8"));
-    return m.version || bundledVersion || "0.0.0";
+    const cached = m.version || bundled;
+    return semverGt(bundled, cached) ? bundled : cached;
   } catch {
-    return bundledVersion || "0.0.0";
+    return bundled;
   }
 }
 
-export function resolveUiRoot(userData, bundledDistRoot) {
+export function resolveUiRoot(userData, bundledDistRoot, bundledVersion = "0.0.0") {
   const p = activeUiMetaPath(userData);
   if (existsSync(p)) {
     try {
       const m = JSON.parse(readFileSync(p, "utf8"));
+      const cachedVer = m.version || "0.0.0";
+      if (semverGt(bundledVersion, cachedVer)) {
+        return bundledDistRoot;
+      }
       const root = m.path;
       if (root && existsSync(join(root, "index.html"))) return root;
     } catch {

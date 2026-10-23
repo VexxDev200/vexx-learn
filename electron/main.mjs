@@ -3,12 +3,19 @@ import { loadAllCourses } from "./courses.mjs";
 import { loadSettings, saveSettings } from "./settings.mjs";
 import { isGitHubConfigured, loadUpdateConfig } from "./update-config.mjs";
 import { getLocalUiVersion, resolveUiRoot } from "./app-ui.mjs";
+import { syncPortableUpgrade } from "./portable-sync.mjs";
 import {
   checkAndApplyUpdates,
   getUpdateSourceInfo,
   isIncompleteGithubRawUrl,
   resolveCoursesBaseForSettings,
 } from "./update.mjs";
+import {
+  abortInteractiveRun,
+  isInteractiveRunActive,
+  startInteractiveRun,
+  writeInteractiveStdin,
+} from "./interactiveRun.mjs";
 import { spawn } from "child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
@@ -101,7 +108,8 @@ function createWindow() {
     win.loadURL("http://127.0.0.1:5173");
   } else {
     const bundledDist = join(ROOT, "dist");
-    const uiRoot = resolveUiRoot(app.getPath("userData"), bundledDist);
+    const bundledVer = readAppVersion();
+    const uiRoot = resolveUiRoot(app.getPath("userData"), bundledDist, bundledVer);
     win.loadFile(join(uiRoot, "index.html"));
   }
 }
@@ -109,7 +117,7 @@ function createWindow() {
 function reloadMainWindowUi() {
   if (!mainWindow || isDev) return;
   const bundledDist = join(ROOT, "dist");
-  const uiRoot = resolveUiRoot(app.getPath("userData"), bundledDist);
+  const uiRoot = resolveUiRoot(app.getPath("userData"), bundledDist, readAppVersion());
   mainWindow.loadFile(join(uiRoot, "index.html"));
 }
 
@@ -173,7 +181,7 @@ function runPython(code, stdin = "") {
   });
 }
 
-function runJava(source) {
+function runJava(source, stdin = "") {
   return new Promise((resolve) => {
     let dir;
     try {
@@ -189,11 +197,17 @@ function runJava(source) {
           try { rmSync(dir, { recursive: true, force: true }); } catch { /* */ }
           return;
         }
-        const child = spawn("java", ["Main"], { cwd: dir, windowsHide: true });
+        const child = spawn("java", ["Main"], {
+          cwd: dir,
+          windowsHide: true,
+          stdio: ["pipe", "pipe", "pipe"],
+        });
         let stdout = "";
         let stderr = "";
         child.stdout.on("data", (d) => { stdout += d.toString(); });
         child.stderr.on("data", (d) => { stderr += d.toString(); });
+        if (stdin) child.stdin.write(stdin);
+        child.stdin.end();
         const timer = setTimeout(() => {
           child.kill();
           resolve({ ok: false, stdout, stderr: stderr + "\n[timeout 12s]", exitCode: -1 });
@@ -236,7 +250,7 @@ function runJava(source) {
   });
 }
 
-function runCpp(source) {
+function runCpp(source, stdin = "") {
   return new Promise((resolve) => {
     let dir;
     try {
@@ -256,11 +270,17 @@ function runCpp(source) {
           try { rmSync(dir, { recursive: true, force: true }); } catch { /* */ }
           return;
         }
-        const child = spawn(exe, [], { cwd: dir, windowsHide: true });
+        const child = spawn(exe, [], {
+          cwd: dir,
+          windowsHide: true,
+          stdio: ["pipe", "pipe", "pipe"],
+        });
         let stdout = "";
         let stderr = "";
         child.stdout.on("data", (d) => { stdout += d.toString(); });
         child.stderr.on("data", (d) => { stderr += d.toString(); });
+        if (stdin) child.stdin.write(stdin);
+        child.stdin.end();
         const timer = setTimeout(() => {
           child.kill();
           resolve({ ok: false, stdout, stderr: stderr + "\n[timeout 12s]", exitCode: -1 });
@@ -303,7 +323,7 @@ function runCpp(source) {
   });
 }
 
-function runCsharp(source) {
+function runCsharp(source, stdin = "") {
   return new Promise((resolve) => {
     let dir;
     try {
@@ -324,11 +344,14 @@ function runCsharp(source) {
       const child = spawn("dotnet", ["run", "--project", join(dir, "App.csproj")], {
         cwd: dir,
         windowsHide: true,
+        stdio: ["pipe", "pipe", "pipe"],
       });
       let stdout = "";
       let stderr = "";
       child.stdout.on("data", (d) => { stdout += d.toString(); });
       child.stderr.on("data", (d) => { stderr += d.toString(); });
+      if (stdin) child.stdin.write(stdin);
+      child.stdin.end();
       const timer = setTimeout(() => {
         child.kill();
         resolve({ ok: false, stdout, stderr: stderr + "\n[timeout 20s]", exitCode: -1 });
@@ -383,6 +406,9 @@ function runChecks(runFn, code, checks) {
 
 app.whenReady().then(() => {
   Menu.setApplicationMenu(null);
+  if (!isDev) {
+    syncPortableUpgrade(app.getPath("userData"), readAppVersion());
+  }
   ipcMain.handle("lessons:list", async () => {
     const base = join(appRoot(), "lessons");
     const tracks = ["python", "java", "cpp", "csharp"];
@@ -442,6 +468,20 @@ app.whenReady().then(() => {
   ipcMain.handle("run:csharp", (_, { code }) => runCsharp(code));
   ipcMain.handle("check:csharp", (_, { code, checks }) => runChecks(runCsharp, code, checks));
 
+  ipcMain.handle("run:interactive", async (_, { lang, code }) => {
+    const wc = mainWindow?.webContents;
+    if (!wc) return { ok: false, error: "no window" };
+    return startInteractiveRun(wc, lang || "python", code || "");
+  });
+  ipcMain.on("run:stdin", (_, { text }) => {
+    writeInteractiveStdin(text ?? "");
+  });
+  ipcMain.on("run:stop", () => {
+    if (isInteractiveRunActive() && mainWindow?.webContents) {
+      abortInteractiveRun(mainWindow.webContents);
+    }
+  });
+
   ipcMain.handle("shell:open", (_, url) => {
     shell.openExternal(url);
   });
@@ -495,12 +535,12 @@ app.whenReady().then(() => {
   });
 
   (async () => {
+    try {
+      await runBackgroundUpdate();
+    } catch (e) {
+      console.warn("[vexx-learn] update", e.message);
+    }
     if (!isDev) {
-      try {
-        await runBackgroundUpdate();
-      } catch (e) {
-        console.warn("[vexx-learn] update", e.message);
-      }
       setInterval(() => {
         runBackgroundUpdate().catch((e) => console.warn("[vexx-learn] update poll", e.message));
       }, UPDATE_POLL_MS);
