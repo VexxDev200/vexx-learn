@@ -4,6 +4,15 @@ import { loadSettings, saveSettings } from "./settings.mjs";
 import { isGitHubConfigured, loadUpdateConfig } from "./update-config.mjs";
 import { getLocalUiVersion, resolveUiRoot } from "./app-ui.mjs";
 import { attachNavigationGuards } from "./navigation-policy.mjs";
+import {
+  validateCheckPayload,
+  validateInteractivePayload,
+  validateLessonId,
+  validatePathArg,
+  validateRunPayload,
+  validateSettingsPatch,
+  validateStdinPayload,
+} from "./ipc-validate.mjs";
 import { syncPortableUpgrade } from "./portable-sync.mjs";
 import {
   checkAndApplyUpdates,
@@ -445,7 +454,8 @@ app.whenReady().then(() => {
   });
 
   ipcMain.handle("progress:get", () => loadProgress());
-  ipcMain.handle("progress:complete", (_, lessonId) => {
+  ipcMain.handle("progress:complete", (_, rawLessonId) => {
+    const lessonId = validateLessonId(rawLessonId);
     const p = loadProgress();
     if (!p.completed.includes(lessonId)) p.completed.push(lessonId);
     const today = new Date();
@@ -470,22 +480,41 @@ app.whenReady().then(() => {
     return p;
   });
 
-  ipcMain.handle("run:python", (_, { code, stdin }) => runPython(code, stdin || ""));
-  ipcMain.handle("check:python", (_, { code, checks }) => runChecks(runPython, code, checks));
-  ipcMain.handle("run:java", (_, { code }) => runJava(code));
-  ipcMain.handle("check:java", (_, { code, checks }) => runChecks(runJava, code, checks));
-  ipcMain.handle("run:cpp", (_, { code }) => runCpp(code));
-  ipcMain.handle("check:cpp", (_, { code, checks }) => runChecks(runCpp, code, checks));
-  ipcMain.handle("run:csharp", (_, { code }) => runCsharp(code));
-  ipcMain.handle("check:csharp", (_, { code, checks }) => runChecks(runCsharp, code, checks));
+  // Every payload from the renderer goes through electron/ipc-validate.mjs first (types, sizes, enums); garbage rejects.
+  const runChannel = (channel, runFn) =>
+    ipcMain.handle(channel, (_, payload) => {
+      const { code, stdin } = validateRunPayload(payload, channel);
+      return runFn(code, stdin);
+    });
+  const checkChannel = (channel, runFn) =>
+    ipcMain.handle(channel, (_, payload) => {
+      const { code, checks } = validateCheckPayload(payload, channel);
+      return runChecks(runFn, code, checks);
+    });
+  runChannel("run:python", runPython);
+  checkChannel("check:python", runPython);
+  runChannel("run:java", (code) => runJava(code));
+  checkChannel("check:java", runJava);
+  runChannel("run:cpp", (code) => runCpp(code));
+  checkChannel("check:cpp", runCpp);
+  runChannel("run:csharp", (code) => runCsharp(code));
+  checkChannel("check:csharp", runCsharp);
 
-  ipcMain.handle("run:interactive", async (_, { lang, code }) => {
+  ipcMain.handle("run:interactive", async (_, payload) => {
+    const { lang, code } = validateInteractivePayload(payload);
     const wc = mainWindow?.webContents;
     if (!wc) return { ok: false, error: "no window" };
-    return startInteractiveRun(wc, lang || "python", code || "");
+    return startInteractiveRun(wc, lang, code);
   });
-  ipcMain.on("run:stdin", (_, { text }) => {
-    writeInteractiveStdin(text ?? "");
+  ipcMain.on("run:stdin", (_, payload) => {
+    let text;
+    try {
+      text = validateStdinPayload(payload);
+    } catch (e) {
+      console.warn("[vexx-learn]", e.message); // fire-and-forget channel: nobody to reject to, drop it
+      return;
+    }
+    writeInteractiveStdin(text);
   });
   ipcMain.on("run:stop", () => {
     if (isInteractiveRunActive() && mainWindow?.webContents) {
@@ -507,7 +536,8 @@ app.whenReady().then(() => {
   });
 
   ipcMain.handle("settings:get", () => loadSettings(app.getPath("userData")));
-  ipcMain.handle("settings:set", (_, patch) => {
+  ipcMain.handle("settings:set", (_, rawPatch) => {
+    const patch = validateSettingsPatch(rawPatch);
     const userData = app.getPath("userData");
     const cfg = loadUpdateConfig(appRoot());
     const { patch: safePatch, rejected } = sanitizeSettingsPatch(patch, cfg);
@@ -546,7 +576,14 @@ app.whenReady().then(() => {
     return result;
   });
 
-  ipcMain.handle("shell:open-path", async (_, filePath) => {
+  ipcMain.handle("shell:open-path", async (_, rawPath) => {
+    let filePath;
+    try {
+      filePath = validatePathArg(rawPath);
+    } catch (e) {
+      console.warn("[vexx-learn]", e.message);
+      return "blocked: invalid path argument";
+    }
     const roots = [app.getPath("userData"), appRoot()];
     if (!isPathInsideRoots(filePath, roots)) {
       console.warn("[vexx-learn] shell:open-path blocked (outside app folders)");

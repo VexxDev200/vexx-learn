@@ -244,3 +244,24 @@
 Оговорка: скрипт рендерера (или внедрённый в него) по-прежнему может открыть любой https-URL в браузере пользователя через `window.open`/`location` - это ровно та же возможность, что уже даёт IPC `shell:open`; политика одна и та же, расширения нет. Жест пользователя не требуется.
 
 **Проверено.** `tests/navigation-policy.test.mjs` (7 тестов): `decideNavigation`, `will-navigate`/`will-redirect`/`window.open` на 11 вредоносных входах, https только во внешний браузер, падение `openExternal` не роняет приложение, `will-attach-webview`, и что `main.mjs` реально вешает охрану на `web-contents-created` (через мок electron в `loadMain`). Мутации (убрать `preventDefault`, `deny`->`allow`, снять https-проверку, убрать подключение в `main.mjs`) валят тесты 2/3/3/1 штуки, файлы восстановлены (хеши совпали). Живой Electron (dev-ветка, CDP): `location.href` на `http://example.com/` остаётся на странице (маркер в `window` сохранён), `window.open(http|file)` возвращает `null` и новых окон/targets нет, штатный `location.reload()` работает. Нюанс честности: `file:` и `data:` из страницы с `http://` origin Chromium блокирует и сам (в логе "Not allowed to load local resource" / "navigate top frame to data URL"), эти два случая проверены тестами, а не только живьём. Живьём https-путь (открытие браузера) намеренно не запускался, чтобы не открывать браузер на машине пользователя; он покрыт юнит-тестами.
+
+### 12.3 Валидация аргументов IPC
+
+`electron/ipc-validate.mjs` (чистый модуль) + подключение в `main.mjs`. Рендерер считается недоверенным: каждый payload проверяется по типу/форме/размеру, а обработчик получает НОВЫЙ объект только с известными полями (лишние ключи отбрасываются, не пробрасываются; не-plain объекты вроде `Object.create(...)`/`Map`/массивов отклоняются). Лишние ключи не считаются ошибкой сознательно: более новый OTA-UI должен работать со старым exe. Мусор (неверный тип, превышение лимита, NUL-символ, неизвестный enum) -> `IpcValidationError` (для `handle` промис рендерера отклоняется, для `ipcMain.on` payload молча отбрасывается с предупреждением в лог), и до этого момента ничего не запускается и не пишется.
+
+| Канал | Правило |
+|---|---|
+| `run:python/java/cpp/csharp` | plain object; `code` строка <= 200 000, `stdin` (необяз.) строка <= 100 000, без NUL |
+| `check:*` | `code` как выше; `checks` (необяз.) массив <= 20 plain-объектов `{stdin?, expectedStdout?, hint?}`: строки, `expectedStdout` <= 100 000, `hint` <= 10 000; в обработчик идут только эти три поля |
+| `run:interactive` | `lang` только `python|java|cpp|csharp` (раньше любое значение молча превращалось в python; пропущенный `lang` = python сохранён), `code` строка |
+| `run:stdin` (on) | `text` строка <= 100 000; иначе отбрасывается |
+| `progress:complete` | id строка 1..100 символов `[A-Za-z0-9._:-]` (все 115 id в `lessons/` и `src/content` подходят: макс. длина 15) |
+| `settings:set` | plain object, <= 50 ключей (иначе отказ); значения по-прежнему фильтрует `sanitizeSettingsPatch` (whitelist, enum, https allowlist) |
+| `shell:open-path` | строка 1..4096 без NUL, иначе `"blocked: invalid path argument"`; далее прежние `isPathInsideRoots` + `canOpenPath` |
+| `shell:open` | без изменений: `isAllowedExternalUrl` уже отвергает не-строки, не-https, >2048 символов (в тесте добавлены мусорные входы) |
+| без аргументов (`lessons:list`, `progress:get`, `courses:get`, `settings:get`, `app:version`, `updater:*`, `updates:*`, `run:stop`) | аргументы игнорируются |
+
+Лимиты выбраны с запасом над реальными данными (максимальный пример кода в курсах 317 символов, до 2 проверок на урок). Поведение для легитимного UI не изменилось (проверено живьём, см. ниже).
+**Не сделано (осознанно, вне запроса):** проверка отправителя (`event.senderFrame`/`sender === mainWindow.webContents`) в каждом обработчике; приложение однооконное и навигация/окна заблокированы (12.2), но это следующий слой защиты.
+
+**Проверено.** `tests/ipc-validate.test.mjs` (7 тестов): юнит-тесты каждого валидатора на 60+ мусорных входах и границах лимитов; через `loadMain` все 8 `run:*/check:*` каналов и `run:interactive` отклоняют мусор ДО запуска процессов; `run:stdin` не бросает на мусоре; `progress:complete` на плохих id не меняет прогресс, на `py-01` работает; `settings:set` не меняет настройки на мусоре; `shell:open`/`shell:open-path` на мусоре без побочных эффектов (`shellCalls` пусты). Мутации (убрать валидацию check/progress/interactive/settings, ослабить whitelist `lang`) валят тесты (1/1/1/2/1), файлы восстановлены (хеши совпали). Живой Electron (CDP): `runPython`, `runPython` со stdin, `checkPython` (pass/fail), `completeLesson('py-01')`, `runInteractive('python')` + `sendRunStdin`, `setSettings({theme})` работают как раньше; мусор (`checkPython(5,'x')`, `runPython({a:1})`, `completeLesson({})`, `completeLesson('../x')`, `runInteractive('ruby',..)`, `setSettings('x')`, `openPath({})`) отклонён с `IpcValidationError`/`blocked`.
