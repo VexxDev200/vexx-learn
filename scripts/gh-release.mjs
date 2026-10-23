@@ -1,11 +1,15 @@
 /**
  * Create or refresh GitHub Release for current package.json version.
- * OTA for users is manifest on main; Release is for visibility + optional portable exe.
+ * OTA for users is manifest on main; Release carries the portable exe.
+ *
+ * Refuses (exit 1, nothing created or uploaded) unless the manifest is validly signed AND sha256(exe) equals its
+ * portableSha256 - see scripts/release-guard.mjs.
  */
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { spawnSync } from "child_process";
+import { verifyReleaseExe } from "./release-guard.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
@@ -17,6 +21,18 @@ if (!existsSync(join(ROOT, "update.config.json"))) {
 }
 const cfg = JSON.parse(readFileSync(join(ROOT, "update.config.json"), "utf8"));
 const repo = `${cfg.githubOwner}/${cfg.githubRepo}`;
+
+const portable = join(ROOT, "release", "Vexx-Learn-Portable.exe");
+const guard = verifyReleaseExe({
+  manifestPath: join(ROOT, "release", "updates", "manifest.json"),
+  exePath: portable,
+  appVersion: version,
+});
+if (!guard.ok) {
+  console.error("REFUSING to publish:", guard.reason);
+  process.exit(1);
+}
+console.log("exe sha256 matches the signed manifest:", guard.sha256);
 
 function runGh(args) {
   const r = spawnSync("gh", args, { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
@@ -53,8 +69,7 @@ if (!view.ok) {
   console.log("Release already exists:", tag);
 }
 
-const portable = join(ROOT, "release", "Vexx-Learn-Portable.exe");
-if (existsSync(portable)) {
+{
   const up = runGh([
     "release",
     "upload",
@@ -64,6 +79,9 @@ if (existsSync(portable)) {
     repo,
     "--clobber",
   ]);
-  if (up.ok) console.log("Uploaded portable exe to", tag);
-  else console.warn("Portable upload:", up.out);
+  if (!up.ok) {
+    console.error("Portable upload failed:", up.out);
+    process.exit(1);
+  }
+  console.log("Uploaded portable exe to", tag);
 }

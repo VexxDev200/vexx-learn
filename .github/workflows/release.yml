@@ -1,4 +1,13 @@
-name: Release portable exe
+# Release tag gate. CI does NOT build or upload the portable exe any more and holds no private key.
+#
+# Why: the OTA manifest records the sha256 of the portable exe (portableSha256) and is signed locally. A CI-built exe
+# is not byte-reproducible, so it would never match that hash and updated clients would reject it.
+# Releases are made LOCALLY on Vexx's PC: build exe -> `pack-updates --sign` -> `ship` / `gh-release` upload THE SAME exe
+# (scripts/gh-release.mjs refuses to upload unless sha256(exe) == portableSha256 of the signed manifest). See AUDIT.md, section 11.
+#
+# This workflow only verifies that the manifest committed at the tag is signed and consistent.
+# It FAILS on an unsigned or tampered manifest (that is the gate working).
+name: Verify release tag
 
 on:
   workflow_dispatch:
@@ -7,31 +16,18 @@ on:
       - "v*"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  build:
-    runs-on: windows-latest
+  verify-manifest:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: npm
+          node-version: "22"
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build portable
-        run: npm run build
-
-      - name: Pack course updates manifest
-        run: npm run pack:updates
-
-      - name: Upload release asset
-        uses: softprops/action-gh-release@v2
-        with:
-          files: release/Vexx-Learn-Portable.exe
-          generate_release_notes: true
-          draft: false
+      # Only Node built-ins and files from this repo are used: no `npm ci`, no secrets.
+      - name: Manifest must be signed and valid, files must match its hashes
+        run: node scripts/sign-manifest.mjs --check release/updates/manifest.json
