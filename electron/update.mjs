@@ -4,18 +4,18 @@ import { dirname, join } from "path";
 import { pipeline } from "stream/promises";
 import { createHash } from "crypto";
 import {
+  TRACKS,
   getLocalCoursesVersion,
   writeCoursesCache,
   readBundledCoursesVersion,
 } from "./courses.mjs";
 import { applyUiBundle, getLocalUiVersion } from "./app-ui.mjs";
 import {
+  fetchGitHubAppRelease,
   githubCoursesBaseUrl,
   isGitHubConfigured,
   loadUpdateConfig,
 } from "./update-config.mjs";
-
-const TRACKS = ["python", "java", "cpp", "csharp"];
 
 function normalizeBase(url) {
   if (!url || typeof url !== "string") return "";
@@ -175,6 +175,56 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
     } else if (appNewer && remote.uiBundle && !result.uiUpdated) {
       result.message = "ui_update_pending";
       result.appUpdateAvailable = true;
+    }
+
+    const bundledNeedsExe = semverGt(result.remoteAppVersion || "0", appVersion);
+    if (bundledNeedsExe && isGitHubConfigured(cfg)) {
+      try {
+        const rel = await fetchGitHubAppRelease(cfg);
+        if (rel?.downloadUrl && rel.version) {
+          result.appUpdateUrl = rel.downloadUrl;
+          const pending = loadPendingAppUpdate(userData);
+          const dir = join(userData, "pending-updates");
+          const dest = join(dir, `Vexx-Learn-Portable-${rel.version}.exe`);
+          let localPath = pending?.path && existsSync(pending.path) ? pending.path : dest;
+          const haveFile = existsSync(localPath) || existsSync(dest);
+          if (!haveFile || pending?.version !== rel.version) {
+            if (!existsSync(dest)) {
+              console.log("[vexx-learn] downloading portable", rel.version);
+              await downloadFile(rel.downloadUrl, dest);
+            }
+            localPath = dest;
+            if (remote.portableSha256) {
+              const hash = sha256File(dest);
+              if (hash !== remote.portableSha256) {
+                throw new Error("Portable exe checksum mismatch");
+              }
+            }
+            savePendingAppUpdate({
+              version: rel.version,
+              url: rel.downloadUrl,
+              path: dest,
+              downloadedAt: new Date().toISOString(),
+            });
+          }
+          result.appDownloaded = true;
+          result.appLocalPath = localPath;
+          if (!result.message || result.message === "courses_up_to_date") {
+            result.message = "app_downloaded";
+          } else if (result.coursesUpdated) {
+            result.message = "courses_and_app";
+          }
+        } else if (bundledNeedsExe && !rel?.downloadUrl) {
+          result.appUpdateAvailable = true;
+          if (!result.message || result.message === "courses_up_to_date") {
+            result.message = "no_app_release";
+          }
+        }
+      } catch (dlErr) {
+        console.warn("[vexx-learn] portable download:", dlErr.message);
+        result.appUpdateAvailable = true;
+        if (!result.error) result.error = dlErr.message;
+      }
     }
   } catch (e) {
     result.error = e.message || String(e);

@@ -1,4 +1,5 @@
 import Editor from "@monaco-editor/react";
+import { blankCodeForEditor } from "./editor/blankCode";
 import { setupMonaco, VEXX_EDITOR_OPTIONS } from "./editor/setupMonaco";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -19,16 +20,14 @@ import { explainError } from "./learn/errorExplain";
 import { mergeStreakFromServer, type StreakState } from "./learn/streak";
 import type { Lesson, UpdateResult } from "./vexx-api";
 
-const TRACKS: { id: string; label: string; ready: boolean }[] = [
-  { id: "python", label: "Python", ready: true },
-  { id: "java", label: "Java", ready: true },
-  { id: "cpp", label: "C++", ready: true },
-  { id: "csharp", label: "C#", ready: true },
-];
+const TRACK_IDS = ["python", "java", "cpp", "csharp", "security"] as const;
 
-function runLesson(api: typeof window.vexxLearn, lang: string, code: string) {
-  if (!api) return Promise.resolve(null);
-  switch (lang) {
+async function runLessonBatch(
+  api: NonNullable<typeof window.vexxLearn>,
+  editorLang: string,
+  code: string
+) {
+  switch (editorLang) {
     case "java":
       return api.runJava(code);
     case "cpp":
@@ -80,7 +79,7 @@ export function App() {
   const tracks = useMemo(() => buildTracks(registry, lang), [registry, lang]);
   const [track, setTrack] = useState("python");
   const [lessonId, setLessonId] = useState<string | null>("py-01");
-  const [code, setCode] = useState(() => bundledRegistry().python[0]?.starterCode ?? "");
+  const [code, setCode] = useState("");
   const [consoleText, setConsoleText] = useState("");
   const [consoleOk, setConsoleOk] = useState(true);
   const [completed, setCompleted] = useState<string[]>([]);
@@ -89,7 +88,15 @@ export function App() {
   const [loading, setLoading] = useState(true);
 
   const consoleRef = useRef<HTMLDivElement>(null);
+  const consoleInputRef = useRef<HTMLInputElement>(null);
+  const [runActive, setRunActive] = useState(false);
+  const [consoleInput, setConsoleInput] = useState("");
   const [hasElectron, setHasElectron] = useState(false);
+  const [appVersion, setAppVersion] = useState("");
+  const [coursesVersion, setCoursesVersion] = useState(0);
+  const runSessionRef = useRef(0);
+  const langRef = useRef(lang);
+  langRef.current = lang;
 
   useEffect(() => {
     const ok = () => Boolean(window.vexxLearn);
@@ -116,6 +123,7 @@ export function App() {
   const reloadCourses = useCallback(async () => {
     if (!api?.getCourses) return;
     const payload = await api.getCourses();
+    setCoursesVersion(payload.coursesVersion || 0);
     setRegistry(registryFromApiCourses(payload.courses));
   }, [api]);
 
@@ -138,7 +146,9 @@ export function App() {
           );
         }
       }
-      if (r.uiUpdated || r.needsReload) {
+      if (r.appDownloaded) {
+        setUpdateBanner(tUi(lang, "upd_app_downloaded"));
+      } else if (r.uiUpdated || r.needsReload) {
         setUpdateBanner(tUi(lang, "upd_ui_updated"));
       } else if (r.coursesUpdated) {
         setUpdateBanner(tUi(lang, "upd_courses_updated"));
@@ -154,14 +164,6 @@ export function App() {
     });
     return () => unsub?.();
   }, [api, applyUpdateResult]);
-
-  useEffect(() => {
-    const l = tracks[track]?.find((x) => x.id === lessonId) ?? tracks[track]?.[0];
-    if (l) {
-      setLessonId(l.id);
-      setCode(l.starterCode);
-    }
-  }, [lang]);
 
   useEffect(() => {
     (async () => {
@@ -186,7 +188,9 @@ export function App() {
         saveSettingsToStorage(merged);
         applyVexxTheme(merged);
         setRegistry(registryFromApiCourses(coursesPayload.courses));
+        setCoursesVersion(coursesPayload.coursesVersion || 0);
         const ver = await api.getAppVersion();
+        setAppVersion(ver);
         setUpdateInfo({
           checked: false,
           coursesUpdated: false,
@@ -213,14 +217,14 @@ export function App() {
   );
 
   const errorWhy = useMemo(() => {
-    if (consoleOk || !lesson) return null;
+    if (runActive || consoleOk || !lesson) return null;
     return explainError(
       consoleText,
       lang,
       lesson.editorLang || "python",
       failContext
     );
-  }, [consoleOk, consoleText, lang, lesson, failContext]);
+  }, [runActive, consoleOk, consoleText, lang, lesson, failContext]);
 
   const progressPct = useMemo(() => {
     const defs = defsForTrack(registry, track).filter((l) => l.kind !== "exam");
@@ -235,8 +239,10 @@ export function App() {
       setConsoleOk(false);
       return;
     }
+    window.vexxLearn?.stopRun?.();
+    setRunActive(false);
     setLessonId(l.id);
-    setCode(l.starterCode);
+    setCode(blankCodeForEditor(l.editorLang || "python"));
     setConsoleText("");
     setConsoleOk(true);
     setFailContext("run");
@@ -252,6 +258,43 @@ export function App() {
     consoleRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [consoleText]);
 
+  useEffect(() => {
+    if (!api?.onRunEvent) return;
+    return api.onRunEvent((ev) => {
+      if (ev.type === "started") {
+        if (ev.sessionId != null) runSessionRef.current = ev.sessionId;
+        setRunActive(true);
+        setConsoleText("");
+        setConsoleOk(true);
+        setConsoleInput("");
+        window.setTimeout(() => consoleInputRef.current?.focus(), 0);
+        return;
+      }
+
+      const sid = ev.sessionId;
+      if (sid != null && sid !== runSessionRef.current) return;
+
+      if (ev.type === "stdout" || ev.type === "stderr") {
+        setConsoleText((prev) => prev + ev.data);
+      } else if (ev.type === "done") {
+        setRunActive(false);
+        setConsoleOk(ev.ok);
+        setConsoleText((prev) => {
+          const t = prev.trimEnd();
+          if (t) return t;
+          const uiLang = langRef.current;
+          return ev.ok ? `(${tUi(uiLang, "output")})` : "";
+        });
+      }
+    });
+  }, [api]);
+
+  useEffect(() => {
+    return () => {
+      window.vexxLearn?.stopRun?.();
+    };
+  }, []);
+
   const runCode = async () => {
     if (!lesson) return;
     if (!api) {
@@ -259,22 +302,68 @@ export function App() {
       setConsoleOk(false);
       return;
     }
+
+    const editorLang = lesson.editorLang || "python";
+    setFailContext("run");
     setConsoleText(tUi(lang, "running"));
     setConsoleOk(true);
-    setFailContext("run");
-    const r = await runLesson(api, lesson.editorLang || "python", code);
-    if (!r) {
-      setConsoleText(`${tUi(lang, "noElectron")}\n(no response from runner)`);
-      setConsoleOk(false);
+    setRunActive(false);
+
+    if (!api.runInteractive || !api.onRunEvent) {
+      const r = await runLessonBatch(api, editorLang, code);
+      if (!r) {
+        setConsoleText(tUi(lang, "noElectron"));
+        setConsoleOk(false);
+        return;
+      }
+      const out = (r.stdout || "") + (r.stderr ? `\n${r.stderr}` : "");
+      setConsoleText(out.trimEnd() || (r.ok ? `(${tUi(lang, "output")})` : r.stderr || ""));
+      setConsoleOk(r.ok);
       return;
     }
-    const out = (r.stdout || "") + (r.stderr ? `\n${r.stderr}` : "");
-    setConsoleText(out.trimEnd() || (r.ok ? `(${tUi(lang, "output")})` : r.stderr || "Error"));
-    setConsoleOk(r.ok);
+
+    try {
+      const r = await api.runInteractive(editorLang, code);
+      if (r?.sessionId != null) runSessionRef.current = r.sessionId;
+      if (!r?.ok && r?.error) {
+        setRunActive(false);
+        setConsoleText(r.error);
+        setConsoleOk(false);
+        return;
+      }
+      if (r?.ok && r.sessionId != null) {
+        setRunActive(true);
+        setConsoleText((t) => (t === tUi(lang, "running") ? "" : t));
+      }
+    } catch {
+      setRunActive(false);
+      setConsoleText(tUi(lang, "runNeedsRestart"));
+      setConsoleOk(false);
+    }
+  };
+
+  const changeLang = (l: Lang) => {
+    if (l === lang) return;
+    api?.stopRun?.();
+    setRunActive(false);
+    setLang(l);
+  };
+
+  const submitConsoleInput = () => {
+    if (!api?.sendRunStdin || !runActive) return;
+    api.sendRunStdin(`${consoleInput}\n`);
+    setConsoleInput("");
+  };
+
+  const stopRunning = () => {
+    api?.stopRun?.();
+    setRunActive(false);
   };
 
   const checkTask = async () => {
     if (!api || !lesson) return;
+    api.stopRun?.();
+    setRunActive(false);
     if (lesson.kind === "exam" && !examUnlocked(track, completed, registry)) {
       setConsoleText(tUi(lang, "examLock"));
       setConsoleOk(false);
@@ -397,7 +486,7 @@ export function App() {
               key={l}
               type="button"
               className={`lang-btn ${lang === l ? "active" : ""}`}
-              onClick={() => setLang(l)}
+              onClick={() => changeLang(l)}
             >
               {LANG_LABEL[l]}
             </button>
@@ -415,15 +504,14 @@ export function App() {
           </div>
         </div>
 
-        {TRACKS.map((t) => (
+        {TRACK_IDS.map((id) => (
           <button
-            key={t.id}
+            key={id}
             type="button"
-            className={`track-btn ${track === t.id ? "active" : ""} ${!t.ready ? "soon" : ""}`}
-            onClick={() => t.ready && switchTrack(t.id)}
+            className={`track-btn ${id === "security" ? "track-security" : ""} ${track === id ? "active" : ""}`}
+            onClick={() => switchTrack(id)}
           >
-            {t.label}
-            {!t.ready ? ` · ${tUi(lang, "soon")}` : ""}
+            {tUi(lang, `track_${id}`)}
           </button>
         ))}
 
@@ -447,6 +535,12 @@ export function App() {
         <button type="button" className="settings-btn" onClick={openSettings}>
           {tUi(lang, "settings")}
         </button>
+        {appVersion ? (
+          <div className="app-version meta" dir="ltr">
+            v{appVersion}
+            {coursesVersion ? ` · c${coursesVersion}` : ""}
+          </div>
+        ) : null}
       </aside>
 
       <div className="main">
@@ -481,7 +575,12 @@ export function App() {
                 )}
                 <div className="editor-toolbar">
                   <span className="editor-hint meta">{tUi(lang, "suggestHint")}</span>
-                  <button type="button" className="btn" onClick={runCode}>
+                  {runActive ? (
+                    <button type="button" className="btn" onClick={stopRunning}>
+                      {tUi(lang, "stopRun")}
+                    </button>
+                  ) : null}
+                  <button type="button" className="btn" onClick={runCode} disabled={runActive}>
                     {tUi(lang, "run")}
                   </button>
                   <button type="button" className="btn primary" onClick={checkTask}>
@@ -490,14 +589,16 @@ export function App() {
                   <button
                     type="button"
                     className="btn"
-                    onClick={() => setCode(lesson.starterCode)}
+                    onClick={() =>
+                      setCode(blankCodeForEditor(lesson.editorLang || "python"))
+                    }
                   >
                     {tUi(lang, "reset")}
                   </button>
                 </div>
                 <div className="editor-wrap" dir="ltr">
                   <Editor
-                    key={`${lesson.id}-${lang}`}
+                    key={lesson.id}
                     height="100%"
                     language={lesson.editorLang || "python"}
                     theme="vexx-dark"
@@ -508,10 +609,37 @@ export function App() {
                   />
                 </div>
                 <div className="console-panel" ref={consoleRef}>
-                  <div className="console-label">{tUi(lang, "console")}</div>
-                  <div className={`console ${consoleOk ? "ok" : "err"}`}>
-                    {consoleText || tUi(lang, "output")}
+                  <div className="console-label">
+                    {tUi(lang, "console")}
+                    {runActive ? (
+                      <span className="console-live meta"> · {tUi(lang, "runLive")}</span>
+                    ) : null}
                   </div>
+                  <div className={`console ${consoleOk ? "ok" : "err"}`}>
+                    {consoleText || (runActive ? "" : tUi(lang, "output"))}
+                  </div>
+                  {runActive ? (
+                    <form
+                      className="console-input-row"
+                      dir="ltr"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        submitConsoleInput();
+                      }}
+                    >
+                      <span className="console-input-prefix">&gt;</span>
+                      <input
+                        ref={consoleInputRef}
+                        type="text"
+                        className="console-input"
+                        value={consoleInput}
+                        onChange={(e) => setConsoleInput(e.target.value)}
+                        placeholder={tUi(lang, "consoleInput")}
+                        autoComplete="off"
+                        spellCheck={false}
+                      />
+                    </form>
+                  ) : null}
                   {errorWhy ? (
                     <div className="error-why" role="note">
                       <strong>{tUi(lang, "whyError")}</strong>

@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
 
-const TRACKS = ["python", "java", "cpp", "csharp"];
+export const TRACKS = ["python", "java", "cpp", "csharp", "security"];
 
 export function coursesCacheDir(userData) {
   return join(userData, "courses-cache");
@@ -52,25 +52,28 @@ export function getLocalCoursesVersion(userData) {
 
 export function loadAllCourses(appRoot, userData) {
   const out = {};
-  let source = "bundled";
+  const bundledVer = readBundledCoursesVersion(appRoot);
   const cachedVer = getLocalCoursesVersion(userData);
+  /** Use OTA cache only when it is newer than the copy shipped with this app folder. */
+  const useCache = cachedVer > 0 && cachedVer > bundledVer;
+  const source = useCache ? "cache" : "bundled";
+  const effectiveVer = useCache ? cachedVer : bundledVer;
 
   for (const track of TRACKS) {
-    const cached = readCachedTrack(userData, track);
-    const bundled = readBundledTrack(appRoot, track);
-    if (cached && cachedVer > 0) {
-      out[track] = cached;
-      source = "cache";
-    } else if (bundled) {
-      out[track] = bundled;
-    } else {
-      out[track] = [];
+    if (useCache) {
+      const cached = readCachedTrack(userData, track);
+      if (cached?.length) {
+        out[track] = cached;
+        continue;
+      }
     }
+    const bundled = readBundledTrack(appRoot, track);
+    out[track] = bundled?.length ? bundled : [];
   }
 
   return {
     courses: out,
-    coursesVersion: cachedVer,
+    coursesVersion: effectiveVer,
     source,
   };
 }

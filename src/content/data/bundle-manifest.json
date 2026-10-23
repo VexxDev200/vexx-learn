@@ -1,12 +1,12 @@
 {
-  "coursesVersion": 20261023104,
-  "contentFingerprint": "f0da92168f54a8e34601756b80c5072dce53eb947d50ea9178f5134d2fd196bb",
-  "generatedAt": "2026-10-23T12:12:36.486Z",
+  "coursesVersion": 20261023107,
+  "contentFingerprint": "725f022667a1935fd1d72ca90c5495080909605caddeaded70682efb0c0147ff",
+  "generatedAt": "2026-10-23T13:24:19.564Z",
   "counts": {
     "python": 21,
     "java": 17,
     "cpp": 17,
     "csharp": 17,
-    "security": 32
+    "security": 35
   }
 }

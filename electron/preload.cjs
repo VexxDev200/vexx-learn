@@ -25,6 +25,14 @@ contextBridge.exposeInMainWorld("vexxLearn", {
   checkCpp: (code, checks) => ipcRenderer.invoke("check:cpp", { code, checks }),
   runCsharp: (code) => ipcRenderer.invoke("run:csharp", { code }),
   checkCsharp: (code, checks) => ipcRenderer.invoke("check:csharp", { code, checks }),
+  runInteractive: (lang, code) => ipcRenderer.invoke("run:interactive", { lang, code }),
+  sendRunStdin: (text) => ipcRenderer.send("run:stdin", { text }),
+  stopRun: () => ipcRenderer.send("run:stop"),
+  onRunEvent: (cb) => {
+    const handler = (_e, payload) => cb(payload);
+    ipcRenderer.on("vexx:run", handler);
+    return () => ipcRenderer.removeListener("vexx:run", handler);
+  },
   openExternal: (url) => ipcRenderer.invoke("shell:open", url),
   openPath: (filePath) => ipcRenderer.invoke("shell:open-path", filePath),
 });
