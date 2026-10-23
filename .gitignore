@@ -11,3 +11,6 @@ release/builder-debug.yml
 # Уроки для авто-обновления — в git
 !release/updates/
 !release/updates/**
+
+# Local OTA config (owner/repo only, never secrets). Template: update.config.example.json
+update.config.json

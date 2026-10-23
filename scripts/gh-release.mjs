@@ -11,6 +11,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
 const version = pkg.version;
 const tag = `v${version}`;
+if (!existsSync(join(ROOT, "update.config.json"))) {
+  console.error("update.config.json not found (it is git-ignored, local only). Copy update.config.example.json to update.config.json and set githubOwner/githubRepo.");
+  process.exit(1);
+}
 const cfg = JSON.parse(readFileSync(join(ROOT, "update.config.json"), "utf8"));
 const repo = `${cfg.githubOwner}/${cfg.githubRepo}`;
 
