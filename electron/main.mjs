@@ -8,6 +8,7 @@ import {
   checkAndApplyUpdates,
   getUpdateSourceInfo,
   isIncompleteGithubRawUrl,
+  loadPendingAppUpdate,
   resolveCoursesBaseForSettings,
 } from "./update.mjs";
 import {

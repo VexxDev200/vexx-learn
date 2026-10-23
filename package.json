@@ -16,7 +16,9 @@
     "predev": "node scripts/build-all-courses.mjs",
     "dev": "concurrently -k \"vite\" \"wait-on http://127.0.0.1:5173 && electron .\"",
     "build": "npm run icon && npm run courses && vite build && node scripts/copy-course-data.mjs && electron-builder --win portable",
-    "start": "electron ."
+    "start": "electron .",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-test-module-mocks --test tests/*.test.mjs"
   },
   "build": {
     "appId": "dev.vexx.learn",
