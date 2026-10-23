@@ -234,7 +234,17 @@ export function App() {
     return Math.round((done / defs.length) * 100);
   }, [track, completed, registry]);
 
+  const nextTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearNextTimer = () => {
+    if (nextTimerRef.current) {
+      clearTimeout(nextTimerRef.current);
+      nextTimerRef.current = null;
+    }
+  };
+  useEffect(() => clearNextTimer, []);
+
   const pickLesson = useCallback((l: Lesson) => {
+    clearNextTimer();
     if (l.kind === "exam" && !examUnlocked(track, completed, registry)) {
       setConsoleText(tUi(lang, "examLock"));
       setConsoleOk(false);
@@ -398,8 +408,22 @@ export function App() {
       setCompleted(p.completed);
       if (p.streak) setStreak(mergeStreakFromServer(p.streak));
     }
+    const nextLesson =
+      r.allPass && lesson.kind !== "exam"
+        ? lessons[lessons.findIndex((x) => x.id === lesson.id) + 1]
+        : undefined;
+    if (nextLesson && nextLesson.kind !== "exam") {
+      lines.push(`\n${tUi(lang, "lessonNext")}`);
+    }
     setConsoleText(lines.join("\n"));
     setConsoleOk(r.allPass);
+    if (nextLesson && nextLesson.kind !== "exam") {
+      clearNextTimer();
+      nextTimerRef.current = setTimeout(() => {
+        nextTimerRef.current = null;
+        pickLesson(nextLesson);
+      }, 1800);
+    }
   };
 
   const editorOptions = useMemo(
