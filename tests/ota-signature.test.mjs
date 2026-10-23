@@ -1,13 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createHash, generateKeyPairSync } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
+import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { checkAndApplyUpdates } from "../electron/update.mjs";
 import { OTA_PUBLIC_KEY_PEM, REQUIRE_SIGNED_MANIFEST } from "../electron/ota-public-key.mjs";
 import { canonicalize, publicKeyFingerprint, signManifest, verifyManifestSignature } from "../electron/manifest-verify.mjs";
-import { checkManifestFile, signManifestFile } from "../scripts/sign-manifest.mjs";
+import { checkManifestFile, checkManifestFiles, signManifestFile } from "../scripts/sign-manifest.mjs";
 
 const OWNER = "test-owner";
 const REPO = "test-repo";
@@ -201,4 +202,118 @@ test("sign-manifest script: signs a file, result verifies, wrong embedded key is
 
 test("verifyManifestSignature rejects non-object manifests", () => {
   for (const bad of [null, "x", 5, []]) assert.equal(verifyManifestSignature(bad, KEYS_A.pub).status, "invalid");
+});
+test("CLI --check (what CI runs): fails on an unsigned manifest, passes on a signed one", () => {
+  const dir = mkdtempSync(join(tmpdir(), "vexx-cli-check-"));
+  const manifestPath = join(dir, "manifest.json");
+  const keyPath = join(dir, "k.pem");
+  const pubPath = join(dir, "pub.pem");
+  writeFileSync(keyPath, KEYS_A.priv);
+  writeFileSync(pubPath, KEYS_A.pub);
+  writeFileSync(manifestPath, JSON.stringify(baseManifest(), null, 2));
+  for (const t of TRACKS) writeFileSync(join(dir, `${t}.json`), trackBody(t)); // files next to the manifest, as in release/updates
+  const cli = (...args) => spawnSync(process.execPath, ["scripts/sign-manifest.mjs", "--check", ...args], { encoding: "utf8" });
+
+  const unsigned = cli(manifestPath, "--pubkey", pubPath);
+  assert.equal(unsigned.status, 1, "unsigned -> exit 1");
+  assert.match(unsigned.stdout, /unsigned/);
+  // also fails against the REAL embedded key (what CI uses)
+  assert.equal(cli(manifestPath).status, 1);
+
+  signManifestFile(manifestPath, keyPath, KEYS_A.pub);
+  const ok = cli(manifestPath, "--pubkey", pubPath);
+  assert.equal(ok.status, 0, "signed -> exit 0");
+  assert.match(ok.stdout, /valid/);
+  // signed by A, embedded key is different -> invalid, exit 1
+  assert.equal(cli(manifestPath).status, 1);
+  // tampered after signing -> exit 1
+  const m = JSON.parse(readFileSync(manifestPath, "utf8"));
+  m.coursesVersion = 99;
+  writeFileSync(manifestPath, JSON.stringify(m));
+  assert.equal(cli(manifestPath, "--pubkey", pubPath).status, 1);
+});
+function makeRelease({ exe = false } = {}) {
+  const dir = mkdtempSync(join(tmpdir(), "vexx-rel-"));
+  const manifest = baseManifest({ uiBundle: "app-ui.zip", portableAssetName: "Vexx-Learn-Portable.exe", portableSha256: null });
+  for (const t of TRACKS) writeFileSync(join(dir, `${t}.json`), trackBody(t));
+  const zip = Buffer.from("PK-fake-zip-bytes");
+  writeFileSync(join(dir, "app-ui.zip"), zip);
+  manifest.sha256.uiBundle = sha(zip);
+  const exeBytes = Buffer.from("fake-exe");
+  if (exe) manifest.portableSha256 = sha(exeBytes);
+  const keyPath = join(dir, "k.pem");
+  const pubPath = join(dir, "pub.pem");
+  const manifestPath = join(dir, "manifest.json");
+  writeFileSync(keyPath, KEYS_A.priv);
+  writeFileSync(pubPath, KEYS_A.pub);
+  writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+  signManifestFile(manifestPath, keyPath, KEYS_A.pub);
+  const cli = (...extra) =>
+    spawnSync(process.execPath, ["scripts/sign-manifest.mjs", "--check", manifestPath, "--pubkey", pubPath, ...extra], { encoding: "utf8" });
+  return { dir, manifestPath, cli, exeBytes };
+}
+
+test("CLI --check also re-hashes files next to the manifest: good release passes", () => {
+  const r = makeRelease();
+  const out = r.cli();
+  assert.equal(out.status, 0, out.stdout);
+  assert.match(out.stdout, /files: ok \(6 verified\)/);
+});
+
+test("CLI --check fails on a SUBSTITUTED app-ui.zip even though the manifest signature is still valid", () => {
+  const r = makeRelease();
+  writeFileSync(join(r.dir, "app-ui.zip"), Buffer.from("PK-evil-zip"));
+  const out = r.cli();
+  assert.equal(out.status, 1);
+  assert.match(out.stdout, /signature: valid/);
+  assert.match(out.stdout, /UI bundle: sha256 of app-ui\.zip does not match/);
+});
+
+test("CLI --check fails on a substituted course file, a missing file, and a missing hash", () => {
+  let r = makeRelease();
+  writeFileSync(join(r.dir, "python.json"), "{}");
+  assert.match(r.cli().stdout, /course python: sha256 of python\.json does not match/);
+  assert.equal(r.cli().status, 1);
+
+  r = makeRelease();
+  rmSync(join(r.dir, "java.json"));
+  assert.match(r.cli().stdout, /course java: file java\.json is missing/);
+  assert.equal(r.cli().status, 1);
+
+  // removing a hash from the manifest invalidates the signature AND would be flagged by the file check
+  r = makeRelease();
+  const m = JSON.parse(readFileSync(r.manifestPath, "utf8"));
+  delete m.sha256.cpp;
+  writeFileSync(r.manifestPath, JSON.stringify(m));
+  const out = r.cli();
+  assert.equal(out.status, 1);
+  assert.match(out.stdout, /no sha256 recorded/);
+});
+
+test("CLI --check: exe is checked only when portableSha256 is set; absent exe is skipped, wrong exe fails", () => {
+  const none = makeRelease();
+  assert.equal(none.cli().status, 0, "portableSha256 null -> exe ignored");
+
+  const r = makeRelease({ exe: true });
+  const skipped = r.cli();
+  assert.equal(skipped.status, 0, skipped.stdout);
+  assert.match(skipped.stdout, /skipped.*portable exe/);
+
+  const exePath = join(r.dir, "x.exe");
+  writeFileSync(exePath, r.exeBytes);
+  assert.equal(r.cli("--exe", exePath).status, 0);
+  writeFileSync(exePath, Buffer.from("tampered-exe"));
+  const bad = r.cli("--exe", exePath);
+  assert.equal(bad.status, 1);
+  assert.match(bad.stdout, /portable exe: sha256 does not match/);
+});
+
+test("checkManifestFiles rejects path traversal in file names", () => {
+  const r = makeRelease();
+  const m = JSON.parse(readFileSync(r.manifestPath, "utf8"));
+  m.files.python = "../python.json";
+  writeFileSync(r.manifestPath, JSON.stringify(m));
+  const res = checkManifestFiles(r.manifestPath);
+  assert.equal(res.ok, false);
+  assert.match(res.problems.join("\n"), /unsafe file name/);
 });
