@@ -418,3 +418,8 @@ test("pack-updates.mjs --sign still works end to end (explicit path), in a throw
   assert.equal(chk2.status, 0, chk2.stdout);
   assert.match(chk2.stdout, /no portableSha256/);
 });
+
+test("ship.mjs packs with --sign (local release flow produces a signed manifest incl. the exe hash)", () => {
+  const src = readFileSync("scripts/ship.mjs", "utf8");
+  assert.match(src, /pack-updates\.mjs",\s*"--sign"/);
+});

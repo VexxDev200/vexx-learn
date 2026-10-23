@@ -42,7 +42,7 @@ console.log("\n[1/4] Build portable exe (courses + UI + electron-builder)…");
 run("npm", ["run", "build"]);
 
 console.log("\n[2/4] Pack OTA (manifest + course JSON + app-ui.zip)…");
-run("node", ["scripts/pack-updates.mjs"]);
+run("node", ["scripts/pack-updates.mjs", "--sign"]); // signs with the local private key; needs the exe built in step 1
 
 console.log("\n[3/4] Push OTA to GitHub (main)…");
 run("node", ["scripts/publish-ota-git.mjs"]);
