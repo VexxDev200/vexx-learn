@@ -384,6 +384,9 @@ test("pack-updates.mjs --sign still works end to end (explicit path), in a throw
   const keyPath = join(root, "k.pem");
   writeFileSync(keyPath, KEYS_A.priv);
   const env = { ...process.env, VEXX_OTA_PRIVATE_KEY: keyPath };
+  const exeBytes = Buffer.from("built-portable-exe");
+  mkdirSync(join(root, "release"), { recursive: true });
+  writeFileSync(join(root, "release", "Vexx-Learn-Portable.exe"), exeBytes);
 
   const plain = spawnSync(process.execPath, ["scripts/pack-updates.mjs"], { cwd: root, encoding: "utf8", env });
   assert.equal(plain.status, 0, plain.stderr);
@@ -392,9 +395,26 @@ test("pack-updates.mjs --sign still works end to end (explicit path), in a throw
 
   const signed = spawnSync(process.execPath, ["scripts/pack-updates.mjs", "--sign"], { cwd: root, encoding: "utf8", env });
   assert.equal(signed.status, 0, signed.stderr + signed.stdout);
-  assert.equal(JSON.parse(readFileSync(m, "utf8")).signature.alg, "ed25519");
+  const signedManifest = JSON.parse(readFileSync(m, "utf8"));
+  assert.equal(signedManifest.signature.alg, "ed25519");
+  assert.equal(signedManifest.portableSha256, sha(exeBytes), "exe hash filled from the built exe BEFORE signing, and covered by the signature");
   const chk = spawnSync(process.execPath, ["scripts/sign-manifest.mjs", "--check", m], { cwd: root, encoding: "utf8" });
   assert.equal(chk.status, 0, chk.stdout);
   assert.match(chk.stdout, /signature: valid/);
   assert.equal(realManifestHash(), before, "real manifest untouched");
+
+  // no built exe: --sign is refused (previous signed manifest stays); --allow-no-exe opts out for courses/UI-only releases
+  rmSync(join(root, "release", "Vexx-Learn-Portable.exe"));
+  const refused = spawnSync(process.execPath, ["scripts/pack-updates.mjs", "--sign"], { cwd: root, encoding: "utf8", env });
+  assert.equal(refused.status, 1);
+  assert.match(refused.stderr, /Refusing to sign/);
+  assert.ok(JSON.parse(readFileSync(m, "utf8")).signature, "previous signed manifest not clobbered by the refused run");
+  const allowed = spawnSync(process.execPath, ["scripts/pack-updates.mjs", "--sign", "--allow-no-exe"], { cwd: root, encoding: "utf8", env });
+  assert.equal(allowed.status, 0, allowed.stderr);
+  const noExe = JSON.parse(readFileSync(m, "utf8"));
+  assert.equal(noExe.portableSha256, null);
+  assert.ok(noExe.signature);
+  const chk2 = spawnSync(process.execPath, ["scripts/sign-manifest.mjs", "--check", m], { cwd: root, encoding: "utf8" });
+  assert.equal(chk2.status, 0, chk2.stdout);
+  assert.match(chk2.stdout, /no portableSha256/);
 });

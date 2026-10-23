@@ -7,8 +7,9 @@ import { syncPortableUpgrade } from "./portable-sync.mjs";
 import {
   checkAndApplyUpdates,
   getUpdateSourceInfo,
+  canOpenPath,
   isIncompleteGithubRawUrl,
-  loadPendingAppUpdate,
+  verifyPendingAppUpdate,
   resolveCoursesBaseForSettings,
 } from "./update.mjs";
 import {
@@ -547,10 +548,15 @@ app.whenReady().then(() => {
       console.warn("[vexx-learn] shell:open-path blocked (outside app folders)");
       return "blocked: path is outside the application folders";
     }
+    const gate = canOpenPath(app.getPath("userData"), filePath);
+    if (!gate.ok) {
+      console.warn("[vexx-learn] shell:open-path blocked:", gate.reason);
+      return "blocked: " + gate.reason;
+    }
     return shell.openPath(filePath);
   });
 
-  ipcMain.handle("updater:pending-app", () => loadPendingAppUpdate(app.getPath("userData")));
+  ipcMain.handle("updater:pending-app", () => verifyPendingAppUpdate(app.getPath("userData")));
 
   ipcMain.handle("updates:capabilities", () => ({ uiOta: true }));
 

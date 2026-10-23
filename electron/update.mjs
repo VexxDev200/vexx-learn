@@ -1,6 +1,6 @@
 import { createWriteStream, existsSync } from "fs";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
-import { dirname, join } from "path";
+import { mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "fs";
+import { dirname, join, resolve } from "path";
 import { pipeline } from "stream/promises";
 import { createHash } from "crypto";
 import {
@@ -16,7 +16,7 @@ import {
   isGitHubConfigured,
   loadUpdateConfig,
 } from "./update-config.mjs";
-import { isAllowedUpdateBaseUrl } from "./security-policy.mjs";
+import { UPDATE_HOST_ALLOWLIST, isAllowedUpdateBaseUrl, isPathInsideRoots } from "./security-policy.mjs";
 import { verifyManifestSignature } from "./manifest-verify.mjs";
 import { OTA_PUBLIC_KEY_PEM, REQUIRE_SIGNED_MANIFEST } from "./ota-public-key.mjs";
 
@@ -37,9 +37,17 @@ async function fetchJson(url, timeoutMs = 15000) {
   }
 }
 
-async function downloadFile(url, destPath) {
+async function downloadFile(url, destPath, { checkFinalHost = false } = {}) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Download failed ${res.status}`);
+  if (checkFinalHost && res.url) {
+    // after redirects the body must still come from https on an allowlisted GitHub host
+    let u;
+    try { u = new URL(res.url); } catch { throw new Error("Download redirected to an invalid URL"); }
+    if (u.protocol !== "https:" || !UPDATE_HOST_ALLOWLIST.includes(u.hostname.toLowerCase())) {
+      throw new Error("Download redirected to a non-GitHub host");
+    }
+  }
   mkdirSync(dirname(destPath), { recursive: true });
   await pipeline(res.body, createWriteStream(destPath));
 }
@@ -209,40 +217,18 @@ export async function checkAndApplyUpdates({
         const rel = await fetchGitHubAppRelease(cfg);
         if (rel?.downloadUrl && rel.version) {
           result.appUpdateUrl = rel.downloadUrl;
-          const pending = loadPendingAppUpdate(userData);
-          const dir = join(userData, "pending-updates");
-          const dest = join(dir, `Vexx-Learn-Portable-${rel.version}.exe`);
-          let localPath = pending?.path && existsSync(pending.path) ? pending.path : dest;
-          const haveFile = existsSync(localPath) || existsSync(dest);
-          if (!haveFile || pending?.version !== rel.version) {
-            if (!existsSync(dest)) {
-              console.log("[vexx-learn] downloading portable", rel.version);
-              await downloadFile(rel.downloadUrl, dest);
+          const sync = await ensurePortableExe({ userData, cfg, rel, remote, signed, requireSignedManifest });
+          if (sync.skipped) {
+            result.appDownloadSkipped = sync.skipped;
+            result.appUpdateAvailable = true;
+          } else {
+            result.appDownloaded = true;
+            result.appLocalPath = sync.path;
+            if (!result.message || result.message === "courses_up_to_date") {
+              result.message = "app_downloaded";
+            } else if (result.coursesUpdated) {
+              result.message = "courses_and_app";
             }
-            localPath = dest;
-            if (!remote.portableSha256 && signed) {
-              console.warn("[vexx-learn] WARNING: signed manifest carries no portableSha256; exe is not hash-verified");
-            }
-            if (remote.portableSha256) {
-              const hash = sha256File(dest);
-              if (hash !== remote.portableSha256) {
-                try { rmSync(dest, { force: true }); } catch { /* ignore */ }
-                throw new Error("Portable exe checksum mismatch");
-              }
-            }
-            savePendingAppUpdate(userData, {
-              version: rel.version,
-              url: rel.downloadUrl,
-              path: dest,
-              downloadedAt: new Date().toISOString(),
-            });
-          }
-          result.appDownloaded = true;
-          result.appLocalPath = localPath;
-          if (!result.message || result.message === "courses_up_to_date") {
-            result.message = "app_downloaded";
-          } else if (result.coursesUpdated) {
-            result.message = "courses_and_app";
           }
         } else if (bundledNeedsExe && !rel?.downloadUrl) {
           result.appUpdateAvailable = true;
@@ -268,6 +254,101 @@ export async function checkAndApplyUpdates({
   }
 
   return result;
+}
+
+const SAFE_VERSION = /^[0-9A-Za-z][0-9A-Za-z.+_-]{0,39}$/;
+const PENDING_DIR = "pending-updates";
+
+export function pendingUpdatesDir(userData) {
+  return join(userData, PENDING_DIR);
+}
+
+/**
+ * Downloads (or re-validates) the portable exe for `rel` into <userData>/pending-updates and records it as pending.
+ * Hash rules (S4):
+ *  - manifest has portableSha256 -> the file is hashed after download (into a .part file) and again whenever an
+ *    existing file is reused; a wrong sum deletes the file and aborts with an error. Nothing wrong is ever left behind.
+ *  - manifest is SIGNED (or strict mode) -> portableSha256 is REQUIRED; without it the exe is not downloaded at all.
+ *    The signed manifest's appVersion must also equal the release version the hash was computed for.
+ *  - unsigned manifest without a hash (old publishing flow, 0.2.11-compatible) -> accepted with a warning.
+ * Returns { path } on success or { skipped: reason } when the exe was deliberately not downloaded.
+ */
+async function ensurePortableExe({ userData, cfg, rel, remote, signed, requireSignedManifest }) {
+  const rawSha = remote.portableSha256;
+  const expected = typeof rawSha === "string" && /^[0-9a-f]{64}$/i.test(rawSha) ? rawSha.toLowerCase() : null;
+  if (rawSha && !expected) throw new Error("portableSha256 in manifest is malformed");
+  if (!SAFE_VERSION.test(String(rel.version))) throw new Error("Release version has unexpected characters");
+  if (!isAllowedUpdateBaseUrl(rel.downloadUrl, cfg)) {
+    throw new Error("Release asset URL is not inside the configured GitHub repository");
+  }
+  const hashRequired = signed || requireSignedManifest;
+  if (hashRequired && !expected) {
+    console.warn("[vexx-learn] signed manifest has no portableSha256 - exe download refused");
+    return { skipped: "no_portable_sha256" };
+  }
+  if (hashRequired && remote.appVersion && String(remote.appVersion) !== String(rel.version)) {
+    console.warn("[vexx-learn] release version differs from signed manifest appVersion - exe download refused");
+    return { skipped: "version_mismatch" };
+  }
+  if (!expected) {
+    console.warn("[vexx-learn] WARNING: manifest has no portableSha256; the exe will NOT be hash-verified");
+  }
+
+  const dir = pendingUpdatesDir(userData);
+  const dest = join(dir, `Vexx-Learn-Portable-${rel.version}.exe`);
+  const part = dest + ".part";
+  const pending = loadPendingAppUpdate(userData);
+  mkdirSync(dir, { recursive: true });
+
+  let reusable = false;
+  if (existsSync(dest)) {
+    if (!expected) {
+      reusable = true; // legacy flow: nothing to compare against
+    } else {
+      const trusted =
+        pending?.path === dest && pending?.version === rel.version && pending?.sha256 === expected &&
+        pending?.size === statSync(dest).size;
+      if (trusted || sha256File(dest) === expected) reusable = true;
+      else {
+        try { rmSync(dest, { force: true }); } catch { /* ignore */ }
+        if (pending?.path === dest) clearPendingAppUpdate(userData);
+      }
+    }
+  }
+
+  if (!reusable) {
+    try { rmSync(part, { force: true }); } catch { /* ignore */ }
+    console.log("[vexx-learn] downloading portable", rel.version);
+    try {
+      await downloadFile(rel.downloadUrl, part, { checkFinalHost: true });
+      if (expected && sha256File(part) !== expected) throw new Error("Portable exe checksum mismatch");
+      renameSync(part, dest);
+    } catch (e) {
+      try { rmSync(part, { force: true }); } catch { /* ignore */ }
+      try { rmSync(dest, { force: true }); } catch { /* ignore */ }
+      throw e;
+    }
+  }
+
+  // housekeeping: drop exes of other versions and leftovers
+  try {
+    for (const f of readdirSync(dir)) {
+      if (join(dir, f) !== dest) rmSync(join(dir, f), { force: true });
+    }
+  } catch { /* ignore */ }
+
+  const size = statSync(dest).size;
+  if (!reusable || pending?.version !== rel.version || (pending?.sha256 ?? null) !== expected || pending?.path !== dest) {
+    savePendingAppUpdate(userData, {
+      version: rel.version,
+      url: rel.downloadUrl,
+      path: dest,
+      sha256: expected,
+      size,
+      downloadedAt: new Date().toISOString(),
+    });
+  }
+  return { path: dest };
 }
 
 function semverGt(a, b) {
@@ -307,4 +388,39 @@ export function loadPendingAppUpdate(userData) {
   } catch {
     return null;
   }
+}
+
+export function clearPendingAppUpdate(userData) {
+  try { rmSync(join(userData, "pending-app-update.json"), { force: true }); } catch { /* ignore */ }
+}
+
+/** Pending exe info, or null if the file is gone or no longer matches the recorded sha256 (then it is deleted). */
+export function verifyPendingAppUpdate(userData) {
+  const pending = loadPendingAppUpdate(userData);
+  if (!pending) return null;
+  if (!pending.path || !existsSync(pending.path)) {
+    clearPendingAppUpdate(userData);
+    return null;
+  }
+  if (pending.sha256 && sha256File(pending.path) !== String(pending.sha256).toLowerCase()) {
+    console.warn("[vexx-learn] pending exe no longer matches its recorded sha256 - deleted");
+    try { rmSync(pending.path, { force: true }); } catch { /* ignore */ }
+    clearPendingAppUpdate(userData);
+    return null;
+  }
+  return pending;
+}
+
+/**
+ * Gate for shell:open-path. Anything inside <userData>/pending-updates may only be opened if it is exactly the
+ * recorded pending exe AND (when a sha256 was recorded) still hashes to it right now.
+ */
+export function canOpenPath(userData, filePath) {
+  if (!isPathInsideRoots(filePath, [pendingUpdatesDir(userData)])) return { ok: true };
+  const pending = verifyPendingAppUpdate(userData);
+  if (!pending) return { ok: false, reason: "no verified pending update (file missing or checksum mismatch)" };
+  if (resolve(pending.path).toLowerCase() !== resolve(String(filePath)).toLowerCase()) {
+    return { ok: false, reason: "not the recorded pending update file" };
+  }
+  return { ok: true };
 }

@@ -98,9 +98,18 @@ test("IPC shell:open-path only opens files inside userData / app folders", async
     assert.match(String(r3), /blocked/);
     assert.deepEqual(m.shellCalls.openPath, [], "no blocked path reached shell.openPath");
 
-    const r4 = await openPath({}, file);
+    // pending-updates is special (see portable-exe.test.mjs): only the verified pending exe may be opened there
+    const r3b = await openPath({}, file);
+    assert.match(String(r3b), /blocked/);
+    assert.deepEqual(m.shellCalls.openPath, []);
+
+    const docs = join(m.userData, "exports");
+    mkdirSync(docs, { recursive: true });
+    const doc = join(docs, "notes.txt");
+    writeFileSync(doc, "x");
+    const r4 = await openPath({}, doc);
     assert.equal(r4, "");
-    assert.deepEqual(m.shellCalls.openPath, [file]);
+    assert.deepEqual(m.shellCalls.openPath, [doc]);
   } finally {
     m.restore();
   }

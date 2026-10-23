@@ -81,6 +81,9 @@ export function checkManifestFiles(manifestPath, { exePath } = {}) {
   };
   for (const [track, name] of Object.entries(manifest.files || {})) verifyOne(`course ${track}`, name, sha[track]);
   if (manifest.uiBundle) verifyOne("UI bundle", manifest.uiBundle, sha.uiBundle || sha[manifest.uiBundle]);
+  if (!manifest.portableSha256) {
+    skipped.push("manifest has no portableSha256: signed clients will not download the exe (fine for courses/UI-only releases)");
+  }
   if (manifest.portableSha256) {
     const asset = manifest.portableAssetName || "Vexx-Learn-Portable.exe";
     const candidates = [exePath, join(dir, basename(asset)), join(dir, "..", basename(asset))].filter(Boolean);

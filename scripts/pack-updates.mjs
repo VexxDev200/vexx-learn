@@ -2,10 +2,13 @@
  * Build folder for hosting auto-updates: release/updates/
  * Upload contents to your CDN / static host; set URL in Vexx Learn settings.
  *
- * Usage: npm run courses && node scripts/pack-updates.mjs [--sign]
+ * Usage: npm run courses && node scripts/pack-updates.mjs [--sign [--allow-no-exe]]
  *
  * --sign (optional): also sign the manifest with the local Ed25519 private key
  * (see scripts/sign-manifest.mjs). Nothing is published by this script.
+ *   portableSha256 is taken from the BUILT exe (release/Vexx-Learn-Portable.exe) before signing, so the signature
+ *   covers the exe hash. Signing without that exe is refused (clients refuse to download an exe that has no hash
+ *   in a signed manifest) unless --allow-no-exe is given for a courses/UI-only release.
  */
 import { createHash } from "crypto";
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
@@ -63,6 +66,14 @@ let portableSha256 = null;
 if (existsSync(portablePath)) {
   portableSha256 = createHash("sha256").update(readFileSync(portablePath)).digest("hex");
   console.log("Portable sha256:", portableSha256.slice(0, 12) + "…");
+}
+
+if (process.argv.includes("--sign") && !portableSha256 && !process.argv.includes("--allow-no-exe")) {
+  console.error(
+    "Refusing to sign: release/Vexx-Learn-Portable.exe not found, so portableSha256 would be empty.\n" +
+      "Build the exe first (npm run build), or pass --allow-no-exe for a courses/UI-only release (clients will not download an exe)."
+  );
+  process.exit(1);
 }
 
 const manifest = {
