@@ -90,3 +90,40 @@
 Проверки: typecheck 0 ошибок; `npm test` 14/14; сборка (icon, courses, vite, electron-builder portable во временную папку) успешна.
 
 Отложено: подпись OTA (S1, раунд 1b), S4, S5 (sandbox/CSP), S6, S7, S8 (`update.config.json` остаётся в git и в asar — решение за Vexx), контент курсов, линтер.
+
+## 8. Round 1b - выполнено (ветка `improve/round-1`, локальные коммиты, без push/релиза)
+
+**Что сделано**
+- **S3-дофикс**: `updateBaseUrl` привязан к настроенному owner/repo (`/<owner>/<repo>/...`) на **всех трёх** хостах (raw.githubusercontent.com, github.com, objects.githubusercontent.com); если owner/repo не настроены — пользовательский URL не принимается вообще (fail closed). Тесты: чужой репозиторий на каждом хосте отклоняется. При отклонении `settings:set` возвращает `settingsErrors.updateBaseUrl`, окно настроек остаётся открытым и показывает понятную ошибку (ru/en/he) — не молча. Примечание: ссылки `objects.githubusercontent.com` не содержат owner/repo в пути, поэтому как custom-URL они теперь никогда не проходят (для manifest они и не годятся).
+- **Node**: `engines.node >= 22`, абзац в README, новый небольшой workflow `.github/workflows/ci.yml` (typecheck + `npm test` на Node 22). Существующие `release.yml` / `ota-publish.yml` (Node 20) не менялись.
+- **S1 — подпись OTA-манифеста (Ed25519)**:
+  - `electron/manifest-verify.mjs`: каноничный JSON (ключи отсортированы, без поля `signature`) + подпись/проверка;
+  - `electron/ota-public-key.mjs`: ПУБЛИЧНЫЙ ключ в приложении + флаг `REQUIRE_SIGNED_MANIFEST = false`;
+  - `electron/update.mjs`: после загрузки manifest.json — проверка подписи. Подписан и верен → ок; подпись есть, но не сходится (подмена, чужой ключ) → обновление отклонено; манифест без подписи → принимается с предупреждением (strict выключен, т.к. клиенты 0.2.11 подписи не проверяют и должны продолжать обновляться), при `REQUIRE_SIGNED_MANIFEST = true` — отклоняется;
+  - хэши файлов: если в манифесте есть хэш — проверка обязательна (как и раньше, теперь покрыта тестами для курсов, UI-бандла и exe); для **подписанного** манифеста отсутствие хэша у курса/UI-бандла = отказ; у exe — только предупреждение (portableSha256 не заполняется в CI);
+  - `scripts/sign-manifest.mjs` (+ `npm run sign:manifest`, режим `--check`); `scripts/pack-updates.mjs --sign` — необязательный явный шаг. Скрипты ничего не публикуют;
+  - тесты `tests/ota-signature.test.mjs`: подписан+верный ключ проходит; подмена отклоняется; чужой ключ отклоняется; без подписи принимается с предупреждением (и отклоняется в strict); хэши; скрипт подписи.
+- Закрытый ключ: `C:\Users\smird\keys\vexx-learn-ota-private.pem` (ACL только текущий пользователь), публичный: `...\vexx-learn-ota-public.pem`. Закрытый ключ не в репозитории, не в логах и не в отчётах.
+
+**Отпечаток ПУБЛИЧНОГО ключа** (sha256 от SPKI DER):
+`c1065d5f425950d0a97b3fb30211186d44736cc4a1e32f8e2f57c5151220f4f5` (keyId в манифесте = первые 16 символов: `c1065d5f425950d0`).
+Пересчитать: `node -e "const c=require('crypto'),f=require('fs');console.log(c.createHash('sha256').update(c.createPublicKey(f.readFileSync('C:/Users/smird/keys/vexx-learn-ota-public.pem')).export({type:'spki',format:'der'})).digest('hex'))"`
+
+**Как подписать релиз (локально)**
+1. `npm run release:pack` (или `npm run courses && npm run build:ui && node scripts/pack-updates.mjs --sign` — тогда шаг 2 не нужен).
+2. `npm run sign:manifest` — подписывает `release/updates/manifest.json` ключом из `VEXX_OTA_PRIVATE_KEY` или `<home>\keys\vexx-learn-ota-private.pem`; перед записью проверяет подпись встроенным публичным ключом.
+3. `node scripts/sign-manifest.mjs --check release/updates/manifest.json` → `valid`.
+4. Любое изменение manifest.json (в т.ч. повторный pack: меняется `generatedAt`) требует повторной подписи. Коммит и публикация — вручную, как и раньше.
+
+**Что должен сделать Vexx сам**
+- Сохранить копию закрытого ключа (`vexx-learn-ota-private.pem`) на USB-носитель / в менеджер паролей. Потеря ключа = подписанные манифесты больше не выпустить, пока в приложение не будет встроен новый публичный ключ (ротация пока не реализована).
+- Проверить, что `update.config.json` не содержит токена (я его не открывал). Файл по-прежнему отслеживается git и упаковывается в asar — решение (`git rm --cached` / .gitignore) не принималось.
+- Решить судьбу `ota-publish.yml`: CI собирает и коммитит манифест БЕЗ подписи (закрытого ключа в CI нет и быть не должно) — подпись, поставленная локально, будет перезаписана. Либо подписывать локально и не использовать авто-pack, либо переходить на подпись вне CI.
+- Включить `REQUIRE_SIGNED_MANIFEST = true` только после того, как все клиенты обновятся до версии со встроенным ключом и релизы стабильно подписываются.
+
+**Оговорки**
+- Проверка подписи заработает только в следующем выпущенном exe/UI-бандле (версия выше 0.2.11); сейчас релиз не делался. Клиенты 0.2.11 поле `signature` игнорируют.
+- Пока strict выключен, атакующий с доступом к хостингу манифеста может просто убрать подпись — защита станет полной только после включения strict.
+- S4 (подпись самого exe/Authenticode), S5–S7, S8 — по-прежнему не закрыты.
+
+Проверки: typecheck 0 ошибок; `npm test` 25/25; сборка (icon, courses, vite, electron-builder portable во временную папку, затем удалена) успешна, новые модули присутствуют в app.asar; побочный `bundle-manifest.json` откачен.
