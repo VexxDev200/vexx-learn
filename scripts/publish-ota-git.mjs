@@ -5,6 +5,7 @@ import { readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { spawnSync } from "child_process";
+import { OTA_COMMIT_PATHS } from "./ship-preflight.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -34,16 +35,9 @@ if (branch !== "main") {
   process.exit(1);
 }
 
-run("git", [
-  "add",
-  "release/updates/",
-  "src/content/data/",
-  "package.json",
-  "electron/",
-  "src/App.tsx",
-  "scripts/publish-ota-git.mjs",
-  "scripts/ship.mjs",
-]);
+// Only the release artefacts + the version bump a human made. Code (electron/, src/, scripts/) is never added here:
+// ship-preflight refuses to start if it has uncommitted changes.
+run("git", ["add", ...OTA_COMMIT_PATHS]);
 
 const staged = spawnSync("git", ["diff", "--cached", "--quiet"], {
   cwd: ROOT,

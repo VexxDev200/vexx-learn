@@ -1,11 +1,12 @@
 /**
- * One-shot release (steps and their ORDER are in ship-plan.mjs): bump version, build exe, pack+sign OTA, verify,
+ * One-shot release (steps and their ORDER are in ship-plan.mjs). The VERSION is set by a human in package.json (ship never
+ * bumps it). Pre-flight first (main, clean tree, version not released yet), then: build exe, pack+sign OTA, verify,
  * create a DRAFT Release, upload the SAME exe to it, push the manifest to main, and publish the draft last.
  * Old portable users: restart app → курсы + UI OTA; если exe старый — скачает новый portable с GitHub Release.
  *
  * Usage: npm run ship   (from vexx-learn folder, gh auth + git push access required)
  */
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { spawnSync } from "child_process";
@@ -23,24 +24,10 @@ function exec(cmd, args) {
   return r.status ?? 1;
 }
 
-function bumpPatchVersion() {
-  const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
-  const parts = String(pkg.version || "0.0.0")
-    .split(".")
-    .map((x) => parseInt(x, 10) || 0);
-  while (parts.length < 3) parts.push(0);
-  parts[2] += 1;
-  pkg.version = parts.join(".");
-  writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n", "utf8");
-  console.log("App version (OTA + exe):", pkg.version);
-  return pkg.version;
-}
-
 console.log("=== Vexx Learn ship ===\n");
 
-bumpPatchVersion();
-
 const version = JSON.parse(readFileSync(pkgPath, "utf8")).version;
+console.log("App version (from package.json, not bumped):", version);
 const result = runPlan(shipSteps(), exec, { log: console.log, tag: `v${version}` });
 if (!result.ok) {
   console.error(`\nship FAILED at step "${result.failed}" (exit ${result.code}).`);

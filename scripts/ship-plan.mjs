@@ -3,7 +3,7 @@
  * and the failure behaviour are testable without running git/gh/npm.
  *
  * Draft-release flow (Architect's decision):
- *   build exe -> pack + sign (portableSha256 from that exe, before signing) -> verify
+ *   pre-flight (main, clean tree, version free; a draft of this version is reused) -> build exe -> pack + sign (portableSha256 from that exe, before signing) -> verify
  *   -> create a DRAFT Release without a tag -> upload the exe to the draft
  *   -> push the signed manifest to main
  *   -> publish: verify origin/main holds exactly the local signed manifest, publish the draft with --target main
@@ -16,6 +16,12 @@ export const MANIFEST_REL = "release/updates/manifest.json";
 
 export function shipSteps() {
   return [
+    {
+      id: "preflight",
+      label: "Pre-flight: on main, clean tree (only OTA files may be dirty), version not released yet",
+      cmd: "node",
+      args: ["scripts/gh-release.mjs", "preflight"],
+    },
     { id: "build", label: "Build portable exe (courses + UI + electron-builder)", cmd: "npm", args: ["run", "build"] },
     {
       id: "pack",
@@ -44,6 +50,7 @@ export function shipSteps() {
 /** Plain-language state after a failure at step `id` (nothing is public until the last step succeeds). */
 export function failureAdvice(id, tag = "vX.Y.Z") {
   switch (id) {
+    case "preflight":
     case "build":
     case "pack":
     case "verify":

@@ -7,9 +7,11 @@ const ids = (steps) => steps.map((s) => s.id);
 const idx = (steps, id) => steps.findIndex((s) => s.id === id);
 const script = (s) => s.args.find((a) => /\.mjs$/.test(a));
 
-test("ship plan (draft flow): build, pack --sign, verify, draft, upload, push, publish - publishing the draft is LAST", () => {
+test("ship plan (draft flow): preflight, build, pack --sign, verify, draft, upload, push, publish - publishing the draft is LAST", () => {
   const steps = shipSteps();
-  assert.deepEqual(ids(steps), ["build", "pack", "verify", "draft", "upload", "push", "publish"]);
+  assert.deepEqual(ids(steps), ["preflight", "build", "pack", "verify", "draft", "upload", "push", "publish"]);
+  assert.equal(steps[0].id, "preflight", "refusals happen before any action");
+  assert.deepEqual(steps[0].args.slice(-1), ["preflight"]);
   assert.equal(steps.at(-1).id, "publish");
   assert.match(script(steps[idx(steps, "publish")]), /gh-release\.mjs$/);
   assert.deepEqual(steps[idx(steps, "publish")].args.slice(-1), ["publish"]);
@@ -65,7 +67,7 @@ test("failure messages say plainly that the draft stays unpublished once it exis
   }
   assert.match(failureAdvice("push", "v1.2.3"), /gh-release\.mjs publish/);
   assert.match(failureAdvice("publish", "v1.2.3"), /UNPUBLISHED/);
-  for (const id of ["build", "pack", "verify"]) assert.match(failureAdvice(id), /Nothing was created or published/);
+  for (const id of ["preflight", "build", "pack", "verify"]) assert.match(failureAdvice(id), /Nothing was created or published/);
 });
 
 test("ship.mjs executes the plan and has no hard-coded step order of its own", () => {
