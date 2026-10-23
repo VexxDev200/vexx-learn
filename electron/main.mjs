@@ -101,7 +101,8 @@ function createWindow() {
       preload: preloadPath,
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: false,
+      // Round 2 / S5.4: OS-level renderer sandbox. preload.cjs only needs require("electron") (contextBridge/ipcRenderer).
+      sandbox: true,
     },
   });
 

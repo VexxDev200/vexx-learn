@@ -17,7 +17,8 @@ export async function loadMain() {
   const windows = [];
 
   class BrowserWindow {
-    constructor() {
+    constructor(options) {
+      this.options = options;
       this.webContents = { on() {}, send() {} };
       windows.push(this);
     }
