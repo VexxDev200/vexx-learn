@@ -1,5 +1,6 @@
 /**
- * One-shot release: bump app version → portable exe → OTA bundle → git push → GitHub Release.
+ * One-shot release (steps and their ORDER are in ship-plan.mjs): bump version, build exe, pack+sign OTA, verify,
+ * upload the SAME exe to the GitHub Release, and only then push the manifest to main.
  * Old portable users: restart app → курсы + UI OTA; если exe старый — скачает новый portable с GitHub Release.
  *
  * Usage: npm run ship   (from vexx-learn folder, gh auth + git push access required)
@@ -8,6 +9,7 @@ import { readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { spawnSync } from "child_process";
+import { shipSteps } from "./ship-plan.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkgPath = join(ROOT, "package.json");
@@ -38,17 +40,11 @@ console.log("=== Vexx Learn ship ===\n");
 
 bumpPatchVersion();
 
-console.log("\n[1/4] Build portable exe (courses + UI + electron-builder)…");
-run("npm", ["run", "build"]);
-
-console.log("\n[2/4] Pack OTA (manifest + course JSON + app-ui.zip)…");
-run("node", ["scripts/pack-updates.mjs", "--sign"]); // signs with the local private key; needs the exe built in step 1
-
-console.log("\n[3/4] Push OTA to GitHub (main)…");
-run("node", ["scripts/publish-ota-git.mjs"]);
-
-console.log("\n[4/4] Upload exe to GitHub Release…");
-run("node", ["scripts/gh-release.mjs"]);
+const steps = shipSteps();
+steps.forEach((s, i) => {
+  console.log(`\n[${i + 1}/${steps.length}] ${s.label}.`);
+  run(s.cmd, s.args);
+});
 
 const manifest = JSON.parse(
   readFileSync(join(ROOT, "release", "updates", "manifest.json"), "utf8")
