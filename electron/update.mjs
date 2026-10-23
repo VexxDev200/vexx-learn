@@ -429,15 +429,31 @@ export function clearPendingAppUpdate(userData) {
   try { rmSync(join(userData, "pending-app-update.json"), { force: true }); } catch { /* ignore */ }
 }
 
-/** Pending exe info, or null if the file is gone or no longer matches the recorded sha256 (then it is deleted). */
-export async function verifyPendingAppUpdate(userData, { useCache = true } = {}) {
+/**
+ * Pending exe info, or null if the file is gone or no longer matches the recorded sha256 (then it is deleted).
+ * A record WITHOUT sha256 (legal only on the unsigned/legacy path, sha256: null):
+ *   - requireHash=false (REQUIRE_SIGNED_MANIFEST=false, the 0.2.12 default): kept, with a warning;
+ *   - requireHash=true  (strict mode): never launched - the file is deleted and the pending record cleared.
+ * requireHash is injectable so both modes are testable without touching the constant.
+ */
+export async function verifyPendingAppUpdate(userData, { useCache = true, requireHash = REQUIRE_SIGNED_MANIFEST } = {}) {
   const pending = loadPendingAppUpdate(userData);
   if (!pending) return null;
   if (!pending.path || !existsSync(pending.path)) {
     clearPendingAppUpdate(userData);
     return null;
   }
-  if (pending.sha256 && (await sha256File(pending.path, { useCache })) !== String(pending.sha256).toLowerCase()) {
+  if (!pending.sha256) {
+    if (requireHash) {
+      console.warn("[vexx-learn] pending exe has no sha256 and signed manifests are required - deleted");
+      try { rmSync(pending.path, { force: true }); } catch { /* ignore */ }
+      clearPendingAppUpdate(userData);
+      return null;
+    }
+    console.warn("[vexx-learn] pending exe has no sha256 (unsigned update path): it cannot be verified before launch");
+    return pending;
+  }
+  if ((await sha256File(pending.path, { useCache })) !== String(pending.sha256).toLowerCase()) {
     console.warn("[vexx-learn] pending exe no longer matches its recorded sha256 - deleted");
     try { rmSync(pending.path, { force: true }); } catch { /* ignore */ }
     clearPendingAppUpdate(userData);
@@ -450,10 +466,10 @@ export async function verifyPendingAppUpdate(userData, { useCache = true } = {})
  * Gate for shell:open-path. Anything inside <userData>/pending-updates may only be opened if it is exactly the
  * recorded pending exe AND (when a sha256 was recorded) still hashes to it right now.
  */
-export async function canOpenPath(userData, filePath) {
+export async function canOpenPath(userData, filePath, { requireHash = REQUIRE_SIGNED_MANIFEST } = {}) {
   if (!isPathInsideRoots(filePath, [pendingUpdatesDir(userData)])) return { ok: true };
   // NO cache here: the exe is re-hashed (streamed, async) right before it is launched.
-  const pending = await verifyPendingAppUpdate(userData, { useCache: false });
+  const pending = await verifyPendingAppUpdate(userData, { useCache: false, requireHash });
   if (!pending) return { ok: false, reason: "no verified pending update (file missing or checksum mismatch)" };
   if (resolve(pending.path).toLowerCase() !== resolve(String(filePath)).toLowerCase()) {
     return { ok: false, reason: "not the recorded pending update file" };
