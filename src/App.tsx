@@ -76,7 +76,7 @@ export function App() {
   const [checkingUpdates, setCheckingUpdates] = useState(false);
   const [updateBanner, setUpdateBanner] = useState<string | null>(null);
   const [uiOtaSupported, setUiOtaSupported] = useState(true);
-  const tracks = useMemo(() => buildTracks(registry, lang), [registry, lang]);
+  const tracks = useMemo<Record<string, Lesson[]>>(() => buildTracks(registry, lang), [registry, lang]);
   const [track, setTrack] = useState("python");
   const [lessonId, setLessonId] = useState<string | null>("py-01");
   const [code, setCode] = useState("");

@@ -4,6 +4,9 @@ export type Lang = "ru" | "en" | "he";
 
 export type L = Record<Lang, string>;
 
+/** Lesson check in course data: hint may be a plain string or a localized {ru,en,he} block. */
+export type LessonDefCheck = Omit<LessonCheck, "hint"> & { hint?: string | L };
+
 export type LessonDef = {
   id: string;
   track: "python" | "java" | "cpp" | "csharp" | "security";
@@ -15,6 +18,6 @@ export type LessonDef = {
   exampleExplain: L;
   task: L;
   starterCode: string;
-  checks: LessonCheck[];
+  checks: LessonDefCheck[];
   editorLang?: "python" | "java" | "cpp" | "csharp";
 };

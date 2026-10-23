@@ -7,7 +7,6 @@ import { Logo } from "./Logo";
 type UpdateInfo = {
   coursesVersion: number;
   appVersion: string;
-  remoteAppVersion: string | null;
   appUpdateUrl: string | null;
   effectiveAppVersion?: string;
   remoteAppVersion?: string | null;

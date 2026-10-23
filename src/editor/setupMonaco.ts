@@ -251,7 +251,7 @@ export function setupMonaco(monaco: Monaco): void {
 
     monaco.languages.registerCompletionItemProvider(lang, {
       triggerCharacters: [".", "(", "<", '"', " ", ":"],
-      provideCompletionItems(model, position) {
+      provideCompletionItems(model: editor.ITextModel, position: Position) {
         const range = wordRange(model, position);
         const prefix = linePrefix(model, position);
         const suggestions = defsToSuggestions(monaco, defs, range, prefix);
@@ -261,7 +261,7 @@ export function setupMonaco(monaco: Monaco): void {
 
     const hoverMap = HOVER[lang] ?? {};
     monaco.languages.registerHoverProvider(lang, {
-      provideHover(model, position) {
+      provideHover(model: editor.ITextModel, position: Position) {
         const word = model.getWordAtPosition(position);
         if (!word) return null;
         let key = word.word;
@@ -334,7 +334,8 @@ export const VEXX_EDITOR_OPTIONS: editor.IStandaloneEditorConstructionOptions = 
   },
   inlineSuggest: { enabled: false },
   parameterHints: { enabled: true },
-  hover: { enabled: true, delay: 250 },
+  // monaco loaded at runtime (CDN, @monaco-editor/react) takes a boolean; installed typings expect a string union
+  hover: { enabled: true, delay: 250 } as unknown as editor.IEditorHoverOptions,
   formatOnType: false,
   links: true,
   colorDecorators: true,
