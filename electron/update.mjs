@@ -16,6 +16,7 @@ import {
   isGitHubConfigured,
   loadUpdateConfig,
 } from "./update-config.mjs";
+import { isAllowedUpdateBaseUrl } from "./security-policy.mjs";
 
 function normalizeBase(url) {
   if (!url || typeof url !== "string") return "";
@@ -56,6 +57,10 @@ function resolveCoursesBase(settings, appRoot) {
   const gh = githubCoursesBaseUrl(cfg);
   const custom = normalizeBase(settings.updateBaseUrl);
   if (!custom) return gh;
+  if (!isIncompleteGithubRawUrl(custom) && !isAllowedUpdateBaseUrl(custom, cfg)) {
+    console.warn("[vexx-learn] updateBaseUrl rejected (https + GitHub host required); using default");
+    return gh;
+  }
   if (isIncompleteGithubRawUrl(custom)) {
     console.warn(
       "[vexx-learn] updateBaseUrl is repo root only; using",

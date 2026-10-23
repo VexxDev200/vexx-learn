@@ -17,6 +17,7 @@ import {
   startInteractiveRun,
   writeInteractiveStdin,
 } from "./interactiveRun.mjs";
+import { sanitizeSettingsPatch } from "./security-policy.mjs";
 import { spawn } from "child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
@@ -495,7 +496,12 @@ app.whenReady().then(() => {
   ipcMain.handle("settings:get", () => loadSettings(app.getPath("userData")));
   ipcMain.handle("settings:set", (_, patch) => {
     const userData = app.getPath("userData");
-    const next = { ...loadSettings(userData), ...patch };
+    const cfg = loadUpdateConfig(appRoot());
+    const { patch: safePatch, rejected } = sanitizeSettingsPatch(patch, cfg);
+    if (rejected.length) {
+      console.warn("[vexx-learn] settings:set rejected keys:", rejected.join(", "));
+    }
+    const next = { ...loadSettings(userData), ...safePatch };
     if (
       typeof next.updateBaseUrl === "string" &&
       isIncompleteGithubRawUrl(next.updateBaseUrl.trim())
