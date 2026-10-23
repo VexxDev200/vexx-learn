@@ -28,6 +28,14 @@ export function toRuntimeLesson(def: LessonDef, lang: Lang): Lesson {
           : undefined,
       };
     }),
-    editorLang: def.editorLang ?? (def.track === "java" ? "java" : "python"),
+    editorLang:
+      def.editorLang ??
+      (def.track === "java"
+        ? "java"
+        : def.track === "cpp"
+          ? "cpp"
+          : def.track === "csharp"
+            ? "csharp"
+            : "python"),
   };
 }

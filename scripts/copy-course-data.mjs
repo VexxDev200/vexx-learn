@@ -7,7 +7,14 @@ const SRC = join(ROOT, "src", "content", "data");
 const DST = join(ROOT, "dist", "content", "data");
 
 mkdirSync(DST, { recursive: true });
-for (const f of ["python.json", "java.json", "cpp.json", "csharp.json", "bundle-manifest.json"]) {
+for (const f of [
+  "python.json",
+  "java.json",
+  "cpp.json",
+  "csharp.json",
+  "security.json",
+  "bundle-manifest.json",
+]) {
   const s = join(SRC, f);
   if (existsSync(s)) copyFileSync(s, join(DST, f));
 }

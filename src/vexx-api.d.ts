@@ -62,7 +62,7 @@ export type VexxLearnApi = {
   setSettings: (patch: Partial<VexxSettings>) => Promise<VexxSettings>;
   getAppVersion: () => Promise<string>;
   checkUpdates: () => Promise<UpdateResult>;
-  getPendingAppUpdate: () => Promise<{ version: string; url: string } | null>;
+  getPendingAppUpdate: () => Promise<{ version: string; url: string; path?: string } | null>;
   onUpdateResult: (cb: (r: UpdateResult) => void) => () => void;
   getUpdateCapabilities: () => Promise<{ uiOta: boolean }>;
   getUpdateSource: () => Promise<{
@@ -80,6 +80,13 @@ export type VexxLearnApi = {
   checkCpp: (code: string, checks: LessonCheck[]) => Promise<CheckResult>;
   runCsharp: (code: string) => Promise<RunResult>;
   checkCsharp: (code: string, checks: LessonCheck[]) => Promise<CheckResult>;
+  runInteractive: (
+    lang: string,
+    code: string
+  ) => Promise<{ ok: boolean; error?: string; sessionId?: number }>;
+  sendRunStdin: (text: string) => void;
+  stopRun: () => void;
+  onRunEvent: (cb: (ev: RunStreamEvent) => void) => () => void;
   openExternal: (url: string) => Promise<void>;
   openPath: (filePath: string) => Promise<string>;
   getPendingAppUpdate: () => Promise<{
@@ -88,6 +95,12 @@ export type VexxLearnApi = {
     localPath?: string;
   } | null>;
 };
+
+export type RunStreamEvent =
+  | { type: "started"; sessionId?: number }
+  | { type: "stdout"; data: string; sessionId?: number }
+  | { type: "stderr"; data: string; sessionId?: number }
+  | { type: "done"; ok: boolean; exitCode: number; aborted?: boolean; sessionId?: number };
 
 export type RunResult = {
   ok: boolean;

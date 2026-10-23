@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type { Lang } from "../content/types";
 import { tUi } from "../i18n/ui";
 import type { AccentId, AppTheme, VexxSettings } from "../settings/types";
@@ -38,6 +39,16 @@ export function SettingsModal({
   onChange,
   onSave,
 }: Props) {
+  const [pendingExe, setPendingExe] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    void window.vexxLearn?.getPendingAppUpdate?.().then((p) => {
+      const path = p && typeof p === "object" && "path" in p ? String((p as { path?: string }).path || "") : "";
+      setPendingExe(path || null);
+    });
+  }, [open, updateInfo?.message, updateInfo?.appVersion]);
+
   if (!open) return null;
 
   return (
@@ -134,6 +145,16 @@ export function SettingsModal({
                 : ""}
             </p>
           )}
+          {pendingExe ? (
+            <button
+              type="button"
+              className="btn primary"
+              style={{ marginTop: 8 }}
+              onClick={() => void window.vexxLearn?.openPath?.(pendingExe)}
+            >
+              {tUi(lang, "openDownloadedApp")}
+            </button>
+          ) : null}
         </section>
 
         <footer className="settings-footer">

@@ -20,7 +20,7 @@ const cfg = loadUpdateConfig(ROOT);
 
 mkdirSync(OUT, { recursive: true });
 
-const tracks = ["python", "java", "cpp", "csharp"];
+const tracks = ["python", "java", "cpp", "csharp", "security"];
 const files = {};
 const sha256 = {};
 
@@ -54,10 +54,19 @@ if (existsSync(join(distDir, "index.html"))) {
   console.warn("dist/ missing — skip app-ui.zip (npm run build:ui)");
 }
 
+const portablePath = join(ROOT, "release", "Vexx-Learn-Portable.exe");
+let portableSha256 = null;
+if (existsSync(portablePath)) {
+  portableSha256 = createHash("sha256").update(readFileSync(portablePath)).digest("hex");
+  console.log("Portable sha256:", portableSha256.slice(0, 12) + "…");
+}
+
 const manifest = {
   coursesVersion: bundle.coursesVersion,
   appVersion: pkg.version,
   uiBundle: uiSha256 ? uiZipName : null,
+  portableAssetName: cfg.portableAssetName || "Vexx-Learn-Portable.exe",
+  portableSha256,
   updateSource: "github",
   githubRepo: isGitHubConfigured(cfg) ? `${cfg.githubOwner}/${cfg.githubRepo}` : null,
   coursesBaseUrl: githubCoursesBaseUrl(cfg),

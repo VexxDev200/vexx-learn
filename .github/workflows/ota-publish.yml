@@ -1,15 +1,59 @@
-# When release/updates is pushed to main, nothing else — clients poll manifest every 3 min.
-name: OTA manifest on main
+# On main: rebuild courses + UI bundle, commit release/updates for raw.githubusercontent OTA.
+# Portable clients poll manifest every 3 minutes (see electron/main.mjs).
+name: Publish OTA course updates
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - "release/updates/**"
+      - "scripts/**"
+      - "src/**"
+      - "lessons/**"
+      - "electron/**"
+      - "public/**"
+      - "update.config.json"
       - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/ota-publish.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ota-publish-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  noop:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "OTA files on main — Vexx Learn clients auto-download within 3 minutes."
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build courses, UI, and OTA folder
+        run: npm run release:pack
+
+      - name: Commit and push release/updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add release/updates/
+          if git diff --staged --quiet; then
+            echo "OTA bundle unchanged — nothing to push"
+            exit 0
+          fi
+          VER=$(node -p "JSON.parse(require('fs').readFileSync('release/updates/manifest.json','utf8')).coursesVersion")
+          git commit -m "chore(ota): publish courses v${VER}"
+          git push

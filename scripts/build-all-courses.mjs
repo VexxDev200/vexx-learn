@@ -1,9 +1,11 @@
 /**
  * Generates src/content/data/*.json — run: node scripts/build-all-courses.mjs
  */
-import { mkdirSync, writeFileSync } from "fs";
+import { createHash } from "crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
+import { buildSecurityTrack } from "./security-track.mjs";
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "content", "data");
 mkdirSync(OUT, { recursive: true });
@@ -86,9 +88,9 @@ function ethics(id, track, editorLang, starter, expected) {
     editorLang,
     title: H("Безопасность и этика", "Security & ethics", "אבטחה ואתיקה"),
     theory: theory(
-      "Программирование даёт силу менять системы. **Вредоносное ПО** (вирусы, RAT, стилеры, шифровальщики) создаёт и распространять **незаконно** — это вред людям и карьере.\n\n**Легальные направления:** защита (blue team), анализ уязвимостей **с письменным разрешением**, open-source, игры, автоматизация, обучение.\n\n**Гигиена:** уникальные пароли + менеджер паролей, 2FA, обновления ОС, не запускать `.exe` из чатов, бэкапы. В Vexx Learn ты учишься **строить** и **защищать**, не ломать чужие машины.",
-      "Coding is power. **Malware** (RATs, stealers, ransomware) is **illegal** and harms people.\n\n**Legal paths:** defense, pentesting **with written permission**, apps, games, automation.\n\n**Hygiene:** password manager, 2FA, updates, suspicious attachments, backups. Here you **learn**, **build**, **protect**.",
-      "קוד נותן כוח. תוכנות זדוניות בלתי חוקיות.\n\nמסלולים חוקיים: הגנה, בדיקות חדירות **באישור**, פיתוח.\n\nהיגיינה: סיסמאות, 2FA, עדכונים, גיבויים."
+      "Программирование даёт силу менять системы. **Вредоносное ПО** (вирусы, RAT, стилеры, шифровальщики) создавать и распространять **незаконно** — уголовная и репутационная ответственность.\n\n**DDoS** — атака на доступность: флуды трафиком, ботнеты, вымогательство «заплати или положим сайт». Защита: CDN, rate limit, WAF, мониторинг, план реагирования. **Нагрузочный тест чужих сервисов без договора = преступление.**\n\n**Легальные карьеры:** blue team, SOC, GRC, разработка, игры, DevSecOps, пентест **только с письменным scope**.\n\n**Гигиена:** менеджер паролей, 2FA, обновления, не запускать файлы из чатов, бэкапы 3-2-1. В Vexx Learn блок **19–28** — защита кода: валидация, хеши, лимиты, логи. Девиз: **learn · build · protect**.",
+      "Coding is power. **Malware** and **unauthorized DDoS** are illegal.\n\n**DDoS** targets availability; defend with CDN, rate limits, WAF, observability. Load-test **only** systems you own or are contracted to test.\n\n**Careers:** defense, SOC, DevSecOps, pentest with written permission.\n\n**Hygiene:** password manager, 2FA, patches, backups. Lessons **19–28** teach defensive coding. Motto: **learn · build · protect**.",
+      "כוח בקוד. תוכנות זדוניות ו-DDoS בלי אישור — בלתי חוקי.\n\nהגנה: CDN, rate limit, WAF. קריירות: blue team, SOC.\n\nשיעורים 19–28: קוד הגנתי. learn · build · protect."
     ),
     exampleCode: starter,
     exampleExplain: H("Три строки — девиз курса.", "Three lines — course motto.", "שלוש שורות."),
@@ -910,26 +912,71 @@ const csharp = [
   ),
 ];
 
+const security = buildSecurityTrack(lesson, project, ethics, exam, H);
+
 writeFileSync(join(OUT, "python.json"), JSON.stringify(python, null, 2));
 writeFileSync(join(OUT, "java.json"), JSON.stringify(java, null, 2));
 writeFileSync(join(OUT, "cpp.json"), JSON.stringify(cpp, null, 2));
 writeFileSync(join(OUT, "csharp.json"), JSON.stringify(csharp, null, 2));
+writeFileSync(join(OUT, "security.json"), JSON.stringify(security, null, 2));
 
-const coursesVersion = Number(
+const trackFiles = ["python", "java", "cpp", "csharp", "security"];
+const contentFingerprint = createHash("sha256");
+for (const t of trackFiles) {
+  contentFingerprint.update(readFileSync(join(OUT, `${t}.json`)));
+}
+const fingerprint = contentFingerprint.digest("hex");
+
+const manifestPath = join(OUT, "bundle-manifest.json");
+let prevVersion = 0;
+let prevFingerprint = "";
+if (existsSync(manifestPath)) {
+  try {
+    const old = JSON.parse(readFileSync(manifestPath, "utf8"));
+    prevVersion = Number(old.coursesVersion) || 0;
+    prevFingerprint = old.contentFingerprint || "";
+  } catch {
+    /* */
+  }
+}
+
+const lessonTotal =
+  python.length + java.length + cpp.length + csharp.length + security.length;
+const dateFloor = Number(
   `${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, "0")}${String(
     new Date().getDate()
-  ).padStart(2, "0")}${String(python.length + java.length).padStart(3, "0")}`
+  ).padStart(2, "0")}${String(lessonTotal).padStart(3, "0")}`
 );
+
+const coursesVersion =
+  fingerprint === prevFingerprint && prevVersion > 0
+    ? prevVersion
+    : Math.max(prevVersion + 1, dateFloor);
+
 writeFileSync(
   join(OUT, "bundle-manifest.json"),
   JSON.stringify(
     {
       coursesVersion,
+      contentFingerprint: fingerprint,
       generatedAt: new Date().toISOString(),
-      counts: { python: python.length, java: java.length, cpp: cpp.length, csharp: csharp.length },
+      counts: {
+        python: python.length,
+        java: java.length,
+        cpp: cpp.length,
+        csharp: csharp.length,
+        security: security.length,
+      },
     },
     null,
     2
   )
 );
-console.log("OK", { python: python.length, java: java.length, cpp: cpp.length, csharp: csharp.length, coursesVersion });
+console.log("OK", {
+  python: python.length,
+  java: java.length,
+  cpp: cpp.length,
+  csharp: csharp.length,
+  security: security.length,
+  coursesVersion,
+});

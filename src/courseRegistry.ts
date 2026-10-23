@@ -1,6 +1,7 @@
 import cppData from "./content/data/cpp.json";
 import csharpData from "./content/data/csharp.json";
 import javaData from "./content/data/java.json";
+import securityData from "./content/data/security.json";
 import pythonData from "./content/data/python.json";
 import type { Lang, LessonDef } from "./content/types";
 import { toRuntimeLesson } from "./i18n/resolve";
@@ -10,6 +11,7 @@ export type CourseRegistry = {
   java: LessonDef[];
   cpp: LessonDef[];
   csharp: LessonDef[];
+  security: LessonDef[];
 };
 
 export function bundledRegistry(): CourseRegistry {
@@ -18,6 +20,7 @@ export function bundledRegistry(): CourseRegistry {
     java: javaData as LessonDef[],
     cpp: cppData as LessonDef[],
     csharp: csharpData as LessonDef[],
+    security: securityData as LessonDef[],
   };
 }
 
@@ -28,6 +31,7 @@ export function registryFromApiCourses(courses: Record<string, LessonDef[]>): Co
     java: courses.java?.length ? courses.java : b.java,
     cpp: courses.cpp?.length ? courses.cpp : b.cpp,
     csharp: courses.csharp?.length ? courses.csharp : b.csharp,
+    security: courses.security?.length ? courses.security : b.security,
   };
 }
 
@@ -38,6 +42,7 @@ export function buildTracks(registry: CourseRegistry, lang: Lang) {
     java: map(registry.java),
     cpp: map(registry.cpp),
     csharp: map(registry.csharp),
+    security: map(registry.security),
   };
 }
 
@@ -46,5 +51,6 @@ export function defsForTrack(registry: CourseRegistry, track: string): LessonDef
   if (track === "java") return registry.java;
   if (track === "cpp") return registry.cpp;
   if (track === "csharp") return registry.csharp;
+  if (track === "security") return registry.security;
   return [];
 }
