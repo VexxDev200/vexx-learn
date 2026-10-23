@@ -7,8 +7,17 @@
 ## Требования
 
 - Windows 11 (у тебя)
-- [Node.js](https://nodejs.org/) 20+
+- [Node.js](https://nodejs.org/) **22+**
 - [Python 3](https://www.python.org/downloads/) с галочкой **Add to PATH**
+
+## Проверки (typecheck и тесты)
+
+```bash
+npm run typecheck
+npm test
+```
+
+`npm test` использует встроенный `node:test` и `--experimental-test-module-mocks`, поэтому нужен **Node.js 22 или новее** (в `package.json` задано `engines.node >= 22`).
 
 ## Запуск (разработка)
 

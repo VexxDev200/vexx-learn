@@ -4,6 +4,9 @@
   "private": true,
   "description": "Vexx Learn — лаунчер обучения кодингу (Python, Java, C++, C#)",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "main": "electron/main.mjs",
   "scripts": {
     "courses": "node scripts/build-all-courses.mjs && node scripts/verify-security-lessons.mjs",
