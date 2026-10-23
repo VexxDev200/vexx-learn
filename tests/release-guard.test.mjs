@@ -96,7 +96,7 @@ test("gh-release.mjs: refuses (exit 1, 'REFUSING') BEFORE any gh call on unsigne
   mkdirSync(join(root, "scripts"));
   mkdirSync(join(root, "electron"));
   mkdirSync(join(root, "release", "updates"), { recursive: true });
-  for (const f of ["gh-release.mjs", "release-guard.mjs"]) cpSync(join("scripts", f), join(root, "scripts", f));
+  for (const f of ["gh-release.mjs", "release-guard.mjs", "release-flow.mjs"]) cpSync(join("scripts", f), join(root, "scripts", f));
   cpSync("electron/manifest-verify.mjs", join(root, "electron", "manifest-verify.mjs"));
   writeFileSync(join(root, "electron", "ota-public-key.mjs"), `export const OTA_PUBLIC_KEY_PEM = ${JSON.stringify(K.pub)};\nexport const REQUIRE_SIGNED_MANIFEST = false;\n`);
   writeFileSync(join(root, "package.json"), JSON.stringify({ name: "x", version: "9.9.9", type: "module" }));
@@ -105,7 +105,7 @@ test("gh-release.mjs: refuses (exit 1, 'REFUSING') BEFORE any gh call on unsigne
   mkdirSync(empty);
   const env = Object.fromEntries(Object.entries(process.env).filter(([k]) => !/^path$/i.test(k)));
   env.PATH = empty; // no `gh` can be found, so nothing can ever be published from a test
-  const run = () => spawnSync(process.execPath, ["scripts/gh-release.mjs"], { cwd: root, encoding: "utf8", env });
+  const run = (mode = "draft") => spawnSync(process.execPath, ["scripts/gh-release.mjs", mode], { cwd: root, encoding: "utf8", env });
   const put = (manifest, exe) => {
     writeFileSync(join(root, "release", "updates", "manifest.json"), JSON.stringify(manifest));
     writeFileSync(join(root, "release", "Vexx-Learn-Portable.exe"), exe);
@@ -122,6 +122,13 @@ test("gh-release.mjs: refuses (exit 1, 'REFUSING') BEFORE any gh call on unsigne
   r = run();
   assert.equal(r.status, 1);
   assert.match(r.stderr, /REFUSING to publish/);
+
+  for (const mode of ["upload", "publish"]) {
+    r = run(mode); // every mode is guarded
+    assert.equal(r.status, 1);
+  }
+  assert.equal(run("nonsense").status, 2, "unknown mode -> usage error");
+  assert.equal(spawnSync(process.execPath, ["scripts/gh-release.mjs"], { cwd: root, encoding: "utf8", env }).status, 2, "no mode -> usage error");
 
   put(signManifest(base, K.priv), EXE); // all matches: guard passes, then gh (absent) fails -> still exit 1 but not a refusal
   r = run();
