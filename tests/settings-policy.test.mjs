@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { isAllowedUpdateBaseUrl, sanitizeSettingsPatch } from "../electron/security-policy.mjs";
+import { UPDATE_HOST_ALLOWLIST, isAllowedUpdateBaseUrl, sanitizeSettingsPatch } from "../electron/security-policy.mjs";
 import { loadMain } from "./helpers/loadMain.mjs";
 
 const CFG = { githubOwner: "acme", githubRepo: "learn" };
@@ -10,7 +10,7 @@ test("updateBaseUrl: accepts empty and allowlisted https URLs", () => {
   assert.equal(isAllowedUpdateBaseUrl("", CFG), true);
   assert.equal(isAllowedUpdateBaseUrl(GOOD, CFG), true);
   assert.equal(isAllowedUpdateBaseUrl("https://github.com/acme/learn/releases/download/v1", CFG), true);
-  assert.equal(isAllowedUpdateBaseUrl("https://objects.githubusercontent.com/x/y", CFG), true);
+  assert.equal(isAllowedUpdateBaseUrl("https://github.com/ACME/Learn/raw/main/release/updates", CFG), true);
 });
 
 test("updateBaseUrl: rejects http, file, javascript, data, unknown hosts", () => {
@@ -35,10 +35,21 @@ test("updateBaseUrl: rejects http, file, javascript, data, unknown hosts", () =>
   }
 });
 
-test("updateBaseUrl: raw.githubusercontent.com must stay inside the configured owner/repo", () => {
-  assert.equal(isAllowedUpdateBaseUrl("https://raw.githubusercontent.com/attacker/learn/main/x", CFG), false);
-  assert.equal(isAllowedUpdateBaseUrl("https://raw.githubusercontent.com/acme/other/main/x", CFG), false);
-  assert.equal(isAllowedUpdateBaseUrl("https://raw.githubusercontent.com/acme/learn-evil/main/x", CFG), false);
+test("updateBaseUrl: EVERY allowlisted host must stay inside the configured owner/repo", () => {
+  for (const host of UPDATE_HOST_ALLOWLIST) {
+    for (const path of ["/attacker/learn/main/x", "/acme/other/main/x", "/acme/learn-evil/main/x", "/acme/", "/x/y"]) {
+      assert.equal(isAllowedUpdateBaseUrl(`https://${host}${path}`, CFG), false, host + path);
+    }
+  }
+  // objects.githubusercontent.com asset URLs carry no owner/repo, so they never pass
+  assert.equal(isAllowedUpdateBaseUrl("https://objects.githubusercontent.com/github-production-release-asset-2e65be/123/abc", CFG), false);
+});
+
+test("updateBaseUrl: fails closed when no owner/repo is configured", () => {
+  for (const cfg of [{}, { githubOwner: "", githubRepo: "learn" }, { githubOwner: "YOUR_GITHUB_USERNAME", githubRepo: "learn" }, { githubOwner: "acme", githubRepo: "" }]) {
+    assert.equal(isAllowedUpdateBaseUrl(GOOD, cfg), false);
+    assert.equal(isAllowedUpdateBaseUrl("", cfg), true, "empty (clear) is always fine");
+  }
 });
 
 test("sanitizeSettingsPatch: keeps known keys, drops unknown/invalid ones", () => {
@@ -61,6 +72,7 @@ test("IPC settings:set rejects bad updateBaseUrl and does not persist it", async
       const res = await set({}, { updateBaseUrl: bad, theme: "midnight" });
       assert.equal(res.updateBaseUrl, before, "unchanged for " + bad);
       assert.equal(res.theme, "midnight", "other valid keys still saved");
+      assert.deepEqual(res.settingsErrors, { updateBaseUrl: "rejected" }, "renderer gets an explicit error for " + bad);
       assert.equal((await get({})).updateBaseUrl, before);
     }
     // a URL derived from the app's own configured repo is accepted
@@ -68,6 +80,7 @@ test("IPC settings:set rejects bad updateBaseUrl and does not persist it", async
     if (src.coursesBaseUrl) {
       const res = await set({}, { updateBaseUrl: src.coursesBaseUrl });
       assert.equal(res.updateBaseUrl, src.coursesBaseUrl);
+      assert.equal(res.settingsErrors, undefined, "no error for a valid URL");
     }
   } finally {
     m.restore();

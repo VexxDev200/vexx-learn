@@ -90,6 +90,7 @@ export const UI: Record<
     upd_app_update_available: "Доступна новая версия приложения",
     upd_app_downloaded: "Новая версия скачана — открой в настройках",
     openDownloadedApp: "Открыть скачанный exe",
+    updateUrlRejected: "Адрес обновлений отклонён: нужен https:// на GitHub-хосте (raw.githubusercontent.com, github.com) в репозитории приложения. Значение не сохранено.",
     upd_courses_and_app: "Обновлены уроки и есть новый exe",
     upd_update_failed: "Ошибка обновления",
     upd_no_app_release:
@@ -185,6 +186,7 @@ export const UI: Record<
     upd_app_update_available: "New app version available",
     upd_app_downloaded: "New version downloaded — open from settings",
     openDownloadedApp: "Open downloaded exe",
+    updateUrlRejected: "Update URL rejected: it must be https:// on a GitHub host (raw.githubusercontent.com, github.com) inside the app's repository. The value was not saved.",
     upd_courses_and_app: "Lessons updated; new app available",
     upd_update_failed: "Update failed",
     upd_no_app_release:
@@ -279,6 +281,7 @@ export const UI: Record<
     upd_app_update_available: "גרסה חדשה זמינה",
     upd_app_downloaded: "הגרסה החדשה הורדה — פתח מההגדרות",
     openDownloadedApp: "פתח exe שהורד",
+    updateUrlRejected: "כתובת העדכון נדחתה: נדרש https:// בשרת GitHub (raw.githubusercontent.com, github.com) בתוך המאגר של האפליקציה. הערך לא נשמר.",
     upd_courses_and_app: "שיעורים עודכנו; גרסה חדשה זמינה",
     upd_ui_updated: "הממשק עודכן אוטומטית",
     upd_ui_update_pending: "גרסה חדשה — הפעל מחדש",

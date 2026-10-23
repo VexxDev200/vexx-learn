@@ -71,6 +71,7 @@ export function App() {
   const [registry, setRegistry] = useState<CourseRegistry>(() => bundledRegistry());
   const [settings, setSettings] = useState<VexxSettings>(() => loadSettingsFromStorage());
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsError, setSettingsError] = useState<string | null>(null);
   const [settingsDraft, setSettingsDraft] = useState<VexxSettings>(() => loadSettingsFromStorage());
   const [updateInfo, setUpdateInfo] = useState<UpdateResult | null>(null);
   const [checkingUpdates, setCheckingUpdates] = useState(false);
@@ -411,14 +412,27 @@ export function App() {
 
   const openSettings = () => {
     setSettingsDraft(settings);
+    setSettingsError(null);
     setSettingsOpen(true);
   };
 
   const saveSettingsHandler = async () => {
-    setSettings(settingsDraft);
-    saveSettingsToStorage(settingsDraft);
-    applyVexxTheme(settingsDraft);
-    if (api?.setSettings) await api.setSettings(settingsDraft);
+    setSettingsError(null);
+    let finalSettings = settingsDraft;
+    let rejected = false;
+    if (api?.setSettings) {
+      const res = await api.setSettings(settingsDraft);
+      if (res?.settingsErrors?.updateBaseUrl) {
+        rejected = true;
+        finalSettings = { ...settingsDraft, updateBaseUrl: res.updateBaseUrl ?? "" };
+        setSettingsDraft(finalSettings);
+        setSettingsError(tUi(lang, "updateUrlRejected"));
+      }
+    }
+    setSettings(finalSettings);
+    saveSettingsToStorage(finalSettings);
+    applyVexxTheme(finalSettings);
+    if (rejected) return; // keep the dialog open so the user sees the error
     setSettingsOpen(false);
     if (settingsDraft.autoUpdateCourses || settingsDraft.autoCheckApp) {
       setCheckingUpdates(true);
@@ -463,6 +477,7 @@ export function App() {
         onClose={() => setSettingsOpen(false)}
         onChange={(patch) => setSettingsDraft((s) => ({ ...s, ...patch }))}
         onSave={saveSettingsHandler}
+        saveError={settingsError}
       />
       <aside className="sidebar">
         <div className="brand-row">

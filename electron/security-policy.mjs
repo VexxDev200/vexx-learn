@@ -37,8 +37,11 @@ export function isAllowedExternalUrl(url) {
 
 /**
  * settings:set updateBaseUrl - empty string (= use configured default) or an https URL on an
- * allowlisted GitHub host. For raw.githubusercontent.com, when the app has a configured
- * GitHub owner/repo (code defaults + update config), the path must stay inside that repo.
+ * allowlisted GitHub host whose path stays inside the app's configured GitHub owner/repo
+ * (/<owner>/<repo>/...). The binding applies to EVERY allowlisted host. If no owner/repo is
+ * configured, no custom URL is accepted (fail closed). Note: objects.githubusercontent.com
+ * asset URLs do not carry owner/repo in their path, so they can never pass this check - which
+ * is intended, they are not valid manifest bases anyway.
  */
 export function isAllowedUpdateBaseUrl(url, cfg = {}) {
   if (typeof url !== "string") return false;
@@ -50,12 +53,10 @@ export function isAllowedUpdateBaseUrl(url, cfg = {}) {
   if (!UPDATE_HOST_ALLOWLIST.includes(host)) return false;
   const owner = cfg.githubOwner;
   const repo = cfg.githubRepo;
-  if (host === "raw.githubusercontent.com" && owner && owner !== PLACEHOLDER_OWNER && repo) {
-    const prefix = `/${owner}/${repo}/`.toLowerCase();
-    const path = (u.pathname.endsWith("/") ? u.pathname : u.pathname + "/").toLowerCase();
-    if (!path.startsWith(prefix)) return false;
-  }
-  return true;
+  if (!owner || owner === PLACEHOLDER_OWNER || !repo) return false;
+  const prefix = `/${owner}/${repo}/`.toLowerCase();
+  const path = (u.pathname.endsWith("/") ? u.pathname : u.pathname + "/").toLowerCase();
+  return path.startsWith(prefix);
 }
 
 function realOrNull(p) {

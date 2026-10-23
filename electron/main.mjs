@@ -517,6 +517,10 @@ app.whenReady().then(() => {
       next.updateBaseUrl = "";
     }
     saveSettings(userData, next);
+    if (rejected.includes("updateBaseUrl")) {
+      // tell the renderer explicitly instead of silently ignoring the value
+      return { ...next, settingsErrors: { updateBaseUrl: "rejected" } };
+    }
     return next;
   });
 

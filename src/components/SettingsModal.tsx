@@ -23,6 +23,7 @@ type Props = {
   onClose: () => void;
   onChange: (patch: Partial<VexxSettings>) => void;
   onSave: () => void;
+  saveError?: string | null;
 };
 
 const THEMES: AppTheme[] = ["default", "midnight", "light", "neon"];
@@ -37,6 +38,7 @@ export function SettingsModal({
   onClose,
   onChange,
   onSave,
+  saveError,
 }: Props) {
   const [pendingExe, setPendingExe] = useState<string | null>(null);
 
@@ -157,6 +159,11 @@ export function SettingsModal({
         </section>
 
         <footer className="settings-footer">
+          {saveError ? (
+            <p role="alert" style={{ color: "#ff6b6b", margin: "0 12px 0 0", flex: 1 }}>
+              {saveError}
+            </p>
+          ) : null}
           <button type="button" className="btn primary" onClick={onSave}>
             {tUi(lang, "saveSettings")}
           </button>

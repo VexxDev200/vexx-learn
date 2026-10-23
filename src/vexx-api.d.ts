@@ -59,7 +59,9 @@ export type VexxLearnApi = {
   }>;
   getCourses: () => Promise<CoursesPayload>;
   getSettings: () => Promise<VexxSettings>;
-  setSettings: (patch: Partial<VexxSettings>) => Promise<VexxSettings>;
+  setSettings: (
+    patch: Partial<VexxSettings>
+  ) => Promise<VexxSettings & { settingsErrors?: { updateBaseUrl?: string } }>;
   getAppVersion: () => Promise<string>;
   checkUpdates: () => Promise<UpdateResult>;
   getPendingAppUpdate: () => Promise<{ version: string; url: string; path?: string } | null>;
