@@ -2,7 +2,10 @@
  * Build folder for hosting auto-updates: release/updates/
  * Upload contents to your CDN / static host; set URL in Vexx Learn settings.
  *
- * Usage: npm run courses && node scripts/pack-updates.mjs
+ * Usage: npm run courses && node scripts/pack-updates.mjs [--sign]
+ *
+ * --sign (optional): also sign the manifest with the local Ed25519 private key
+ * (see scripts/sign-manifest.mjs). Nothing is published by this script.
  */
 import { createHash } from "crypto";
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
@@ -10,6 +13,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { spawnSync } from "child_process";
 
+import { signManifestFile } from "./sign-manifest.mjs";
 import { githubCoursesBaseUrl, isGitHubConfigured, loadUpdateConfig } from "../electron/update-config.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -78,6 +82,12 @@ if (uiSha256) manifest.sha256.uiBundle = uiSha256;
 
 writeFileSync(join(OUT, "manifest.json"), JSON.stringify(manifest, null, 2));
 console.log("Packed updates ->", OUT);
+if (process.argv.includes("--sign")) {
+  const r = signManifestFile(join(OUT, "manifest.json"));
+  console.log("Manifest signed, keyId:", r.keyId);
+} else {
+  console.log("Manifest NOT signed (run: npm run sign:manifest, or pass --sign).");
+}
 console.log("coursesVersion:", manifest.coursesVersion, "| appVersion:", manifest.appVersion);
 if (manifest.coursesBaseUrl) {
   console.log("GitHub raw (commit release/updates here):", manifest.coursesBaseUrl);

@@ -17,6 +17,8 @@ import {
   loadUpdateConfig,
 } from "./update-config.mjs";
 import { isAllowedUpdateBaseUrl } from "./security-policy.mjs";
+import { verifyManifestSignature } from "./manifest-verify.mjs";
+import { OTA_PUBLIC_KEY_PEM, REQUIRE_SIGNED_MANIFEST } from "./ota-public-key.mjs";
 
 function normalizeBase(url) {
   if (!url || typeof url !== "string") return "";
@@ -75,7 +77,15 @@ export function resolveCoursesBaseForSettings(settings, appRoot) {
   return resolveCoursesBase(settings, appRoot);
 }
 
-export async function checkAndApplyUpdates({ appRoot, userData, settings, appVersion }) {
+export async function checkAndApplyUpdates({
+  appRoot,
+  userData,
+  settings,
+  appVersion,
+  // injectable for tests; production uses the embedded key and the module-level strict flag
+  otaPublicKeyPem = OTA_PUBLIC_KEY_PEM,
+  requireSignedManifest = REQUIRE_SIGNED_MANIFEST,
+}) {
   settings = { ...settings, autoUpdateCourses: true, autoCheckApp: true };
   const cfg = loadUpdateConfig(appRoot);
   const base = resolveCoursesBase(settings, appRoot);
@@ -91,6 +101,7 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
     appDownloaded: false,
     appUpdateAvailable: false,
     uiUpdated: false,
+    manifestSignature: "none",
     needsReload: false,
     effectiveAppVersion: appVersion,
     message: "",
@@ -106,9 +117,20 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
 
   try {
     let remote = { coursesVersion: 0, appVersion: null, appDownloadUrl: null, files: {}, sha256: {} };
+    let signed = false;
     if (base) {
       const manifestUrl = `${base}/manifest.json?t=${Date.now()}`;
       remote = await fetchJson(manifestUrl);
+      const sig = verifyManifestSignature(remote, otaPublicKeyPem);
+      result.manifestSignature = sig.status;
+      if (sig.status === "invalid") {
+        throw new Error(`Manifest signature invalid: ${sig.reason || "verification failed"}`);
+      }
+      if (sig.status === "unsigned") {
+        if (requireSignedManifest) throw new Error("Manifest is not signed (signature required)");
+        console.warn("[vexx-learn] WARNING: update manifest is not signed; accepting (strict mode off)");
+      }
+      signed = sig.status === "valid";
     }
 
     const remoteCoursesVer = Number(remote.coursesVersion) || 0;
@@ -132,6 +154,8 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
           if (hash !== remote.sha256[track]) {
             throw new Error(`Checksum mismatch for ${track}`);
           }
+        } else if (signed) {
+          throw new Error(`Signed manifest has no checksum for ${track}`);
         }
         tracksData[track] = JSON.parse(readFileSync(tmp, "utf8"));
       }
@@ -158,12 +182,9 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
       const zipTmp = join(userData, "app-ui", `_dl_${result.remoteAppVersion}.zip`);
       mkdirSync(dirname(zipTmp), { recursive: true });
       await downloadFile(uiUrl, zipTmp);
-      applyUiBundle(
-        userData,
-        result.remoteAppVersion,
-        zipTmp,
-        remote.sha256?.uiBundle || remote.sha256?.[uiName]
-      );
+      const uiSha = remote.sha256?.uiBundle || remote.sha256?.[uiName];
+      if (!uiSha && signed) throw new Error("Signed manifest has no checksum for the UI bundle");
+      applyUiBundle(userData, result.remoteAppVersion, zipTmp, uiSha);
       result.uiUpdated = true;
       result.needsReload = true;
       result.effectiveAppVersion = result.remoteAppVersion;
@@ -199,6 +220,9 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
               await downloadFile(rel.downloadUrl, dest);
             }
             localPath = dest;
+            if (!remote.portableSha256 && signed) {
+              console.warn("[vexx-learn] WARNING: signed manifest carries no portableSha256; exe is not hash-verified");
+            }
             if (remote.portableSha256) {
               const hash = sha256File(dest);
               if (hash !== remote.portableSha256) {
