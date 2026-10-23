@@ -1,22 +1,24 @@
 {
-  "coursesVersion": 20261022038,
-  "appVersion": "0.2.8",
+  "coursesVersion": 20261023104,
+  "appVersion": "0.2.10",
   "uiBundle": "app-ui.zip",
   "updateSource": "github",
   "githubRepo": "VexxDev200/vexx-learn",
   "coursesBaseUrl": "https://raw.githubusercontent.com/VexxDev200/vexx-learn/main/release/updates",
-  "generatedAt": "2026-10-22T20:21:22.480Z",
+  "generatedAt": "2026-10-23T12:16:47.899Z",
   "files": {
     "python": "python.json",
     "java": "java.json",
     "cpp": "cpp.json",
-    "csharp": "csharp.json"
+    "csharp": "csharp.json",
+    "security": "security.json"
   },
   "sha256": {
-    "python": "ea358d43287ed17a539ac95271183e6ac6b00dcc44b41d0a7f4d972a3eb6bf53",
-    "java": "4fc1286c55ceb1b9a4e807c78c73a8e5ad7edf3fb35f1553aa4f1a3aa07ee269",
-    "cpp": "25739a905cd686bd4c16c2aa588d20d0bab6c978f6a39ac8ead706e01f52a257",
-    "csharp": "18a614e8eb693daac45de5656047c1c2f92627d1bbd8a601a622a344e8654cd5",
-    "uiBundle": "de8c4332baf4f4c7a355aa075b32483c20668b3c9fde571919668b535d5a49e0"
+    "python": "69da00a678084fb4201b4f6ccc083925ed9315a3c9e36918580313b1ffcd8aab",
+    "java": "8172814af38ef5d63e29b8b950a43ed48b3079851ba2e3ba8324ab8fefb502aa",
+    "cpp": "69ab629e3d1489d863c2e1918008269c4f2f24dd0974ec4d5d00ac557066213d",
+    "csharp": "9a7fff4f91d0fcb09d3b06c96b7795b2f04ab1c506621f66892b39305b01f5bb",
+    "security": "996b86dfb240a30ab61bbe71457554814f7014c830e20d79c925a1dc26eeb867",
+    "uiBundle": "1c4ec779d128fa69ba2be89f45f5962a55b950faa7fd7fbfda7baee6231aea4d"
   }
 }

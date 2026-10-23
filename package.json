@@ -1,17 +1,19 @@
 {
   "name": "vexx-learn",
-  "version": "0.2.8",
+  "version": "0.2.10",
   "private": true,
   "description": "Vexx Learn — лаунчер обучения кодингу (Python, Java, C++, C#)",
   "type": "module",
   "main": "electron/main.mjs",
   "scripts": {
-    "courses": "node scripts/build-all-courses.mjs",
+    "courses": "node scripts/build-all-courses.mjs && node scripts/verify-security-lessons.mjs",
     "icon": "node scripts/generate-icon.mjs",
     "pack:updates": "node scripts/pack-updates.mjs",
     "build:ui": "vite build && node scripts/copy-course-data.mjs",
     "release:pack": "npm run courses && npm run build:ui && node scripts/pack-updates.mjs",
     "release:github": "node scripts/gh-release.mjs",
+    "ship": "node scripts/ship.mjs",
+    "predev": "node scripts/build-all-courses.mjs",
     "dev": "concurrently -k \"vite\" \"wait-on http://127.0.0.1:5173 && electron .\"",
     "build": "npm run icon && npm run courses && vite build && node scripts/copy-course-data.mjs && electron-builder --win portable",
     "start": "electron ."

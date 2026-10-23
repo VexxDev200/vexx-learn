@@ -1,0 +1,1092 @@
+[
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-01",
+    "minutes": 25,
+    "title": {
+      "ru": "1. Карта угроз",
+      "en": "1. Threat landscape",
+      "he": "1. מפת איומים"
+    },
+    "exampleCode": "print(\"CIA\")\nprint(\"learn\")\nprint(\"protect\")",
+    "task": {
+      "ru": "Выведи CIA, learn, protect — три строки.",
+      "en": "Print CIA, learn, protect.",
+      "he": "שלוש שורות."
+    },
+    "starterCode": "print(\"CIA\")\nprint(\"learn\")\nprint(\"protect\")\n",
+    "checks": [
+      {
+        "expectedStdout": "CIA\nlearn\nprotect"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nКибербезопасность — это не «взлом ради прикола», а дисциплина защиты систем и данных.\n\n**CIA (триада):**\n- **Confidentiality** — секретность (шифрование, доступы).\n- **Integrity** — данные не подменены (хеши, подписи).\n- **Availability** — сервис доступен (бэкапы, защита от **DDoS**).\n\n**Кто атакует:** криминал, конкуренты, хактивисты, инсайдеры, ошибки сотрудников.\n\n**Кто защищает:** SOC, blue team, DevSecOps, GRC, архитекторы. Твой путь начинается с понимания угроз и написания **безопасного кода**.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nCIA triad and defender roles. Security is a discipline, not chaos.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nCIA ותפקידי מגן.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-02",
+    "minutes": 30,
+    "title": {
+      "ru": "2. Доксинг и приватность",
+      "en": "2. Doxxing & privacy",
+      "he": "2. דוקסינג ופרטיות"
+    },
+    "exampleCode": "def redact_email(e):\n    if \"@\" not in e:\n        return \"***\"\n    u, d = e.split(\"@\", 1)\n    return (u[0] + \"***@\" + d) if u else \"***@\" + d\nprint(redact_email(\"user@mail.com\"))",
+    "task": {
+      "ru": "redact_email для user@mail.com → u***@mail.com",
+      "en": "Redact email.",
+      "he": "u***@mail.com"
+    },
+    "starterCode": "def redact_email(e):\n    if \"@\" not in e:\n        return \"***\"\n    u, d = e.split(\"@\", 1)\n    return (u[0] + \"***@\" + d) if u else \"***@\" + d\nprint(redact_email(\"user@mail.com\"))\n",
+    "checks": [
+      {
+        "expectedStdout": "u***@mail.com"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\n**Доксинг** — публикация личных данных человека (адрес, телефон, семья) без согласия. Это травля и часто **преступление**.\n\n**Защита:** минимум данных в профилях, отдельная почта, VPN не спасает от утечки пароля. **Редактирование логов:** не пиши в лог полный email — маска `u***@mail.com`.\n\nКод: `redact_email(\"user@mail.com\")` → `u***@mail.com`.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\n**Doxxing** publishes private data without consent — illegal harassment. **Defense:** data minimization, log redaction.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nדוקסינג — פרסום מידע פרטי. הגנה: מינימום חשיפה, מיסוך בלוגים.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-03",
+    "minutes": 32,
+    "title": {
+      "ru": "3. Фишинг и социнженерия",
+      "en": "3. Phishing",
+      "he": "3. פישינג"
+    },
+    "exampleCode": "def is_suspicious(url):\n    return \"login\" in url and not url.startswith(\"https://\")\nprint(1 if is_suspicious(\"http://evil/login\") else 0)",
+    "task": {
+      "ru": "http://evil/login → 1, https://bank/login → 0.",
+      "en": "Suspicious flag.",
+      "he": "1 ואז 0"
+    },
+    "starterCode": "def is_suspicious(url):\n    return \"login\" in url and not url.startswith(\"https://\")\nprint(1 if is_suspicious(\"http://evil/login\") else 0)\nprint(1 if is_suspicious(\"https://bank/login\") else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1\n0"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nФишинг — поддельные письма/сайты для кражи паролей. Признаки: срочность, опечатки, чужой домен `paypa1.com`.\n\nЗащита: проверка URL, 2FA, не вводить пароль по ссылке из чата.\n\n`is_suspicious(url)` — True если в строке есть `login` и нет `https://`.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nPhishing steals credentials. Check URL and use 2FA.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nפישינג לגניבת סיסמאות.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-04",
+    "minutes": 35,
+    "title": {
+      "ru": "4. SQL-инъекции",
+      "en": "4. SQL injection",
+      "he": "4. SQLi"
+    },
+    "exampleCode": "def safe_id(s):\n    return s.isdigit()\nprint(1 if safe_id(\"42\") else 0)\nprint(1 if safe_id(\"1 OR 1\") else 0)",
+    "task": {
+      "ru": "42→1, `1 OR 1`→0.",
+      "en": "Digit check.",
+      "he": "1\n0"
+    },
+    "starterCode": "def safe_id(s):\n    return s.isdigit()\nprint(1 if safe_id(\"42\") else 0)\nprint(1 if safe_id(\"1 OR 1\") else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1\n0"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nСклейка SQL с вводом пользователя → `OR 1=1`. Лечение: **параметризованные запросы**, ORM, минимальные права БД.\n\nУчебная функция `safe_id(s)` — только цифры, иначе отказ.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nParameterized queries stop SQLi. safe_id accepts digits only.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nשאילתות עם placeholders.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-05",
+    "minutes": 30,
+    "title": {
+      "ru": "5. XSS",
+      "en": "5. XSS",
+      "he": "5. XSS"
+    },
+    "exampleCode": "def escape_html(s):\n    return s.replace(\"&\", \"&amp;\").replace(\"<\", \"&lt;\").replace(\">\", \"&gt;\")\nprint(escape_html(\"<script>\"))",
+    "task": {
+      "ru": "escape <script> → &lt;script&gt;",
+      "en": "Escape script tag.",
+      "he": "&lt;script&gt;"
+    },
+    "starterCode": "def escape_html(s):\n    return s.replace(\"&\", \"&amp;\").replace(\"<\", \"&lt;\").replace(\">\", \"&gt;\")\nprint(escape_html(\"<script>\"))\n",
+    "checks": [
+      {
+        "expectedStdout": "&lt;script&gt;"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\n**XSS** — внедрение скрипта в HTML. Экранируй `<`, `>`, `&`. CSP заголовки на сервере.\n\n`escape_html` для вывода пользовательского ника.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nEscape HTML metacharacters on output.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nבריחת HTML.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-06",
+    "minutes": 28,
+    "title": {
+      "ru": "6. Пароли и хеши",
+      "en": "6. Passwords & hashes",
+      "he": "6. סיסמאות"
+    },
+    "exampleCode": "import hashlib\nprint(hashlib.sha256(b\"vexx\").hexdigest()[:8])",
+    "task": {
+      "ru": "Первые 8 hex sha256('vexx') → bfabb5f9",
+      "en": "Hash vexx.",
+      "he": "bfabb5f9"
+    },
+    "starterCode": "import hashlib\nprint(hashlib.sha256(b\"vexx\").hexdigest()[:8])\n",
+    "checks": [
+      {
+        "expectedStdout": "bfabb5f9"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nХрани **хеш**, не пароль. `hashlib.sha256` — демо; в проде **argon2/bcrypt** + соль.\n\nОдинаковый пароль → одинаковый хеш (без соли — только учебник).\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nStore hashes. sha256 demo; production uses salted slow hashes.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nגיבוב סיסמאות.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-07",
+    "minutes": 30,
+    "title": {
+      "ru": "7. Секреты в коде",
+      "en": "7. Secrets in code",
+      "he": "7. סודות בקוד"
+    },
+    "exampleCode": "def has_secret(line):\n    return \"API_KEY=\" in line\nprint(1 if has_secret(\"API_KEY=abc\") else 0)",
+    "task": {
+      "ru": "API_KEY=abc → 1, hello → 0.",
+      "en": "Detect leak pattern.",
+      "he": "1\n0"
+    },
+    "starterCode": "def has_secret(line):\n    return \"API_KEY=\" in line\nprint(1 if has_secret(\"API_KEY=abc\") else 0)\nprint(1 if has_secret(\"hello\") else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1\n0"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nAPI-ключи в GitHub = утечка за минуты. Используй `.env`, vault, CI secrets.\n\n`has_secret(code)` — True если строка содержит `API_KEY=`.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nNever commit API keys. Scan for API_KEY= patterns.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nלא לשמור מפתחות בקוד.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-08",
+    "minutes": 35,
+    "title": {
+      "ru": "8. Rate limit",
+      "en": "8. Rate limiting",
+      "he": "8. הגבלת קצב"
+    },
+    "exampleCode": "def hit(c, ip, lim=3):\n    c[ip] = c.get(ip, 0) + 1\n    return c[ip] <= lim\nc = {}\nfor _ in range(4):\n    print(1 if hit(c, \"1.2.3.4\") else 0)",
+    "task": {
+      "ru": "4 запроса лимит 3 → 1,1,1,0.",
+      "en": "Rate limit.",
+      "he": "1\n1\n1\n0"
+    },
+    "starterCode": "def hit(c, ip, lim=3):\n    c[ip] = c.get(ip, 0) + 1\n    return c[ip] <= lim\nc = {}\nfor _ in range(4):\n    print(1 if hit(c, \"1.2.3.4\") else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1\n1\n1\n0"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nЛимит запросов с IP — защита от брутфорса и **application flood** (часть DDoS).\n\nСчётчик в dict, лимит 3 → четвёртый отказ.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nPer-IP counters mitigate brute force and abuse.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nמונה לכל IP.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-09",
+    "minutes": 45,
+    "title": {
+      "ru": "9. DDoS: типы",
+      "en": "9. DDoS types",
+      "he": "9. סוגי DDoS"
+    },
+    "exampleCode": "allowed = sum(1 for i in range(10) if i < 4)\nprint(allowed)",
+    "task": {
+      "ru": "10 запросов, лимит 4 → выведи 4.",
+      "en": "Allow 4 of 10.",
+      "he": "4"
+    },
+    "starterCode": "allowed = sum(1 for i in range(10) if i < 4)\nprint(allowed)\n",
+    "checks": [
+      {
+        "expectedStdout": "4"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\n**DDoS (Distributed Denial of Service)** — цель: положить сайт/игру/API, а не «взломать пароль».\n\n**Типы:**\n1. **Volumetric** — гигабиты мусорного UDP/ICMP, канал забит.\n2. **Protocol** — SYN flood, полуоткрытые сессии, истощение firewall.\n3. **Application (L7)** — тысячи «нормальных» HTTP-запросов на тяжёлый endpoint `/search`.\n\n**Симптомы:** latency ×10, 502/503, CPU 100%, счета за трафик.\n\n**Защита (слоями):** Anycast **CDN** (Cloudflare, Akamai), **rate limit** + WAF, кэш, autoscale, геоблок при атаке, **blackhole** у ISP, капча на логин. План реагирования: кто звонит провайдеру, кто включает «Under Attack mode».\n\n**Закон:** «проверить, выдержит ли чужой сайт» без договора = DDoS-атака.\n\nКод: симулятор пропускает только первые 4 запроса из 10.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nFull DDoS taxonomy and layered mitigation. Legal stress tests need contract.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nDDoS והגנה בשכבות.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-10",
+    "minutes": 40,
+    "title": {
+      "ru": "10. Ботнеты и CDN",
+      "en": "10. Botnets & CDN",
+      "he": "10. בוטנט"
+    },
+    "exampleCode": "r = 1200\nprint('ALERT' if r > 1000 else 'OK')",
+    "task": {
+      "ru": "1200 запросов → ALERT.",
+      "en": "Print ALERT.",
+      "he": "ALERT"
+    },
+    "starterCode": "r = 1200\nprint('ALERT' if r > 1000 else 'OK')\n",
+    "checks": [
+      {
+        "expectedStdout": "ALERT"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nБотнет — заражённые машины, управляемые централизованно. Используются для DDoS, спама — **владельцы ботнетов преследуются**.\n\nCDN распределяет трафик и фильтрует часть атаки на периметре.\n\nЕсли `requests > 1000` в логе за минуту — флаг `ALERT`.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nBotnets amplify DDoS. CDN absorbs and filters traffic.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nבוטנט ו-CDN.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-11",
+    "minutes": 32,
+    "title": {
+      "ru": "11. Логи и SOC",
+      "en": "11. Logs & SOC",
+      "he": "11. SOC"
+    },
+    "exampleCode": "L = [\"OK|1.1.1.1|x\", \"FAIL|2.2.2.2|login\", \"FAIL|2.2.2.2|login\"]\nprint(sum(1 for x in L if x.startswith(\"FAIL\")))",
+    "task": {
+      "ru": "2 FAIL → 2.",
+      "en": "Count FAIL.",
+      "he": "2"
+    },
+    "starterCode": "L = [\"OK|1.1.1.1|x\", \"FAIL|2.2.2.2|login\", \"FAIL|2.2.2.2|login\"]\nprint(sum(1 for x in L if x.startswith(\"FAIL\")))\n",
+    "checks": [
+      {
+        "expectedStdout": "2"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nSOC анализирует логи: `FAIL_LOGIN`, скан портов, всплеск 404.\n\nФормат `LEVEL|ip|event`. Подсчёт FAIL.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nStructured logs enable detection.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nלוגים מובנים.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-12",
+    "minutes": 30,
+    "title": {
+      "ru": "12. Ransomware",
+      "en": "12. Ransomware",
+      "he": "12. כופר"
+    },
+    "exampleCode": "days = 1\nprint(1 if days <= 1 else 0)",
+    "task": {
+      "ru": "backup 1 день назад → 1.",
+      "en": "Fresh backup OK.",
+      "he": "1"
+    },
+    "starterCode": "days = 1\nprint(1 if days <= 1 else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nШифровальщик блокирует файлы, требует выкуп. Защита: **бэкапы 3-2-1**, сегментация сети, не запускать макросы, EDR.\n\n`backup_ok` True если `days_since_backup <= 1`.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nRansomware defense: offline backups, segmentation, EDR.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nגיבויים נגד כופר.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-13",
+    "minutes": 28,
+    "title": {
+      "ru": "13. MITM (концепт)",
+      "en": "13. MITM concept",
+      "he": "13. MITM"
+    },
+    "exampleCode": "def secure_url(u):\n    return u.startswith(\"https://\")\nprint(1 if secure_url(\"https://x\") else 0)",
+    "task": {
+      "ru": "https → 1, http → 0.",
+      "en": "HTTPS check.",
+      "he": "1\n0"
+    },
+    "starterCode": "def secure_url(u):\n    return u.startswith(\"https://\")\nprint(1 if secure_url(\"https://x\") else 0)\nprint(1 if secure_url(\"http://x\") else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1\n0"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\n**Man-in-the-middle** — перехват между клиентом и сервером. Защита: **HTTPS/TLS**, HSTS, certificate pinning в мобильных приложениях.\n\n`secure = url.startswith('https://')`\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nTLS prevents MITM on the wire. Always HTTPS.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nHTTPS נגד MITM.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-14",
+    "minutes": 35,
+    "title": {
+      "ru": "14. OWASP Top",
+      "en": "14. OWASP Top",
+      "he": "14. OWASP"
+    },
+    "exampleCode": "cats = list(range(10))\nprint(len(cats))",
+    "task": {
+      "ru": "10 категорий → 10.",
+      "en": "Print 10.",
+      "he": "10"
+    },
+    "starterCode": "cats = list(range(10))\nprint(len(cats))\n",
+    "checks": [
+      {
+        "expectedStdout": "10"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nOWASP Top 10: broken access control, crypto failures, injection, insecure design, misconfiguration, vulnerable components, auth failures, integrity, logging, SSRF.\n\nВыведи количество категорий в учебном списке из 10 строк.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nOWASP Top 10 categories — know the list as a defender.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nOWASP Top 10.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-15",
+    "minutes": 30,
+    "title": {
+      "ru": "15. Пентест легально",
+      "en": "15. Legal pentest",
+      "he": "15. פנטסט חוקי"
+    },
+    "exampleCode": "signed = True\nscope = [\"10.0.0.5\"]\ntarget = \"10.0.0.5\"\nprint(1 if signed and target in scope else 0)",
+    "task": {
+      "ru": "signed + target in scope → 1.",
+      "en": "Scope check.",
+      "he": "1"
+    },
+    "starterCode": "signed = True\nscope = [\"10.0.0.5\"]\ntarget = \"10.0.0.5\"\nprint(1 if signed and target in scope else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nПентест без **письменного scope** (договор, IP, даты) = взлом. Bug bounty только по правилам программы.\n\n`scope_ok = signed and target in scope_list`\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nWritten scope before any security testing.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nscope בכתב.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "project",
+    "minutes": 50,
+    "id": "sec-proj-auth",
+    "track": "security",
+    "editorLang": "python",
+    "title": {
+      "ru": "Проект: вход с lockout",
+      "en": "Project: login lockout",
+      "he": "פרויקט: lockout"
+    },
+    "exampleCode": "import hashlib\ndef h(p):\n    return hashlib.sha256(p.encode()).hexdigest()[:8]\nHP = h(\"vexx\")\nfor i, p in enumerate([\"w\", \"w\", \"w\", \"vexx\"]):\n    if i >= 3:\n        print(\"LOCKED\")\n        break\n",
+    "task": {
+      "ru": "На 4-й попытке только LOCKED.",
+      "en": "Print LOCKED.",
+      "he": "LOCKED"
+    },
+    "starterCode": "import hashlib\ndef h(p):\n    return hashlib.sha256(p.encode()).hexdigest()[:8]\nHP = h(\"vexx\")\nfor i, p in enumerate([\"w\", \"w\", \"w\", \"vexx\"]):\n    if i >= 3:\n        print(\"LOCKED\")\n        break\n",
+    "checks": [
+      {
+        "expectedStdout": "LOCKED"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\n3 неверных пароля → LOCKED (см. урок rate limit + хеш).\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nThree wrong passwords → LOCKED.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nLOCKED.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Это образец решения — твой код может отличаться, если проходит проверку.",
+      "en": "Sample solution — yours can differ if tests pass.",
+      "he": "דוגמה לפתרון."
+    }
+  },
+  {
+    "kind": "project",
+    "minutes": 55,
+    "id": "sec-proj-logs",
+    "track": "security",
+    "editorLang": "python",
+    "title": {
+      "ru": "Проект: разбор инцидента",
+      "en": "Project: incident triage",
+      "he": "פרויקט: תחקיר"
+    },
+    "exampleCode": "def ip(row):\n    return row.split(\"|\", 1)[1]\nrows = [\"OK|1.1.1.1\", \"DENY|6.6.6.6\", \"OK|6.6.6.6\", \"DENY|6.6.6.6\", \"OK|6.6.6.6\"]\nprint(len(rows))\nprint(sum(1 for r in rows if ip(r) == \"6.6.6.6\"))\nprint(sum(1 for r in rows if r.startswith(\"DENY\")))",
+    "task": {
+      "ru": "Три строки: 5, 4, 2.",
+      "en": "Print 5, 4, 2.",
+      "he": "5\n4\n2"
+    },
+    "starterCode": "def ip(row):\n    return row.split(\"|\", 1)[1]\nrows = [\"OK|1.1.1.1\", \"DENY|6.6.6.6\", \"OK|6.6.6.6\", \"DENY|6.6.6.6\", \"OK|6.6.6.6\"]\nprint(len(rows))\nprint(sum(1 for r in rows if ip(r) == \"6.6.6.6\"))\nprint(sum(1 for r in rows if r.startswith(\"DENY\")))\n",
+    "checks": [
+      {
+        "expectedStdout": "5\n4\n2"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nРазбор инцидента как в SOC: посчитай объём, сколько раз встречается атакующий IP `6.6.6.6`, сколько отказов DENY. IP бери из второй колонки после `|`.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nSOC triage: total lines, count IP 6.6.6.6 in column 2, count DENY.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nספירת IP ו-DENY.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Это образец решения — твой код может отличаться, если проходит проверку.",
+      "en": "Sample solution — yours can differ if tests pass.",
+      "he": "דוגמה לפתרון."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-16",
+    "minutes": 38,
+    "title": {
+      "ru": "16. Malware семейства",
+      "en": "16. Malware families",
+      "he": "16. malware"
+    },
+    "exampleCode": "families = [\"virus\", \"trojan\", \"stealer\", \"rat\"]\nprint(len(families))",
+    "task": {
+      "ru": "4 семейства → 4.",
+      "en": "Print 4.",
+      "he": "4"
+    },
+    "starterCode": "families = [\"virus\", \"trojan\", \"stealer\", \"rat\"]\nprint(len(families))\n",
+    "checks": [
+      {
+        "expectedStdout": "4"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nВирус, троян, стилер, RAT, криптомайнер, шифровальщик — разные цели. Создание и распространение **против чужих** — уголовка.\n\nИзучай в песочнице и курсах, как **детектировать** (IOC, поведение).\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nKnow malware families to defend; creating malware for others is criminal.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nמשפחות malware להגנה.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-17",
+    "minutes": 35,
+    "title": {
+      "ru": "17. 2FA и сессии",
+      "en": "17. 2FA & sessions",
+      "he": "17. 2FA"
+    },
+    "exampleCode": "pw = True\ntotp = True\nprint(1 if pw and totp else 0)",
+    "task": {
+      "ru": "оба True → 1.",
+      "en": "Both factors.",
+      "he": "1"
+    },
+    "starterCode": "pw = True\ntotp = True\nprint(1 if pw and totp else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nПароль + второй фактор (TOTP, ключ). Сессионный токен должен быть случайным и с TTL.\n\n`auth_ok = password_ok and totp_ok`\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\n2FA layers defense. Both factors required.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\n2FA.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-18",
+    "minutes": 40,
+    "title": {
+      "ru": "18. Zero Trust",
+      "en": "18. Zero Trust",
+      "he": "18. Zero Trust"
+    },
+    "exampleCode": "user = \"alice\"\ngroup = [\"alice\", \"bob\"]\nmfa = True\nprint(1 if user in group and mfa else 0)",
+    "task": {
+      "ru": "alice + mfa → 1.",
+      "en": "Allow alice.",
+      "he": "1"
+    },
+    "starterCode": "user = \"alice\"\ngroup = [\"alice\", \"bob\"]\nmfa = True\nprint(1 if user in group and mfa else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nНе доверяй сети по умолчанию. Каждый запрос: кто, что, откуда, зачем. MFA, micro-segmentation.\n\n`allow = user in group and mfa`\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nZero trust: verify every access.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nZero Trust.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-19",
+    "minutes": 36,
+    "title": {
+      "ru": "19. CSRF",
+      "en": "19. CSRF",
+      "he": "19. CSRF"
+    },
+    "exampleCode": "def csrf_ok(method, token):\n    if method == \"GET\":\n        return True\n    return bool(token)\nprint(1 if csrf_ok(\"POST\", \"abc\") else 0)\nprint(1 if csrf_ok(\"POST\", \"\") else 0)",
+    "task": {
+      "ru": "POST+token → 1, POST пустой → 0.",
+      "en": "CSRF token check.",
+      "he": "1\n0"
+    },
+    "starterCode": "def csrf_ok(method, token):\n    if method == \"GET\":\n        return True\n    return bool(token)\nprint(1 if csrf_ok(\"POST\", \"abc\") else 0)\nprint(1 if csrf_ok(\"POST\", \"\") else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1\n0"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\n**CSRF** — браузер жертвы отправляет запрос на сайт, где она уже залогинена (смена пароля, перевод). Защита: **CSRF-токен** в форме, SameSite cookies, проверка Referer.\n\n`csrf_ok(method, token)` — для POST токен обязан быть непустым.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nCSRF tricks the browser into unwanted actions. Use anti-CSRF tokens.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nCSRF וטוקן.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-20",
+    "minutes": 38,
+    "title": {
+      "ru": "20. SSRF",
+      "en": "20. SSRF",
+      "he": "20. SSRF"
+    },
+    "exampleCode": "def blocked(host):\n    return host in (\"127.0.0.1\", \"localhost\")\nprint(1 if blocked(\"127.0.0.1\") else 0)\nprint(1 if blocked(\"example.com\") else 0)",
+    "task": {
+      "ru": "127.0.0.1→1, example.com→0.",
+      "en": "Block internal.",
+      "he": "1\n0"
+    },
+    "starterCode": "def blocked(host):\n    return host in (\"127.0.0.1\", \"localhost\")\nprint(1 if blocked(\"127.0.0.1\") else 0)\nprint(1 if blocked(\"example.com\") else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1\n0"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\n**SSRF** — сервер по твоему URL ходит во внутреннюю сеть (`http://127.0.0.1`, `http://169.254.169.254` метаданные облака). Защита: whitelist хостов, блок private IP, без raw URL от пользователя.\n\n`blocked(host)` True для localhost.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nSSRF abuses server-side fetches. Block internal hosts.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nSSRF.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-21",
+    "minutes": 40,
+    "title": {
+      "ru": "21. Ввод пользователя",
+      "en": "21. User input (stdin)",
+      "he": "21. קלט"
+    },
+    "exampleCode": "name = input()\nprint(\"OK\" if name.strip() else \"EMPTY\")",
+    "task": {
+      "ru": "Прочитай строку; если не пустая — OK. При проверке ввод `alice`.",
+      "en": "Non-empty input → OK.",
+      "he": "OK"
+    },
+    "starterCode": "name = input()\nprint(\"OK\" if name.strip() else \"EMPTY\")\n",
+    "checks": [
+      {
+        "stdin": "alice\n",
+        "expectedStdout": "OK"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nРеальные сервисы читают ввод: `input()` в Python. **Запустить** → внизу консоли введи строку → Enter.\n\nПроверка: непустой логин → `OK`, пустой → `EMPTY`. Автотест подставит `alice` сам.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nUse Run + console input field for input(). Check uses stdin.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\ninput() והרצה אינטראקטיבית.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-22",
+    "minutes": 34,
+    "title": {
+      "ru": "22. Supply chain",
+      "en": "22. Supply chain",
+      "he": "22. supply chain"
+    },
+    "exampleCode": "def pin_ok(v):\n    return any(c.isdigit() for c in v)\nprint(1 if pin_ok(\"2.1.0\") else 0)\nprint(1 if pin_ok(\"latest\") else 0)",
+    "task": {
+      "ru": "2.1.0→1, latest→0.",
+      "en": "Pin versions.",
+      "he": "1\n0"
+    },
+    "starterCode": "def pin_ok(v):\n    return any(c.isdigit() for c in v)\nprint(1 if pin_ok(\"2.1.0\") else 0)\nprint(1 if pin_ok(\"latest\") else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1\n0"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nАтака через зависимости: поддельный пакет npm/PyPI, компрометированный vendor. Защита: lock-файлы, подписи, SBOM, минимум зависимостей, Dependabot.\n\n`pin_ok(v)` — версия содержит цифру (не `latest`).\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nSupply-chain attacks via dependencies. Pin versions.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nשרשרת אספקה.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-23",
+    "minutes": 42,
+    "title": {
+      "ru": "23. Криптография",
+      "en": "23. Cryptography",
+      "he": "23. קריפטו"
+    },
+    "exampleCode": "import hashlib\nprint(len(hashlib.sha256(b\"x\").hexdigest()))",
+    "task": {
+      "ru": "Длина hex sha256 → 64.",
+      "en": "Print 64.",
+      "he": "64"
+    },
+    "starterCode": "import hashlib\nprint(len(hashlib.sha256(b\"x\").hexdigest()))\n",
+    "checks": [
+      {
+        "expectedStdout": "64"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\n**Симметричное** — один ключ (AES) для шифрования файла.\n**Хеш** — односторонний отпечаток (пароли).\n**Асимметрия** — публичный/приватный ключ (TLS, подписи).\n\nНе путай: хеш нельзя «расшифровать». Длина sha256 hex = 64 символа.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nSymmetric vs hash vs public-key crypto.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nסימטרי, גיבוב, מפתחות.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-24",
+    "minutes": 38,
+    "title": {
+      "ru": "24. Реагирование IR",
+      "en": "24. Incident response",
+      "he": "24. IR"
+    },
+    "exampleCode": "print(\"prep,detect,contain,recover\")",
+    "task": {
+      "ru": "Одна строка: prep,detect,contain,recover",
+      "en": "IR phases line.",
+      "he": "prep,detect,contain,recover"
+    },
+    "starterCode": "print(\"prep,detect,contain,recover\")\n",
+    "checks": [
+      {
+        "expectedStdout": "prep,detect,contain,recover"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nФазы **IR:** подготовка → обнаружение → сдерживание → устранение → восстановление → уроки.\n\nПри инциденте: не паниковать, сохранить логи, изолировать хост, эскалировать.\n\nВыведи фазы через запятую в одной строке (учебный формат).\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nNIST-style IR phases.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nשלבי IR.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-25",
+    "minutes": 36,
+    "title": {
+      "ru": "25. IOC и форензика",
+      "en": "25. IOC & forensics",
+      "he": "25. IOC"
+    },
+    "exampleCode": "ioc = [\"1.2.3.4\", \"evil.com\", \"deadbeef\"]\nprint(len(ioc))",
+    "task": {
+      "ru": "3 IOC → 3.",
+      "en": "Print 3.",
+      "he": "3"
+    },
+    "starterCode": "ioc = [\"1.2.3.4\", \"evil.com\", \"deadbeef\"]\nprint(len(ioc))\n",
+    "checks": [
+      {
+        "expectedStdout": "3"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\n**IOC** (indicator of compromise): IP C2, хеш файла, домен, путь реестра. Ищут в SIEM/EDR.\n\nСписок IOC: посчитай элементы.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nIndicators of compromise feed detection.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nIOC.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-26",
+    "minutes": 40,
+    "title": {
+      "ru": "26. API и OAuth",
+      "en": "26. API & OAuth",
+      "he": "26. API"
+    },
+    "exampleCode": "def scope_ok(scopes, need):\n    return need in scopes\nprint(1 if scope_ok([\"read\", \"write\"], \"read\") else 0)",
+    "task": {
+      "ru": "read in scopes → 1.",
+      "en": "Scope check.",
+      "he": "1"
+    },
+    "starterCode": "def scope_ok(scopes, need):\n    return need in scopes\nprint(1 if scope_ok([\"read\", \"write\"], \"read\") else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nAPI-ключи в заголовке, OAuth2 выдаёт **access token** с TTL. Не логируй токены. Scope минимальный.\n\n`scope_ok(scopes, need)` — need должен быть в списке scopes.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nOAuth scopes least privilege.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nscope.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-27",
+    "minutes": 35,
+    "title": {
+      "ru": "27. Цифровой след",
+      "en": "27. Digital footprint",
+      "he": "27. footprint"
+    },
+    "exampleCode": "def safe_nick(n):\n    return 3 <= len(n) <= 16 and n.isalnum()\nprint(1 if safe_nick(\"vexx42\") else 0)",
+    "task": {
+      "ru": "vexx42 → 1.",
+      "en": "Valid nick.",
+      "he": "1"
+    },
+    "starterCode": "def safe_nick(n):\n    return 3 <= len(n) <= 16 and n.isalnum()\nprint(1 if safe_nick(\"vexx42\") else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\n**OSINT** — открытые данные о тебе: соцсети, утечки паролей, метаданные фото. **Защита от доксинга:** не светить адрес, 2FA, уникальные ники, проверка haveibeenpwned.\n\n`safe_nick(n)` — длина 3..16, только буквы/цифры.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nMinimize public footprint. Validate public nicknames.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nטביעת רגל דיגיטלית.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "kind": "lesson",
+    "track": "security",
+    "editorLang": "python",
+    "id": "sec-28",
+    "minutes": 45,
+    "title": {
+      "ru": "28. Bug bounty",
+      "en": "28. Bug bounty",
+      "he": "28. bounty"
+    },
+    "exampleCode": "print(1 if True and True else 0)",
+    "task": {
+      "ru": "report_ok(True,True) → 1.",
+      "en": "Print 1.",
+      "he": "1"
+    },
+    "starterCode": "has_steps = True\nin_scope = True\nprint(1 if has_steps and in_scope else 0)\n",
+    "checks": [
+      {
+        "expectedStdout": "1"
+      }
+    ],
+    "theory": {
+      "ru": "## Подробно\n\nПлатформы (HackerOne, Bugcrowd): ищешь баг **в рамках policy** — scope, safe harbor, не DoS.\n\nОтчёт: title, steps, impact, PoC **без** эксфильтрации чужих данных.\n\n`report_ok(has_steps, in_scope)` — оба True.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nBug bounty requires scope and reproducible steps.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nbug bounty.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleExplain": {
+      "ru": "Разбери каждую строку: что объявляется, что вычисляется, что уходит в консоль.",
+      "en": "Walk through each line: declarations, expressions, console output.",
+      "he": "עבור שורה שורה: הצהרות, ביטויים, פלט."
+    }
+  },
+  {
+    "id": "sec-ethics",
+    "track": "security",
+    "kind": "ethics",
+    "minutes": 25,
+    "editorLang": "python",
+    "title": {
+      "ru": "Этика хакера",
+      "en": "Hacker ethics",
+      "he": "אתיקה"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nБелая шляпа: защита. Серая — без разрешения нельзя. Чёрная — преступление.\n\n**DDoS, доксинг, стилеры, RAT** против людей без закона — тюрьма и бан навыков.\n\nКарьера: SOC, forensics, GRC, DevSecOps, пентест **со scope**.\n\n### Как работать в Vexx Learn\n1. **Вставить пример** — если редактор пустой.\n2. **Запустить** — смотри консоль; если программа ждёт ввод (`input`), пиши в поле внизу и Enter.\n3. **Проверить** — автотесты сравнивают вывод **символ в символ** (пробелы и переносы строк важны).\n4. Ошибка? Блок **«Почему ошибка»** под консолью.\n\n### Закон и этика\nИзучаем атаки, чтобы **защищать**. DDoS, доксинг, взлом чужих систем, малварь против людей без **письменного разрешения** — уголовная ответственность.\n\n### Сдача\nТочный вывод → **Проверить**. Несколько тестов — все должны пройти.\n\n## Задание\n\nКод → **Запустить** → **Проверить**.",
+      "en": "## In depth\n\nWhite hat defends. Black hat attacks illegally. DDoS/doxxing/malware against victims is criminal.\n\n### Vexx Learn workflow\nRun → console (use input field if needed) → **Check** (exact stdout). Unauthorized attacks are **illegal**.\n\n### Pass\nEvery test must pass.\n\n## Task\n\nCode → **Run** → **Check**.",
+      "he": "## לעומק\n\nכובע לבן מגן. כובע שחור פלילי.\n\n### תרגול\nאימות, הגבלת קצב, לוגים. התקפות בלי אישור — בלתי חוקי.\n\n### מעבר\nפלט מדויק.\n\n## משימה\n\nקוד → הרץ → בדוק."
+    },
+    "exampleCode": "print(\"learn\")\nprint(\"build\")\nprint(\"protect\")\n",
+    "exampleExplain": {
+      "ru": "Три строки — девиз курса.",
+      "en": "Three lines — course motto.",
+      "he": "שלוש שורות."
+    },
+    "task": {
+      "ru": "Выведи три строки: `learn`, `build`, `protect` (каждая с новой строки).",
+      "en": "Print learn, build, protect (one per line).",
+      "he": "הדפס learn, build, protect — שורה לכל אחד."
+    },
+    "starterCode": "print(\"learn\")\nprint(\"build\")\nprint(\"protect\")\n",
+    "checks": [
+      {
+        "expectedStdout": "learn\nbuild\nprotect"
+      }
+    ]
+  },
+  {
+    "id": "sec-exam",
+    "track": "security",
+    "kind": "exam",
+    "minutes": 60,
+    "editorLang": "python",
+    "title": {
+      "ru": "Экзамен: киберзащита",
+      "en": "Cybersecurity exam",
+      "he": "מבחן אבטחה"
+    },
+    "theory": {
+      "ru": "## Подробно\n\nЭкзамен закрывает весь трек. Нужно написать рабочий код без подсказок стартера (кроме шаблона). Все автотесты по выводу должны пройти. Если застрял — вернись к урокам про функции, циклы и коллекции.\n\n### Частые ошибки\n- Путаница `=` (присвоить) и `==` (сравнить).\n- Неверный отступ (Python) или пропущенная `{ }` / `;` (Java, C++, C#).\n- Автопроверка сравнивает **точный** вывод — лишний пробел или другой регистр = провал.\n\n### Как проходить урок\n1. Прочитай блок **Подробно**.\n2. Скопируй **пример** в редактор и нажми **Запустить**.\n3. Реши **задание** в стартовом коде.\n4. **Проверить** — зелёный = урок засчитан.\n5. Поэкспериментируй: поменяй входные данные и снова запусти.\n\n## Что сделать\n\nПрочитай пример → **Запустить** → измени код под задачу → **Проверить**.",
+      "en": "## In depth\n\nFinal exam for this track. Write working code; all stdout checks must pass. Review functions, loops, and collections if stuck.\n\n### Common mistakes\n- `=` vs `==`.\n- Wrong indent (Python) or missing braces/semicolons.\n- **Check** compares exact stdout.\n\n### How to study\nRead → Run example → Solve task → **Check** → experiment.\n\n## What to do\n\nRead the example → **Run** → edit → **Check**.",
+      "he": "## לעומק\n\nמבחן סופי לכל המסלול. כל הבדיקות חייבות לעבור.\n\n### טעויות נפוצות\n- `=` מול `==`.\n- הזחה שגויה או סוגריים חסרים.\n- **בדוק** דורש פלט מדויק.\n\n### איך ללמוד\nקרא → הרץ דוגמה → פתור → **בדוק**.\n\n## מה לעשות\n\nקרא → הרץ → ערוך → בדוק."
+    },
+    "exampleCode": "def shield(n):\n    if n < 0 or n > 1000:\n        return 0\n    return n\nprint(shield(50))\nprint(shield(9999))\n",
+    "exampleExplain": {
+      "ru": "Шаблон экзамена.",
+      "en": "Exam template.",
+      "he": "תבנית מבחן."
+    },
+    "task": {
+      "ru": "1) `shield(n)`: n<0 или n>1000 → 0, иначе n — выведи shield(50) и shield(9999) (две строки).\n2) `sanitize(s)` — убери пробелы по краям; для ввода `  hi  ` выведи `hi` (проверка с stdin).",
+      "en": "shield + sanitize with stdin test.",
+      "he": "shield + sanitize."
+    },
+    "starterCode": "def shield(n):\n    if n < 0 or n > 1000:\n        return 0\n    return n\n\ndef sanitize(s):\n    return s.strip()\n\nprint(shield(50))\nprint(shield(9999))\nprint(sanitize(input()))\n",
+    "checks": [
+      {
+        "stdin": "  hi  \n",
+        "expectedStdout": "50\n0\nhi"
+      }
+    ]
+  }
+]
