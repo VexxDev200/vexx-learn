@@ -317,3 +317,84 @@ test("checkManifestFiles rejects path traversal in file names", () => {
   assert.equal(res.ok, false);
   assert.match(res.problems.join("\n"), /unsafe file name/);
 });
+const REAL_MANIFEST = "release/updates/manifest.json";
+const realManifestHash = () => sha(readFileSync(REAL_MANIFEST));
+
+test("sign-manifest CLI refuses to run without an explicit manifest path or with unknown flags (exit 2, nothing signed)", () => {
+  const before = realManifestHash();
+  const run = (...args) => spawnSync(process.execPath, ["scripts/sign-manifest.mjs", ...args], { encoding: "utf8" });
+  const dir = mkdtempSync(join(tmpdir(), "vexx-cli-strict-"));
+  const mp = join(dir, "manifest.json");
+  writeFileSync(mp, JSON.stringify(baseManifest()));
+  const mpBefore = readFileSync(mp, "utf8");
+  const pubPath = join(dir, "pub.pem");
+  writeFileSync(pubPath, KEYS_A.pub);
+
+  const bad = [
+    [],                                   // no path: must NOT default to release/updates/manifest.json
+    ["--check"],                          // check without path
+    ["--sign", mp],                       // unknown flag (sign mode)
+    ["--check", "--bogus", mp],           // unknown flag (check mode)
+    ["-x", mp],                           // unknown short flag
+    [mp, mp + ".other"],                  // two paths
+    ["--check", mp, "--pubkey"],          // flag without value
+    [mp, "--pubkey", pubPath],            // --pubkey without --check
+  ];
+  for (const args of bad) {
+    const r = run(...args);
+    assert.equal(r.status, 2, `args ${JSON.stringify(args.map((a) => a.replace(dir, "<tmp>")))} -> exit ${r.status}: ${r.stderr}`);
+    assert.match(r.stderr, /sign-manifest:/);
+  }
+  assert.equal(readFileSync(mp, "utf8"), mpBefore, "temp manifest untouched");
+  assert.equal(realManifestHash(), before, "real release/updates/manifest.json untouched");
+});
+
+test("sign-manifest CLI: explicit path signs ONLY that file (private key from env, real manifest untouched)", () => {
+  const before = realManifestHash();
+  const dir = mkdtempSync(join(tmpdir(), "vexx-cli-explicit-"));
+  const mp = join(dir, "manifest.json");
+  const keyPath = join(dir, "k.pem");
+  writeFileSync(keyPath, KEYS_A.priv);
+  writeFileSync(mp, JSON.stringify(baseManifest()));
+  // the embedded key differs from KEYS_A, so signing is refused (wrong key) and the file stays unchanged
+  const r = spawnSync(process.execPath, ["scripts/sign-manifest.mjs", mp], {
+    encoding: "utf8",
+    env: { ...process.env, VEXX_OTA_PRIVATE_KEY: keyPath },
+  });
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /does not verify/);
+  assert.equal(JSON.parse(readFileSync(mp, "utf8")).signature, undefined);
+  assert.equal(realManifestHash(), before);
+});
+
+test("pack-updates.mjs --sign still works end to end (explicit path), in a throw-away copy of the repo layout", () => {
+  const before = realManifestHash();
+  const root = mkdtempSync(join(tmpdir(), "vexx-pack-"));
+  for (const sub of ["scripts", "electron"]) mkdirSync(join(root, sub), { recursive: true });
+  for (const f of ["scripts/pack-updates.mjs", "scripts/sign-manifest.mjs"]) writeFileSync(join(root, f), readFileSync(f));
+  for (const f of ["manifest-verify.mjs", "update-config.mjs", "ota-public-key.mjs"]) writeFileSync(join(root, "electron", f), readFileSync(join("electron", f)));
+  // the copy trusts the TEST public key, so the real private key is never needed
+  writeFileSync(join(root, "electron", "ota-public-key.mjs"), `export const OTA_PUBLIC_KEY_PEM = ${JSON.stringify(KEYS_A.pub)};\nexport const REQUIRE_SIGNED_MANIFEST = false;\n`);
+  writeFileSync(join(root, "package.json"), JSON.stringify({ name: "x", version: "9.9.9" }));
+  writeFileSync(join(root, "update.config.json"), JSON.stringify({ githubOwner: OWNER, githubRepo: REPO }));
+  const data = join(root, "src", "content", "data");
+  mkdirSync(data, { recursive: true });
+  for (const t of TRACKS) writeFileSync(join(data, `${t}.json`), trackBody(t));
+  writeFileSync(join(data, "bundle-manifest.json"), JSON.stringify({ coursesVersion: 7 }));
+  const keyPath = join(root, "k.pem");
+  writeFileSync(keyPath, KEYS_A.priv);
+  const env = { ...process.env, VEXX_OTA_PRIVATE_KEY: keyPath };
+
+  const plain = spawnSync(process.execPath, ["scripts/pack-updates.mjs"], { cwd: root, encoding: "utf8", env });
+  assert.equal(plain.status, 0, plain.stderr);
+  const m = join(root, "release", "updates", "manifest.json");
+  assert.equal(JSON.parse(readFileSync(m, "utf8")).signature, undefined, "no --sign -> unsigned");
+
+  const signed = spawnSync(process.execPath, ["scripts/pack-updates.mjs", "--sign"], { cwd: root, encoding: "utf8", env });
+  assert.equal(signed.status, 0, signed.stderr + signed.stdout);
+  assert.equal(JSON.parse(readFileSync(m, "utf8")).signature.alg, "ed25519");
+  const chk = spawnSync(process.execPath, ["scripts/sign-manifest.mjs", "--check", m], { cwd: root, encoding: "utf8" });
+  assert.equal(chk.status, 0, chk.stdout);
+  assert.match(chk.stdout, /signature: valid/);
+  assert.equal(realManifestHash(), before, "real manifest untouched");
+});

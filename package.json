@@ -12,7 +12,7 @@
     "courses": "node scripts/build-all-courses.mjs && node scripts/verify-security-lessons.mjs",
     "icon": "node scripts/generate-icon.mjs",
     "pack:updates": "node scripts/pack-updates.mjs",
-    "sign:manifest": "node scripts/sign-manifest.mjs",
+    "sign:manifest": "node scripts/sign-manifest.mjs release/updates/manifest.json",
     "build:ui": "vite build && node scripts/copy-course-data.mjs",
     "release:pack": "npm run courses && npm run build:ui && node scripts/pack-updates.mjs",
     "release:github": "node scripts/gh-release.mjs",

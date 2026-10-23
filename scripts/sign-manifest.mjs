@@ -1,8 +1,8 @@
 /**
  * Sign the OTA manifest locally with the maintainer's Ed25519 private key.
  *
- *   node scripts/sign-manifest.mjs [path/to/manifest.json]      (default: release/updates/manifest.json)
- *   node scripts/sign-manifest.mjs --check [path/to/manifest.json]   (verify only, no key needed;
+ *   node scripts/sign-manifest.mjs <path/to/manifest.json>           (sign in place)
+ *   node scripts/sign-manifest.mjs --check <path/to/manifest.json>   (verify only, no key needed;
  *       exit code 1 if unsigned or invalid - used by CI. Also re-hashes the files next to the manifest
  *       (courses, UI bundle, and the exe if it is present and portableSha256 is set) and compares with the manifest. Optional: --pubkey <file> to verify against another public key, for tests)
  *
@@ -10,29 +10,25 @@
  * The key is read only to sign; it is never printed. The result is verified against the public key
  * embedded in the app (electron/ota-public-key.mjs) before the file is written, so a wrong key
  * can never produce a manifest that clients would reject.
- * This script publishes nothing. Re-run it after EVERY change to the manifest.
+ * The manifest path is ALWAYS required (no implicit default): a missing path or an unknown flag is an error
+ * (exit 2), so nothing is ever signed by accident. This script publishes nothing. Re-run it after EVERY change to the manifest.
  */
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
-import { fileURLToPath, pathToFileURL } from "node:url";
+import { pathToFileURL } from "node:url";
 
 import { OTA_PUBLIC_KEY_PEM } from "../electron/ota-public-key.mjs";
 import { publicKeyFingerprint, signManifest, verifyManifestSignature } from "../electron/manifest-verify.mjs";
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 export function defaultPrivateKeyPath() {
   return process.env.VEXX_OTA_PRIVATE_KEY || join(homedir(), "keys", "vexx-learn-ota-private.pem");
 }
 
-export function defaultManifestPath() {
-  return join(ROOT, "release", "updates", "manifest.json");
-}
-
 /** Signs the manifest file in place. Throws on any problem (nothing is written in that case). */
-export function signManifestFile(manifestPath = defaultManifestPath(), keyPath = defaultPrivateKeyPath(), publicKeyPem = OTA_PUBLIC_KEY_PEM) {
+export function signManifestFile(manifestPath, keyPath = defaultPrivateKeyPath(), publicKeyPem = OTA_PUBLIC_KEY_PEM) {
+  if (typeof manifestPath !== "string" || !manifestPath) throw new Error("manifest path is required");
   if (!existsSync(manifestPath)) throw new Error(`manifest not found: ${manifestPath}`);
   if (!existsSync(keyPath)) throw new Error(`private key not found: ${keyPath} (set VEXX_OTA_PRIVATE_KEY)`);
   const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
@@ -45,7 +41,7 @@ export function signManifestFile(manifestPath = defaultManifestPath(), keyPath =
   return { manifestPath, keyId: signed.signature.keyId, fingerprint: publicKeyFingerprint(publicKeyPem) };
 }
 
-export function checkManifestFile(manifestPath = defaultManifestPath(), publicKeyPem = OTA_PUBLIC_KEY_PEM) {
+export function checkManifestFile(manifestPath, publicKeyPem = OTA_PUBLIC_KEY_PEM) {
   const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
   return verifyManifestSignature(manifest, publicKeyPem);
 }
@@ -58,7 +54,7 @@ export function checkManifestFile(manifestPath = defaultManifestPath(), publicKe
  * - the portable exe is checked only if portableSha256 is set AND the exe file is found
  *   (exePath, or <manifestDir>/<portableAssetName>, or <manifestDir>/../<portableAssetName>); a missing exe is skipped.
  */
-export function checkManifestFiles(manifestPath = defaultManifestPath(), { exePath } = {}) {
+export function checkManifestFiles(manifestPath, { exePath } = {}) {
   const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
   const dir = dirname(resolve(manifestPath));
   const problems = [];
@@ -96,26 +92,52 @@ export function checkManifestFiles(manifestPath = defaultManifestPath(), { exePa
   return { ok: problems.length === 0, problems, checked, skipped };
 }
 
+/**
+ * Strict CLI parsing. Throws on: unknown flag, missing flag value, no/extra manifest path,
+ * --pubkey/--exe without --check.
+ */
+export function parseCliArgs(args) {
+  const out = { check: false, pubKeyFile: null, exeFile: null, file: null };
+  const positional = [];
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (a === "--check") out.check = true;
+    else if (a === "--pubkey" || a === "--exe") {
+      const v = args[i + 1];
+      if (v === undefined || v.startsWith("--")) throw new Error(`${a} needs a value`);
+      if (a === "--pubkey") out.pubKeyFile = v;
+      else out.exeFile = v;
+      i++;
+    } else if (a.startsWith("-")) throw new Error(`unknown flag: ${a}`);
+    else positional.push(a);
+  }
+  if (positional.length === 0) throw new Error("explicit manifest path is required (e.g. release/updates/manifest.json)");
+  if (positional.length > 1) throw new Error(`expected exactly one manifest path, got ${positional.length}`);
+  if (!out.check && (out.pubKeyFile || out.exeFile)) throw new Error("--pubkey/--exe are only valid together with --check");
+  out.file = positional[0];
+  return out;
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  const args = process.argv.slice(2);
-  const checkOnly = args.includes("--check");
-  const pkIdx = args.indexOf("--pubkey");
-  const pubKeyFile = pkIdx >= 0 ? args[pkIdx + 1] : null;
-  const exeIdx = args.indexOf("--exe");
-  const exeFile = exeIdx >= 0 ? args[exeIdx + 1] : null;
-  const skip = new Set([pkIdx >= 0 ? pkIdx + 1 : -1, exeIdx >= 0 ? exeIdx + 1 : -1]);
-  const file = args.find((a, i) => !a.startsWith("--") && !skip.has(i)) || defaultManifestPath();
+  let opts;
   try {
-    if (checkOnly) {
-      const r = checkManifestFile(file, pubKeyFile ? readFileSync(pubKeyFile, "utf8") : OTA_PUBLIC_KEY_PEM);
+    opts = parseCliArgs(process.argv.slice(2));
+  } catch (e) {
+    console.error("sign-manifest: " + e.message);
+    console.error("usage: node scripts/sign-manifest.mjs [--check [--pubkey <pem>] [--exe <file>]] <manifest.json>");
+    process.exit(2);
+  }
+  try {
+    if (opts.check) {
+      const r = checkManifestFile(opts.file, opts.pubKeyFile ? readFileSync(opts.pubKeyFile, "utf8") : OTA_PUBLIC_KEY_PEM);
       console.log(`manifest signature: ${r.status}${r.reason ? " (" + r.reason + ")" : ""}`);
-      const f = checkManifestFiles(file, { exePath: exeFile });
+      const f = checkManifestFiles(opts.file, { exePath: opts.exeFile });
       console.log(`files: ${f.ok ? "ok" : "FAILED"} (${f.checked.length} verified)`);
       for (const p of f.problems) console.log("  - " + p);
       for (const p of f.skipped) console.log("  (skipped) " + p);
       process.exit(r.status === "valid" && f.ok ? 0 : 1);
     }
-    const r = signManifestFile(file);
+    const r = signManifestFile(opts.file);
     console.log(`Signed ${r.manifestPath}`);
     console.log(`keyId: ${r.keyId}  public key sha256: ${r.fingerprint}`);
   } catch (e) {
