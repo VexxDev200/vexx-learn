@@ -4,6 +4,7 @@ import { loadSettings, saveSettings } from "./settings.mjs";
 import { isGitHubConfigured, loadUpdateConfig } from "./update-config.mjs";
 import { getLocalUiVersion, resolveUiRoot } from "./app-ui.mjs";
 import { attachNavigationGuards } from "./navigation-policy.mjs";
+import { MSG_NO_DOTNET, prepareCsharp } from "./csharp-run.mjs";
 import {
   validateCheckPayload,
   validateInteractivePayload,
@@ -345,22 +346,15 @@ function runCsharp(source, stdin = "") {
   return new Promise((resolve) => {
     let dir;
     try {
-      dir = mkdtempSync(join(tmpdir(), "vexx-cs-"));
-      writeFileSync(join(dir, "Program.cs"), source, "utf8");
-      writeFileSync(
-        join(dir, "App.csproj"),
-        `<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
-</Project>`,
-        "utf8"
-      );
-      const child = spawn("dotnet", ["run", "--project", join(dir, "App.csproj")], {
+      const prep = prepareCsharp(source);
+      if (!prep.ok) {
+        resolve({ ok: false, stdout: "", stderr: prep.message + "\n", exitCode: -1 });
+        return;
+      }
+      dir = prep.dir;
+      const child = spawn("dotnet", prep.args, {
         cwd: dir,
+        env: prep.env,
         windowsHide: true,
         stdio: ["pipe", "pipe", "pipe"],
       });
@@ -387,9 +381,7 @@ function runCsharp(source, stdin = "") {
           ok: false,
           stdout: "",
           stderr:
-            (e.code === "ENOENT"
-              ? ".NET SDK не найден. Установи .NET 8 SDK."
-              : e.message) + "\n",
+            (e.code === "ENOENT" ? MSG_NO_DOTNET : e.message) + "\n",
           exitCode: -1,
         });
       });

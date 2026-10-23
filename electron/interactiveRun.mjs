@@ -2,6 +2,7 @@ import { spawn } from "child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
+import { MSG_NO_DOTNET, prepareCsharp } from "./csharp-run.mjs";
 
 const MAX_RUN_MS = 10 * 60 * 1000;
 
@@ -115,7 +116,7 @@ function toolMissingMessage(cmd) {
     return "g++ не найден. Установи MinGW-w64 или MSVC build tools.";
   }
   if (c.includes("dotnet")) {
-    return ".NET SDK не найден. Установи .NET 8 SDK.";
+    return MSG_NO_DOTNET;
   }
   return "Не удалось запустить программу (команда не найдена в PATH).";
 }
@@ -251,22 +252,12 @@ function compileCpp(source) {
 function prepCsharp(source) {
   let dir;
   try {
-    dir = mkdtempSync(join(tmpdir(), "vexx-cs-"));
-    writeFileSync(join(dir, "Program.cs"), source, "utf8");
-    writeFileSync(
-      join(dir, "App.csproj"),
-      `<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
-</Project>`,
-      "utf8"
-    );
-    const child = spawn("dotnet", ["run", "--project", join(dir, "App.csproj")], {
+    const prep = prepareCsharp(source);
+    if (!prep.ok) return { error: prep.message };
+    dir = prep.dir;
+    const child = spawn("dotnet", prep.args, {
       cwd: dir,
+      env: prep.env,
       windowsHide: true,
       stdio: ["pipe", "pipe", "pipe"],
     });
