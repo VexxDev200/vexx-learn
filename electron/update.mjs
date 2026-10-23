@@ -1,5 +1,5 @@
 import { createWriteStream, existsSync } from "fs";
-import { mkdirSync, readFileSync, writeFileSync } from "fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
 import { pipeline } from "stream/promises";
 import { createHash } from "crypto";
@@ -197,10 +197,11 @@ export async function checkAndApplyUpdates({ appRoot, userData, settings, appVer
             if (remote.portableSha256) {
               const hash = sha256File(dest);
               if (hash !== remote.portableSha256) {
+                try { rmSync(dest, { force: true }); } catch { /* ignore */ }
                 throw new Error("Portable exe checksum mismatch");
               }
             }
-            savePendingAppUpdate({
+            savePendingAppUpdate(userData, {
               version: rel.version,
               url: rel.downloadUrl,
               path: dest,
@@ -252,6 +253,7 @@ function semverGt(a, b) {
 
 export function savePendingAppUpdate(userData, info) {
   const p = join(userData, "pending-app-update.json");
+  mkdirSync(dirname(p), { recursive: true });
   writeFileSync(p, JSON.stringify(info, null, 2), "utf8");
 }
 
