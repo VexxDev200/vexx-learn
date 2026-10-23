@@ -5,7 +5,10 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+let currentMock = null;
+
 export async function loadMain() {
+  currentMock?.restore();
   const userData = mkdtempSync(join(tmpdir(), "vexx-test-userdata-"));
   const handlers = new Map();
   const listeners = new Map();
@@ -41,7 +44,7 @@ export async function loadMain() {
       openPath: async (p) => { shellCalls.openPath.push(p); return ""; },
     },
   };
-  mock.module("electron", { defaultExport: electron, namedExports: electron });
+  currentMock = mock.module("electron", { defaultExport: electron, namedExports: electron });
 
   // never touch the network from tests
   const realFetch = globalThis.fetch;
@@ -56,6 +59,8 @@ export async function loadMain() {
     handlers,
     listeners,
     shellCalls,
-    restore() { globalThis.fetch = realFetch; },
+    restore() {
+      globalThis.fetch = realFetch;
+    },
   };
 }

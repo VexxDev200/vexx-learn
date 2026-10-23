@@ -17,7 +17,11 @@ import {
   startInteractiveRun,
   writeInteractiveStdin,
 } from "./interactiveRun.mjs";
-import { sanitizeSettingsPatch } from "./security-policy.mjs";
+import {
+  isAllowedExternalUrl,
+  isPathInsideRoots,
+  sanitizeSettingsPatch,
+} from "./security-policy.mjs";
 import { spawn } from "child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
@@ -484,8 +488,12 @@ app.whenReady().then(() => {
     }
   });
 
-  ipcMain.handle("shell:open", (_, url) => {
-    shell.openExternal(url);
+  ipcMain.handle("shell:open", async (_, url) => {
+    if (!isAllowedExternalUrl(url)) {
+      console.warn("[vexx-learn] shell:open blocked (https only)");
+      return;
+    }
+    await shell.openExternal(String(url).trim());
   });
 
   ipcMain.handle("courses:get", () => {
@@ -529,7 +537,14 @@ app.whenReady().then(() => {
     return result;
   });
 
-  ipcMain.handle("shell:open-path", (_, filePath) => shell.openPath(filePath));
+  ipcMain.handle("shell:open-path", async (_, filePath) => {
+    const roots = [app.getPath("userData"), appRoot()];
+    if (!isPathInsideRoots(filePath, roots)) {
+      console.warn("[vexx-learn] shell:open-path blocked (outside app folders)");
+      return "blocked: path is outside the application folders";
+    }
+    return shell.openPath(filePath);
+  });
 
   ipcMain.handle("updater:pending-app", () => loadPendingAppUpdate(app.getPath("userData")));
 
