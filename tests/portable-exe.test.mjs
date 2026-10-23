@@ -211,27 +211,27 @@ test("release asset outside the configured repo, odd tag names, and off-GitHub r
 test("launch gate: exe tampered after download is deleted and cannot be opened", async () => {
   const { userData } = await run(signed(baseManifest()));
   const pending = loadPendingAppUpdate(userData);
-  assert.equal(canOpenPath(userData, pending.path).ok, true);
-  assert.ok(verifyPendingAppUpdate(userData));
+  assert.equal((await canOpenPath(userData, pending.path)).ok, true);
+  assert.ok(await verifyPendingAppUpdate(userData));
 
   writeFileSync(pending.path, Buffer.alloc(EXE.length, 0x41)); // same size, different bytes
-  const gate = canOpenPath(userData, pending.path);
+  const gate = await canOpenPath(userData, pending.path);
   assert.equal(gate.ok, false);
   assert.equal(existsSync(pending.path), false, "tampered exe deleted");
   assert.equal(loadPendingAppUpdate(userData), null, "pending record cleared");
-  assert.equal(verifyPendingAppUpdate(userData), null);
+  assert.equal(await verifyPendingAppUpdate(userData), null);
 });
 
 test("launch gate: other files in pending-updates are refused; files elsewhere are unaffected", async () => {
   const { userData } = await run(signed(baseManifest()));
   const stray = join(pendingUpdatesDir(userData), "Other.exe");
   writeFileSync(stray, "x");
-  const g = canOpenPath(userData, stray);
+  const g = await canOpenPath(userData, stray);
   assert.equal(g.ok, false);
   assert.match(g.reason, /not the recorded pending update/);
   const elsewhere = join(userData, "notes.txt");
   writeFileSync(elsewhere, "x");
-  assert.equal(canOpenPath(userData, elsewhere).ok, true);
+  assert.equal((await canOpenPath(userData, elsewhere)).ok, true);
 });
 
 test("IPC: updater:pending-app and shell:open-path enforce the hash (tamper -> null / blocked, genuine -> opens)", async () => {

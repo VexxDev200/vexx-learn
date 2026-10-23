@@ -1,4 +1,4 @@
-import { createWriteStream, existsSync } from "fs";
+import { createReadStream, createWriteStream, existsSync } from "fs";
 import { mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "fs";
 import { dirname, join, resolve } from "path";
 import { pipeline } from "stream/promises";
@@ -52,9 +52,40 @@ async function downloadFile(url, destPath, { checkFinalHost = false } = {}) {
   await pipeline(res.body, createWriteStream(destPath));
 }
 
-function sha256File(path) {
-  const buf = readFileSync(path);
-  return createHash("sha256").update(buf).digest("hex");
+// SHA-256 of a file, read as a STREAM (a ~70 MB exe must not be loaded into memory or block the main process), with a
+// small cache keyed by (path, size, mtime, ctime). A modified/replaced file changes size or mtime, and ctime cannot be set
+// from user space, so a swapped file misses the cache and is hashed again. The key is taken before reading and the result
+// is cached only if the stat is unchanged after reading (no caching of a file that changed while being hashed).
+const HASH_CACHE_MAX = 16;
+const hashCache = new Map();
+const hashStats = { computed: 0, cacheHits: 0 };
+export function sha256Stats() { return { ...hashStats }; }
+export function clearSha256Cache() { hashCache.clear(); hashStats.computed = 0; hashStats.cacheHits = 0; }
+const statKey = (path, st) => `${resolve(path)}|${st.size}|${st.mtimeMs}|${st.ctimeMs}`;
+
+export async function sha256File(path, { useCache = true } = {}) {
+  const before = statSync(path);
+  const key = statKey(path, before);
+  if (useCache && hashCache.has(key)) {
+    hashStats.cacheHits++;
+    const v = hashCache.get(key);
+    hashCache.delete(key);
+    hashCache.set(key, v); // LRU refresh
+    return v;
+  }
+  const h = createHash("sha256");
+  for await (const chunk of createReadStream(path)) h.update(chunk);
+  hashStats.computed++;
+  const digest = h.digest("hex");
+  if (useCache) {
+    let after = null;
+    try { after = statSync(path); } catch { /* vanished */ }
+    if (after && statKey(path, after) === key) {
+      hashCache.set(key, digest);
+      while (hashCache.size > HASH_CACHE_MAX) hashCache.delete(hashCache.keys().next().value);
+    }
+  }
+  return digest;
 }
 
 /** raw.githubusercontent.com/owner/repo with no branch/path → 404 in browser */
@@ -158,7 +189,7 @@ export async function checkAndApplyUpdates({
         const tmp = join(userData, "courses-cache", `_dl_${track}.json`);
         await downloadFile(fileUrl, tmp);
         if (remote.sha256?.[track]) {
-          const hash = sha256File(tmp);
+          const hash = await sha256File(tmp, { useCache: false });
           if (hash !== remote.sha256[track]) {
             throw new Error(`Checksum mismatch for ${track}`);
           }
@@ -308,7 +339,7 @@ async function ensurePortableExe({ userData, cfg, rel, remote, signed, requireSi
       const trusted =
         pending?.path === dest && pending?.version === rel.version && pending?.sha256 === expected &&
         pending?.size === statSync(dest).size;
-      if (trusted || sha256File(dest) === expected) reusable = true;
+      if (trusted || (await sha256File(dest)) === expected) reusable = true;
       else {
         try { rmSync(dest, { force: true }); } catch { /* ignore */ }
         if (pending?.path === dest) clearPendingAppUpdate(userData);
@@ -321,7 +352,7 @@ async function ensurePortableExe({ userData, cfg, rel, remote, signed, requireSi
     console.log("[vexx-learn] downloading portable", rel.version);
     try {
       await downloadFile(rel.downloadUrl, part, { checkFinalHost: true });
-      if (expected && sha256File(part) !== expected) throw new Error("Portable exe checksum mismatch");
+      if (expected && (await sha256File(part, { useCache: false })) !== expected) throw new Error("Portable exe checksum mismatch");
       renameSync(part, dest);
     } catch (e) {
       try { rmSync(part, { force: true }); } catch { /* ignore */ }
@@ -395,14 +426,14 @@ export function clearPendingAppUpdate(userData) {
 }
 
 /** Pending exe info, or null if the file is gone or no longer matches the recorded sha256 (then it is deleted). */
-export function verifyPendingAppUpdate(userData) {
+export async function verifyPendingAppUpdate(userData) {
   const pending = loadPendingAppUpdate(userData);
   if (!pending) return null;
   if (!pending.path || !existsSync(pending.path)) {
     clearPendingAppUpdate(userData);
     return null;
   }
-  if (pending.sha256 && sha256File(pending.path) !== String(pending.sha256).toLowerCase()) {
+  if (pending.sha256 && (await sha256File(pending.path)) !== String(pending.sha256).toLowerCase()) {
     console.warn("[vexx-learn] pending exe no longer matches its recorded sha256 - deleted");
     try { rmSync(pending.path, { force: true }); } catch { /* ignore */ }
     clearPendingAppUpdate(userData);
@@ -415,9 +446,9 @@ export function verifyPendingAppUpdate(userData) {
  * Gate for shell:open-path. Anything inside <userData>/pending-updates may only be opened if it is exactly the
  * recorded pending exe AND (when a sha256 was recorded) still hashes to it right now.
  */
-export function canOpenPath(userData, filePath) {
+export async function canOpenPath(userData, filePath) {
   if (!isPathInsideRoots(filePath, [pendingUpdatesDir(userData)])) return { ok: true };
-  const pending = verifyPendingAppUpdate(userData);
+  const pending = await verifyPendingAppUpdate(userData);
   if (!pending) return { ok: false, reason: "no verified pending update (file missing or checksum mismatch)" };
   if (resolve(pending.path).toLowerCase() !== resolve(String(filePath)).toLowerCase()) {
     return { ok: false, reason: "not the recorded pending update file" };

@@ -548,7 +548,7 @@ app.whenReady().then(() => {
       console.warn("[vexx-learn] shell:open-path blocked (outside app folders)");
       return "blocked: path is outside the application folders";
     }
-    const gate = canOpenPath(app.getPath("userData"), filePath);
+    const gate = await canOpenPath(app.getPath("userData"), filePath);
     if (!gate.ok) {
       console.warn("[vexx-learn] shell:open-path blocked:", gate.reason);
       return "blocked: " + gate.reason;
@@ -556,7 +556,7 @@ app.whenReady().then(() => {
     return shell.openPath(filePath);
   });
 
-  ipcMain.handle("updater:pending-app", () => verifyPendingAppUpdate(app.getPath("userData")));
+  ipcMain.handle("updater:pending-app", async () => verifyPendingAppUpdate(app.getPath("userData")));
 
   ipcMain.handle("updates:capabilities", () => ({ uiOta: true }));
 
