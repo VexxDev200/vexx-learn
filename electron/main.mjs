@@ -3,6 +3,7 @@ import { loadAllCourses } from "./courses.mjs";
 import { loadSettings, saveSettings } from "./settings.mjs";
 import { isGitHubConfigured, loadUpdateConfig } from "./update-config.mjs";
 import { getLocalUiVersion, resolveUiRoot } from "./app-ui.mjs";
+import { attachNavigationGuards } from "./navigation-policy.mjs";
 import { syncPortableUpgrade } from "./portable-sync.mjs";
 import {
   checkAndApplyUpdates,
@@ -410,6 +411,9 @@ function runChecks(runFn, code, checks) {
     return { allPass, results };
   })();
 }
+
+// Round 2 / S5.2: every webContents (also ones created later) gets the navigation / window.open guards.
+app.on("web-contents-created", (_event, contents) => attachNavigationGuards(contents, shell));
 
 app.whenReady().then(() => {
   Menu.setApplicationMenu(null);

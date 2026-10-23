@@ -13,10 +13,13 @@ export async function loadMain() {
   const handlers = new Map();
   const listeners = new Map();
   const shellCalls = { openExternal: [], openPath: [] };
+  const appListeners = new Map();
+  const windows = [];
 
   class BrowserWindow {
     constructor() {
       this.webContents = { on() {}, send() {} };
+      windows.push(this);
     }
     loadURL() {}
     loadFile() {}
@@ -29,7 +32,7 @@ export async function loadMain() {
       getPath: () => userData,
       getAppPath: () => process.cwd(),
       whenReady: () => Promise.resolve(),
-      on() {},
+      on: (ev, fn) => appListeners.set(ev, fn),
       quit() {},
     },
     BrowserWindow,
@@ -58,6 +61,8 @@ export async function loadMain() {
     userData,
     handlers,
     listeners,
+    appListeners,
+    windows,
     shellCalls,
     restore() {
       globalThis.fetch = realFetch;
