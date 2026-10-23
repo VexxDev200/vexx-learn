@@ -242,6 +242,8 @@ export function App() {
     }
   };
   useEffect(() => clearNextTimer, []);
+  const lessonIdRef = useRef(lessonId);
+  lessonIdRef.current = lessonId;
 
   const pickLesson = useCallback((l: Lesson) => {
     clearNextTimer();
@@ -307,6 +309,7 @@ export function App() {
   }, []);
 
   const runCode = async () => {
+    clearNextTimer();
     if (!lesson) return;
     if (!api) {
       setConsoleText(tUi(lang, "noElectron"));
@@ -373,6 +376,7 @@ export function App() {
 
   const checkTask = async () => {
     if (!api || !lesson) return;
+    clearNextTimer();
     api.stopRun?.();
     setRunActive(false);
     if (lesson.kind === "exam" && !examUnlocked(track, completed, registry)) {
@@ -417,7 +421,7 @@ export function App() {
     }
     setConsoleText(lines.join("\n"));
     setConsoleOk(r.allPass);
-    if (nextLesson && nextLesson.kind !== "exam") {
+    if (nextLesson && nextLesson.kind !== "exam" && lessonIdRef.current === lesson.id) {
       clearNextTimer();
       nextTimerRef.current = setTimeout(() => {
         nextTimerRef.current = null;
@@ -601,7 +605,10 @@ export function App() {
                   <strong>{tUi(lang, "example")}</strong>
                   <pre>{lesson.exampleCode}</pre>
                   <p>{lesson.exampleExplain}</p>
-                  <button type="button" className="btn" onClick={() => setCode(lesson.exampleCode)}>
+                  <button type="button" className="btn" onClick={() => {
+                clearNextTimer();
+                setCode(lesson.exampleCode);
+              }}>
                     {tUi(lang, "insertExample")}
                   </button>
                 </div>
@@ -628,9 +635,10 @@ export function App() {
                   <button
                     type="button"
                     className="btn"
-                    onClick={() =>
-                      setCode(blankCodeForEditor(lesson.editorLang || "python"))
-                    }
+                    onClick={() => {
+                      clearNextTimer();
+                      setCode(blankCodeForEditor(lesson.editorLang || "python"));
+                    }}
                   >
                     {tUi(lang, "reset")}
                   </button>
@@ -642,7 +650,10 @@ export function App() {
                     language={lesson.editorLang || "python"}
                     theme="vexx-dark"
                     value={code}
-                    onChange={(v) => setCode(v ?? "")}
+                    onChange={(v) => {
+                clearNextTimer();
+                setCode(v ?? "");
+              }}
                     beforeMount={setupMonaco}
                     options={editorOptions}
                   />
