@@ -10,15 +10,29 @@ import { checkAndApplyUpdates } from "../electron/update.mjs";
 
 const tmp = (p) => mkdtempSync(join(tmpdir(), p));
 
-test("update.config.json is git-ignored and NOT tracked; the example template is tracked-ready and secret-free", () => {
+const IN_GIT = spawnSync("git", ["rev-parse", "--is-inside-work-tree"], { encoding: "utf8" }).stdout.trim() === "true";
+
+test("local config / env files are git-ignored; the example template is secret-free", () => {
   const ignore = readFileSync(".gitignore", "utf8").split(/\r?\n/).map((l) => l.trim());
-  assert.ok(ignore.includes("update.config.json"), ".gitignore lists update.config.json");
-  const tracked = spawnSync("git", ["ls-files", "--", "update.config.json"], { encoding: "utf8" }).stdout.trim();
-  assert.equal(tracked, "", "update.config.json must not be tracked");
+  for (const line of ["update.config.json", ".env", ".env.*", "!.env.example"]) {
+    assert.ok(ignore.includes(line), `.gitignore lists ${line}`);
+  }
   const ex = JSON.parse(readFileSync("update.config.example.json", "utf8"));
   assert.deepEqual(Object.keys(ex).sort(), ["branch", "githubOwner", "githubRepo", "portableAssetName", "updatesPath"]);
   assert.equal(isGitHubConfigured(ex), false, "placeholder owner = OTA off, never points at a random account");
   assert.doesNotMatch(JSON.stringify(ex), /token|secret|password|authorization|ghp_|github_pat_/i);
+});
+
+// Explicit SKIP (not a silent green pass) when there is no git work tree, e.g. a source tarball
+test("update.config.json and .env files are NOT tracked by git", { skip: IN_GIT ? false : "not inside a git work tree - tracking cannot be checked" }, () => {
+  const ls = (...p) => spawnSync("git", ["ls-files", "--", ...p], { encoding: "utf8" });
+  const a = ls("update.config.json");
+  assert.equal(a.status, 0, "git ls-files must work: " + a.stderr);
+  assert.equal(a.stdout.trim(), "", "update.config.json must not be tracked");
+  const b = ls(".env", ".env.*", "**/.env", "**/.env.*");
+  assert.equal(b.status, 0);
+  const tracked = b.stdout.split(/\r?\n/).filter((x) => x && !/\.env\.example$/.test(x));
+  assert.deepEqual(tracked, [], ".env files must not be tracked");
 });
 
 test("app starts and updater degrades gracefully when update.config.json is missing", async () => {
