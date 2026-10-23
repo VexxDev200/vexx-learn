@@ -77,3 +77,16 @@
 3. Нет ни одного теста и линтера, а `tsc` падает с 24 ошибками, скрытыми тем, что `npm run build` его не запускает — `package.json`, `src/App.tsx`, `src/content/pythonCourse.ts`.
 4. 17 уязвимостей npm (включая critical `dompurify` в production-дереве и устаревший Electron 34) — `package.json`, `package-lock.json`.
 5. Содержимое курсов: в 90 уроках стартовый код равен примеру, в 108 проверках нет подсказок, 47 заголовков/текстов не переведены, плюс дублирующая папка `lessons/` — `src/content/data/*.json`, `lessons/`.
+## 7. Round 1a — результаты (ветка `improve/round-1`, локальные коммиты, без push/релиза)
+
+Сделано (каждое исправление — отдельный коммит с тестом):
+- **Баг** `electron/main.mjs`: добавлен импорт `loadPendingAppUpdate` — IPC `updater:pending-app` больше не падает. Тест: `tests/main-pending-app.test.mjs` (был красный до правки).
+- **Баг** `electron/update.mjs`: `savePendingAppUpdate(userData, info)` вызывается с правильными аргументами, функция создаёт папку; exe с неверной контрольной суммой удаляется. Тесты: `tests/update-pending.test.mjs`.
+- **S3**: `settings:set` принимает только известные ключи; `updateBaseUrl` — пустая строка или `https://` на `raw.githubusercontent.com` / `github.com` / `objects.githubusercontent.com` (для raw — только путь настроенного owner/repo, берётся из кода, файл конфига не печатается). Та же проверка при использовании (`resolveCoursesBase`), так что старое плохое значение из файла настроек игнорируется. Код: `electron/security-policy.mjs`. Тесты: `tests/settings-policy.test.mjs` (http, file, javascript, data, чужие хосты, креды, порт отклоняются).
+- **S2**: `shell:open` — только `https://`; `shell:open-path` — только внутри `userData` и папки приложения (resolve + realpath, блок `..` и symlink/junction). Тесты: `tests/shell-policy.test.mjs`.
+- **tsc**: 24 ошибки исправлены без изменения поведения (типы `LessonDefCheck`, `Record<string, Lesson[]>`, дубль поля в `SettingsModal`, типы параметров Monaco); `npm run typecheck` = 0 ошибок.
+- Добавлены скрипты `npm test` (`node:test`, нужен Node 22+) и `npm run typecheck`.
+
+Проверки: typecheck 0 ошибок; `npm test` 14/14; сборка (icon, courses, vite, electron-builder portable во временную папку) успешна.
+
+Отложено: подпись OTA (S1, раунд 1b), S4, S5 (sandbox/CSP), S6, S7, S8 (`update.config.json` остаётся в git и в asar — решение за Vexx), контент курсов, линтер.
