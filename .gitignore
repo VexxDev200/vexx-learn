@@ -14,3 +14,8 @@ release/builder-debug.yml
 
 # Local OTA config (owner/repo only, never secrets). Template: update.config.example.json
 update.config.json
+
+# Local environment files (may hold secrets); only a template may be committed
+.env
+.env.*
+!.env.example
